@@ -5,5 +5,5 @@ import com.api.learning.ElearningBE.form.account.CreateAccountForm;
 import org.springframework.validation.BindingResult;
 
 public interface AccountService {
-    ApiMessageDto<String> create(CreateAccountForm createAccountForm, BindingResult bindingResult);
+    ApiMessageDto<String> create(CreateAccountForm createAccountForm);
 }

@@ -17,6 +17,7 @@ public class Account extends Auditable<String> {
     private String password;
     private String fullName;
     private String avatarPath;
+    private Boolean isAdmin = false;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;

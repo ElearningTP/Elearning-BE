@@ -16,12 +16,11 @@ import javax.persistence.Table;
 @Table(name = "db_permission")
 public class Permission extends Auditable<String> {
     private String name;
-    private String action;
+    private String action; // endpoint
     private Boolean showMenu = false;
     @Column(columnDefinition = "text")
     private String description;
-    @Column(unique = true)
     private String nameGroup;
     @Column(unique = true)
-    private String pCode;
+    private String permissionCode; // permission code
 }

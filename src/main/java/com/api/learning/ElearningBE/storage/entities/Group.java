@@ -14,6 +14,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "db_group")
 public class Group extends Auditable<String> {
+    @Column(unique = true)
     private String name;
     private Integer kind;
     @Column(columnDefinition = "text")
