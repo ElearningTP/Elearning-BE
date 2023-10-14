@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service(value = "accountService")
-public class AccountServiceImpl implements AccountService, UserDetailsService {
+public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -56,16 +56,4 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = accountRepository.findByEmail(email);
-        if (account == null){
-            throw new NotFoundException("Invalid email and password");
-        }
-        return new User(account.getEmail(), account.getPassword(), getAuthority());
-    }
-
-    private List getAuthority(){
-        return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    }
 }
