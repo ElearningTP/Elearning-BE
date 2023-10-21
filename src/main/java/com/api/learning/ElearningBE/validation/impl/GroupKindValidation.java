@@ -18,7 +18,9 @@ public class GroupKindValidation implements ConstraintValidator<GroupKind,Intege
         if (groupKind == null && allowNull){
             return true;
         }
-        if (!Objects.equals(groupKind, ELearningConstant.GROUP_KIND_ADMIN)){
+        if (!Objects.equals(groupKind, ELearningConstant.GROUP_KIND_ADMIN)
+                && !Objects.equals(groupKind, ELearningConstant.GROUP_KIND_TEACHER)
+                && !Objects.equals(groupKind, ELearningConstant.GROUP_KIND_STUDENT)){
             return false;
         }
         return true;

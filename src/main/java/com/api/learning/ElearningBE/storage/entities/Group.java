@@ -19,7 +19,7 @@ public class Group extends Auditable<String> {
     private Integer kind;
     @Column(columnDefinition = "text")
     private String description;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "db_permission_group",
             joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))

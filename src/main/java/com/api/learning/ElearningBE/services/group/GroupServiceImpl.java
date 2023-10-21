@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.services.group;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.form.group.CreateGroupForm;
+import com.api.learning.ElearningBE.form.group.UpdateGroupForm;
 import com.api.learning.ElearningBE.mapper.GroupMapper;
 import com.api.learning.ElearningBE.repositories.GroupRepository;
 import com.api.learning.ElearningBE.repositories.PermissionRepository;
@@ -32,9 +33,28 @@ public class GroupServiceImpl implements GroupService{
         }
         Group group = groupMapper.fromCreateGroupFormToEntity(createGroupForm);
         List<Permission> permissions = permissionRepository.findAllByIdIn(createGroupForm.getPermissions());
+        group.setPermissions(permissions);
         groupRepository.save(group);
 
         apiMessageDto.setMessage("Create group successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<String> update(UpdateGroupForm updateGroupForm) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Group group = groupRepository.findById(updateGroupForm.getId()).orElse(null);
+        if (group == null){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(String.format("Group with id %s not found", updateGroupForm.getId()));
+            return apiMessageDto;
+        }
+        groupMapper.fromUpdateGroupFormToEntity(updateGroupForm, group);
+        List<Permission> permissions = permissionRepository.findAllByIdIn(updateGroupForm.getPermissions());
+        group.setPermissions(permissions);
+        groupRepository.save(group);
+
+        apiMessageDto.setMessage("Update group successfully");
         return apiMessageDto;
     }
 }

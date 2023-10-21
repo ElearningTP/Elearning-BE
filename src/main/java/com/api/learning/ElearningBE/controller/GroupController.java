@@ -2,13 +2,11 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.form.group.CreateGroupForm;
+import com.api.learning.ElearningBE.form.group.UpdateGroupForm;
 import com.api.learning.ElearningBE.services.group.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,7 +24,19 @@ public class GroupController {
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
-            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setMessage("An unexpected error occurred: "+e.getMessage());
+        }
+        return apiMessageDto;
+    }
+    @PutMapping("/update")
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateGroupForm updateGroupForm){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = groupService.update(updateGroupForm);
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            apiMessageDto.setMessage("An unexpected error occurred: "+e.getMessage());
         }
         return apiMessageDto;
     }
