@@ -1,10 +1,13 @@
 package com.api.learning.ElearningBE.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenDetail {
     private String fullName;
     private String token;
-    private String avatar;
+//    private String avatar;
 }

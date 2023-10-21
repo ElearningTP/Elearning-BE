@@ -1,20 +1,23 @@
 package com.api.learning.ElearningBE.security;
 
+import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
-
-    private final String secret = "VGFuUGh1Y1NQS1Q=";
+    private static final long JWT_VALIDITY_SECONDS = 60 * 60;
+    private final String secret = "8B1B7D6556CEC7F67432B7C1D3CA9gsdfdeGFHFTSHyT";//"VGFuUGh1Y1NQS1Q=";
 
     public String getEmailFromToken(String token){
         return getClaimsFromToken(token, Claims::getSubject);
@@ -32,8 +35,27 @@ public class JwtUtils {
         final Date dateExpire = getClaimsFromToken(token, Claims::getExpiration);
         return dateExpire.before(new Date());
     }
-    public Boolean validateToken(UserDetails userDetails, String token){
+    public Boolean validateToken(UserDetailsImpl userDetails, String token){
         final String email = getEmailFromToken(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return  (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
+    }
+    public String generateToken(UserDetailsImpl userDetails){
+        Map<String,Object> claims = new HashMap<>();
+        List<String> pCode = userDetails
+                .getAuthorities()
+                        .stream()
+                                .map(GrantedAuthority::getAuthority)
+                                        .collect(Collectors.toList());
+        claims.put("authorities",pCode);
+        claims.put("name",userDetails.getFullName());
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
+        return Jwts
+                .builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_VALIDITY_SECONDS * 1000))
+                .signWith(key, SignatureAlgorithm.HS256).compact();
     }
 }

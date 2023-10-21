@@ -1,7 +1,6 @@
 package com.api.learning.ElearningBE.services.account;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
-import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
 import com.api.learning.ElearningBE.mapper.AccountMapper;
 import com.api.learning.ElearningBE.repositories.AccountRepository;
@@ -9,26 +8,20 @@ import com.api.learning.ElearningBE.repositories.GroupRepository;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.Group;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
-import java.util.Arrays;
-import java.util.List;
-
-@Service(value = "accountService")
+@Service
 public class AccountServiceImpl implements AccountService {
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     @Autowired
     private AccountMapper accountMapper;
     @Autowired
     private GroupRepository groupRepository;
+
+    public AccountServiceImpl(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     @Override
     public ApiMessageDto<String> create(CreateAccountForm createAccountForm) {
