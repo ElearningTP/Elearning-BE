@@ -24,7 +24,7 @@ public class GroupController {
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
-            apiMessageDto.setMessage("An unexpected error occurred: "+e.getMessage());
+            apiMessageDto.setMessage(e.getMessage());
         }
         return apiMessageDto;
     }
@@ -36,7 +36,7 @@ public class GroupController {
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
-            apiMessageDto.setMessage("An unexpected error occurred: "+e.getMessage());
+            apiMessageDto.setMessage(e.getMessage());
         }
         return apiMessageDto;
     }

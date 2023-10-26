@@ -13,6 +13,7 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "db_account")
 public class Account extends Auditable<String> {
+    @Column(unique = true)
     private String email;
     private String password;
     private String fullName;

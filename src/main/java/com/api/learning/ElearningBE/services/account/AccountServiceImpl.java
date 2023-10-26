@@ -39,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String hash = encoder.encode(createAccountForm.getPassword());
+
         Account account = accountMapper.fromCreateAccountFormToEntity(createAccountForm);
         account.setGroup(group);
         account.setPassword(hash);

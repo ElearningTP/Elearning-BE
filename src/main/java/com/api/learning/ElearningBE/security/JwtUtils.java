@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.security;
 
+import com.api.learning.ElearningBE.dto.TokenDetail;
 import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtils {
     private static final long JWT_VALIDITY_SECONDS = 60 * 60;
-    private final String secret = "8B1B7D6556CEC7F67432B7C1D3CA9gsdfdeGFHFTSHyT";//"VGFuUGh1Y1NQS1Q=";
+    private final String secret = "8B1B7D6556CEC7F67432B7C1D3CA9gsdfdeGFHFTSHyT";
 
     public String getEmailFromToken(String token){
         return getClaimsFromToken(token, Claims::getSubject);
@@ -53,9 +54,19 @@ public class JwtUtils {
         return Jwts
                 .builder()
                 .setClaims(claims)
+                .setHeaderParam("typ", "JWT")
                 .setSubject(userDetails.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_VALIDITY_SECONDS * 1000))
-                .signWith(key, SignatureAlgorithm.HS256).compact();
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+    public TokenDetail getTokenDetail(UserDetailsImpl userDetails){
+        TokenDetail tokenDetail = new TokenDetail();
+        tokenDetail.setFullName(userDetails.getFullName());
+        tokenDetail.setAvatar(userDetails.getAvatar());
+        tokenDetail.setToken(generateToken(userDetails));
+        tokenDetail.setExpiresIn(JWT_VALIDITY_SECONDS);
+        return tokenDetail;
     }
 }

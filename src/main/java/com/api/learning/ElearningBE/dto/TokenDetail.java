@@ -9,5 +9,6 @@ import lombok.*;
 public class TokenDetail {
     private String fullName;
     private String token;
-//    private String avatar;
+    private String avatar;
+    private long expiresIn;
 }

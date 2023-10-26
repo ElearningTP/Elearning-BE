@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +41,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         apiMessageDto.setData(invalidArgumentForms);
         apiMessageDto.setMessage("Invalid form");
         return new ResponseEntity<>(apiMessageDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ApiMessageDto<String>> handleAccessDeniedException(AccessDeniedException ex){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        apiMessageDto.setResult(false);
+        apiMessageDto.setMessage("[Ex] "+ex.getMessage());
+        return new ResponseEntity<>(apiMessageDto, HttpStatus.FORBIDDEN);
     }
 
 }

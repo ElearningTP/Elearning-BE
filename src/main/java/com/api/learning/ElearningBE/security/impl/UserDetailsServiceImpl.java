@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new NotFoundException("Email not found");
         }
         Set<GrantedAuthority> grantedAuthorities = grantedAuthority(account);
-        return new UserDetailsImpl(account.getFullName(), account.getEmail(), account.getPassword(), grantedAuthorities, account.getStatus());
+        return new UserDetailsImpl(account.getFullName(), account.getEmail(), account.getPassword(), grantedAuthorities, account.getStatus(), account.getAvatarPath());
     }
     private Set<GrantedAuthority> grantedAuthority(Account account){
         List<String> roles = new ArrayList<>();
