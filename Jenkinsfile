@@ -1,6 +1,7 @@
 node{
     stage("Build"){
-        sh "ls -l"
+        sh "cd Elearning-BE"
+        sh "ls"
         sh "whoami"
         println("Build")
     }
