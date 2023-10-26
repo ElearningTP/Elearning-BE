@@ -1,5 +1,6 @@
 node{
     stage("Build"){
+        sh "ls -l"
         println("Build")
     }
     stage("Build docker images"){
