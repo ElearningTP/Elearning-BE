@@ -5,4 +5,7 @@ node{
     stage("Build"){
         println("Build")
     }
+    stage("Deploy"){
+        println("Deploying")
+    }
 }
