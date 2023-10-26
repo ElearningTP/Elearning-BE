@@ -1,6 +1,6 @@
 node{
     stage("Build"){
-        sh "cd Elearning-BE"
+        sh "cd /root"
         sh "ls"
         sh "whoami"
         println("Build")
