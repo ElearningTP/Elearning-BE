@@ -1,9 +1,5 @@
 node{
     stage("Build"){
-        sh "cd /root"
-        sh "ls -l"
-        sh "whoami"
-        sh "pwd"
         println("Build")
     }
     stage("Build docker images"){

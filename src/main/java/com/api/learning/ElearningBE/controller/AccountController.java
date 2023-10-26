@@ -29,7 +29,7 @@ public class AccountController {
             apiMessageDto = accountService.create(createAccountForm);
         }catch (Exception e){
             apiMessageDto.setResult(false);
-            apiMessageDto.setMessage("An unexpected error occurred: "+e.getMessage());
+            apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
         }
         return apiMessageDto;
