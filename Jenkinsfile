@@ -3,7 +3,7 @@ node{
         println("Build")
     }
     stage("Build docker images"){
-        println("Build")
+        println("Build docker images")
     }
     stage("Push Docker Registry"){
         println("Pushing")
