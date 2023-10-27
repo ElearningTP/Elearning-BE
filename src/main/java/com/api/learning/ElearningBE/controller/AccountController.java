@@ -2,9 +2,6 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
-import com.api.learning.ElearningBE.mapper.AccountMapper;
-import com.api.learning.ElearningBE.repositories.AccountRepository;
-import com.api.learning.ElearningBE.repositories.GroupRepository;
 import com.api.learning.ElearningBE.services.account.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,11 @@ import javax.validation.Valid;
 public class AccountController {
     @Autowired
     private AccountService accountService;
+
+    @GetMapping("/hello")
+    public String helloWorld(){
+        return "Hello world";
+    }
 
     @PostMapping(value = "/create")
     @PreAuthorize("hasRole('AC_C')")
