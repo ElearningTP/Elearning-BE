@@ -18,11 +18,6 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    @GetMapping("/hello")
-    public String helloWorld(){
-        return "Hello world";
-    }
-
     @PostMapping(value = "/create")
     @PreAuthorize("hasRole('AC_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateAccountForm createAccountForm){
