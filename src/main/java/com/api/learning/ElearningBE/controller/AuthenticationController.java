@@ -52,7 +52,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/google")
-    public ApiMessageDto<TokenDetail> googleLogin(@RequestHeader(name = "accessToken") String accessToken){
+    public ApiMessageDto<TokenDetail> googleLogin(@RequestParam(name = "accessToken") String accessToken){
         ApiMessageDto<TokenDetail> apiMessageDto = new ApiMessageDto<>();
         String url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token="+accessToken;
         String email;
