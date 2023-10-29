@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/v1/auth")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = {"http://127.0.0.1:3000"})
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
