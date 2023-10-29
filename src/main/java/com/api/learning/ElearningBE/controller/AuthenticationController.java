@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/v1/auth")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
