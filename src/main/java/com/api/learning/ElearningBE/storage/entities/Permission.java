@@ -20,7 +20,7 @@ public class Permission extends Auditable<String> {
     private Boolean showMenu = false;
     @Column(columnDefinition = "text")
     private String description;
-    private String nameGroup;
+    private String roleName;
     @Column(unique = true)
     private String permissionCode; // permission code
 }

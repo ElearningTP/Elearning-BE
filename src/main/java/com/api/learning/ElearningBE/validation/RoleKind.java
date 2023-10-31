@@ -1,6 +1,6 @@
 package com.api.learning.ElearningBE.validation;
 
-import com.api.learning.ElearningBE.validation.impl.GroupKindValidation;
+import com.api.learning.ElearningBE.validation.impl.RoleKindValidation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,10 +11,10 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-@Constraint(validatedBy = GroupKindValidation.class)
-public @interface GroupKind {
+@Constraint(validatedBy = RoleKindValidation.class)
+public @interface RoleKind {
     boolean allowNull() default false;
-    String message() default "Invalid group kind";
+    String message() default "Invalid role kind";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

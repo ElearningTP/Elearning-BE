@@ -17,9 +17,9 @@ public class CreatePermissionForm {
     private Boolean showMenu;
     @ApiModelProperty(name = "description")
     private String description;
-    @NotEmpty(message = "Name group can not be empty")
-    @ApiModelProperty(name = "nameGroup", required = true)
-    private String nameGroup;
+    @NotEmpty(message = "Name role can not be empty")
+    @ApiModelProperty(name = "roleName", required = true)
+    private String roleName;
     @NotEmpty(message = "Permission code can not be empty")
     @ApiModelProperty(name = "permissionCode", required = true)
     private String permissionCode;

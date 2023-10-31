@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
     private Set<GrantedAuthority> grantedAuthority(Account account){
         List<String> roles = new ArrayList<>();
-        account.getGroup().getPermissions()
+        account.getRole().getPermissions()
                 .stream()
                 .filter(permission -> permission.getPermissionCode() != null)
                 .forEach(pName -> roles.add(pName.getPermissionCode()));

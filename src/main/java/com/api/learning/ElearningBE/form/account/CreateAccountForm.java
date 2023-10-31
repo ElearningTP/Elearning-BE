@@ -19,7 +19,7 @@ public class CreateAccountForm {
     @NotEmpty(message = "Full name can not be empty")
     @ApiModelProperty(name = "fullName", required = true)
     private String fullName;
-    @NotNull(message = "Group id can not be null")
-    @ApiModelProperty(name = "groupId", required = true)
-    private Long groupId;
+    @NotNull(message = "Role id can not be null")
+    @ApiModelProperty(name = "roleId", required = true)
+    private Long roleId;
 }
