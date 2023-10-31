@@ -12,16 +12,16 @@ import java.util.List;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "db_group")
-public class Group extends Auditable<String> {
+@Table(name = "db_role")
+public class Role extends Auditable<String> {
     @Column(unique = true)
     private String name;
     private Integer kind;
     @Column(columnDefinition = "text")
     private String description;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "db_permission_group",
-            joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"),
+    @JoinTable(name = "db_permission_role",
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private List<Permission> permissions = new ArrayList<>();
 }

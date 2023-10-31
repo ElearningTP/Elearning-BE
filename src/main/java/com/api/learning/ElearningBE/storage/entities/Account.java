@@ -20,6 +20,6 @@ public class Account extends Auditable<String> {
     private String avatarPath;
     private Boolean isAdmin = false;
     @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JoinColumn(name = "role_id")
+    private Role role;
 }

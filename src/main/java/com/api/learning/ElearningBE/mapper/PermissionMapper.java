@@ -13,7 +13,7 @@ public interface PermissionMapper {
     @Mapping(source = "permissionAction", target = "action")
     @Mapping(source = "showMenu", target = "showMenu")
     @Mapping(source = "description", target = "description")
-    @Mapping(source = "nameGroup", target = "nameGroup")
+    @Mapping(source = "roleName", target = "roleName")
     @Mapping(source = "permissionCode", target = "permissionCode")
     Permission fromCreatePermissionFormToEntity(CreatePermissionForm createPermissionForm);
 }
