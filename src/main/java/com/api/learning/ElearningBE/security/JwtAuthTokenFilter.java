@@ -2,6 +2,9 @@ package com.api.learning.ElearningBE.security;
 
 import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
 import com.api.learning.ElearningBE.security.impl.UserDetailsServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,13 +23,20 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
-//    private static final String contentType = "application/json";
+    private static final String contentType = "application/json";
     @Autowired
     private UserDetailsServiceImpl userDetailService;
     @Autowired
     private JwtUtils jwtUtils;
 
-
+    private void handleValidationException(String message,HttpServletResponse httpServletResponse) throws IOException {
+        final String response = "{\"result\": false, \"message\": \"" + message + "\"}";
+        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        httpServletResponse.setContentType(contentType);
+        httpServletResponse.getWriter().write(response);
+        httpServletResponse.getWriter().flush();
+        httpServletResponse.getWriter().close();
+    }
     public String extractToken(HttpServletRequest httpServletRequest){
         final String requestTokenHeader = httpServletRequest.getHeader("Authorization");
         if (StringUtils.hasText(requestTokenHeader) && requestTokenHeader.startsWith("Bearer ")){
@@ -48,6 +58,14 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
+        }catch (ExpiredJwtException e){
+            log.error("Occurred an error authentication: "+e.getMessage());
+            handleValidationException("Token has expired",httpServletResponse);
+            return;
+        }catch (MalformedJwtException | SignatureException e){
+            log.error("Occurred an error authentication: "+ e.getMessage());
+            handleValidationException("Invalid token",httpServletResponse);
+            return;
         }catch (Exception e){
             log.error("Occurred an error authentication: "+ e.getMessage());
         }
