@@ -1,12 +1,16 @@
 package com.api.learning.ElearningBE.mapper;
 
+import com.api.learning.ElearningBE.dto.Role.RoleDto;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
 import com.api.learning.ElearningBE.storage.entities.Role;
 import org.mapstruct.*;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = {PermissionMapper.class})
 public interface RoleMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "roleName", target = "name")
@@ -18,4 +22,18 @@ public interface RoleMapper {
     @Mapping(source = "roleName", target = "name")
     @Mapping(source = "description", target = "description")
     void fromUpdateGroupFormToEntity(UpdateRoleForm updateRoleForm, @MappingTarget Role role);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "kind", target = "kind")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "createDate", target = "createDate")
+    @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "permissions", target = "permissions", qualifiedByName = "fromEntityToPermissionDto")
+    @Named("fromEntityToRoleDto")
+    RoleDto fromEntityToRoleDto(Role role);
+    @IterableMapping(elementTargetType = RoleDto.class, qualifiedByName = "fromEntityToRoleDto")
+    List<RoleDto> fromEntityToRoleDtoList(List<Role> roleList);
 }

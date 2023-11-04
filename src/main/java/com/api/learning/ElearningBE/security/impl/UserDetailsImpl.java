@@ -12,15 +12,18 @@ public class UserDetailsImpl implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
     private final Integer status;
     private final String avatar;
+    private final Integer userKind;
 
-    public UserDetailsImpl(String fullName, String email, String password, Collection<? extends GrantedAuthority> authorities, Integer status, String avatar) {
+    public UserDetailsImpl(String fullName, String email, String password, Collection<? extends GrantedAuthority> authorities, Integer status, String avatar, Integer userKind) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.status = status;
         this.avatar = avatar;
+        this.userKind = userKind;
     }
+
 
     public String getFullName() {
         return fullName;
@@ -34,6 +37,10 @@ public class UserDetailsImpl implements UserDetails {
     }
     public String getAvatar() {
         return avatar;
+    }
+
+    public Integer getUserKind() {
+        return userKind;
     }
 
     @Override
