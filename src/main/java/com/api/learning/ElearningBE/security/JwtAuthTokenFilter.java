@@ -1,7 +1,12 @@
 package com.api.learning.ElearningBE.security;
 
+import com.api.learning.ElearningBE.constant.ELearningConstant;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
 import com.api.learning.ElearningBE.security.impl.UserDetailsServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,13 +25,20 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
-//    private static final String contentType = "application/json";
+    private static final String contentType = "application/json";
     @Autowired
     private UserDetailsServiceImpl userDetailService;
     @Autowired
     private JwtUtils jwtUtils;
 
-
+    private void handleValidationException(String message,HttpServletResponse httpServletResponse) throws IOException {
+        final String response = "{\"result\": false, \"message\": \"" + message + "\"}";
+        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        httpServletResponse.setContentType(contentType);
+        httpServletResponse.getWriter().write(response);
+        httpServletResponse.getWriter().flush();
+        httpServletResponse.getWriter().close();
+    }
     public String extractToken(HttpServletRequest httpServletRequest){
         final String requestTokenHeader = httpServletRequest.getHeader("Authorization");
         if (StringUtils.hasText(requestTokenHeader) && requestTokenHeader.startsWith("Bearer ")){
@@ -39,8 +51,19 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = extractToken(httpServletRequest);
             String email = jwtUtils.getEmailFromToken(jwt);
+            Integer userKind = jwtUtils.getUserKindFromToken(jwt);
+
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetailsImpl userDetails = userDetailService.loadUserByUsername(email);
+                UserDetailsImpl userDetails;
+                if (userKind.equals(ELearningConstant.ROLE_KIND_STUDENT)){
+                    userDetails = userDetailService.loadUserByUsername(email);
+                }else {
+                    if (userKind.equals(ELearningConstant.ROLE_KIND_TEACHER)){
+                        userDetails= userDetailService.loadTeacherByEmail(email);
+                    }else {
+                        throw new InvalidException("Invalid user kind");
+                    }
+                }
                 if (userDetails != null && jwtUtils.validateToken(userDetails,jwt)){
                     UsernamePasswordAuthenticationToken authenticationToken = new
                             UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
@@ -48,6 +71,18 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
+        }catch (InvalidException e){
+            log.error("Occurred an error authentication: "+ e.getMessage());
+            handleValidationException(e.getMessage(),httpServletResponse);
+            return;
+        }catch (ExpiredJwtException e){
+            log.error("Occurred an error authentication: "+e.getMessage());
+            handleValidationException("Token has expired",httpServletResponse);
+            return;
+        }catch (MalformedJwtException | SignatureException e){
+            log.error("Occurred an error authentication: "+ e.getMessage());
+            handleValidationException("Invalid token",httpServletResponse);
+            return;
         }catch (Exception e){
             log.error("Occurred an error authentication: "+ e.getMessage());
         }

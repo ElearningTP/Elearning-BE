@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.storage.base;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -16,8 +17,8 @@ import java.util.Date;
 @MappedSuperclass
 public class Auditable<T> implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GenericGenerator(name = "idGenerator", strategy = "com.api.learning.ElearningBE.storage.id.IdGenerator")
+    @GeneratedValue(generator = "idGenerator")
     private Long id;
     @CreatedDate
     @Column(name = "create_date", nullable = false, updatable = false)

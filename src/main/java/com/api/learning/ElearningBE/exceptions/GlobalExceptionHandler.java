@@ -50,5 +50,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         apiMessageDto.setMessage("[Ex] "+ex.getMessage());
         return new ResponseEntity<>(apiMessageDto, HttpStatus.FORBIDDEN);
     }
-
 }

@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +42,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-    
+//    @Bean
+//    public FilterRegistrationBean<CorsFilter> filterRegistrationBean(){
+//        final UrlBasedCorsConfigurationSource source = corsConfigurationSource();
+//        return new FilterRegistrationBean<>(new CorsFilter(source));
+//    }
     @Bean
     public CorsFilter corsFilter(){
         final UrlBasedCorsConfigurationSource source = corsConfigurationSource();
@@ -54,7 +59,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Accept", "Origin"));
-        configuration.setExposedHeaders(Arrays.asList("Accept", "Origin", "Content-Type", "Depth", "User-Agent", "Authorization"));
+        configuration.setExposedHeaders(Arrays.asList("Accept", "Origin", "Content-Type", "Depth", "User-Agent", "Authorization", "Cache-Control"));
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
