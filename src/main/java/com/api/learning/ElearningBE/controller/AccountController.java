@@ -1,6 +1,7 @@
 package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
+import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
 import com.api.learning.ElearningBE.services.account.AccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,15 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping(value = "/create")
-    @PreAuthorize("hasRole('AC_C')")
+//    @PreAuthorize("hasRole('AC_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateAccountForm createAccountForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = accountService.create(createAccountForm);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

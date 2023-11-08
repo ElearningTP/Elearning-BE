@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +18,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
-    private static final String DELIM = "\\|";
     private static final long JWT_VALIDITY_SECONDS = 60 * 60;
-    private final String secret = "8B1B7D6556CEC7F67432B7C1D3CA9gsdfdeGFHFTSHyT";
+    @Value("${elearning.jwt.secret}")
+    private String secret;
 
     public String getEmailFromToken(String token){
         return getClaimsFromToken(token, Claims::getSubject);
-    }
-    public Integer getUserKindFromToken(String token) {
-        Claims claims = getAllClaimsFromToken(token);
-        return (Integer) claims.get("userKind");
     }
 
     public <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver){
@@ -55,7 +52,6 @@ public class JwtUtils {
                                         .collect(Collectors.toList());
         claims.put("authorities",pCode);
         claims.put("name",userDetails.getFullName());
-        claims.put("userKind", userDetails.getUserKind());
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         Key key = Keys.hmacShaKeyFor(keyBytes);
         return Jwts
