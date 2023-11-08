@@ -10,6 +10,6 @@ import java.util.List;
 public interface RoleService {
     ApiMessageDto<String> create(CreateRoleForm createRoleForm);
     ApiMessageDto<String> update(UpdateRoleForm updateRoleForm);
-    ApiMessageDto<RoleDto> get(Long id);
+    ApiMessageDto<RoleDto> retrieve(Long id);
     ApiMessageDto<List<RoleDto>> list();
 }

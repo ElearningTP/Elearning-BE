@@ -7,19 +7,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Getter
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "db_teacher")
-public class Teacher extends Auditable<String> {
+@Table(name = "db_nation")
+public class Nation extends Auditable<String> {
     private String name;
-    private String email;
-    private String nation;
-    private String password;
-    @ManyToOne
-    private Role role;
 }

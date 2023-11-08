@@ -1,7 +1,5 @@
 package com.api.learning.ElearningBE.security;
 
-import com.api.learning.ElearningBE.constant.ELearningConstant;
-import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
 import com.api.learning.ElearningBE.security.impl.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -51,19 +49,9 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = extractToken(httpServletRequest);
             String email = jwtUtils.getEmailFromToken(jwt);
-            Integer userKind = jwtUtils.getUserKindFromToken(jwt);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetailsImpl userDetails;
-                if (userKind.equals(ELearningConstant.ROLE_KIND_STUDENT)){
-                    userDetails = userDetailService.loadUserByUsername(email);
-                }else {
-                    if (userKind.equals(ELearningConstant.ROLE_KIND_TEACHER)){
-                        userDetails= userDetailService.loadTeacherByEmail(email);
-                    }else {
-                        throw new InvalidException("Invalid user kind");
-                    }
-                }
+                UserDetailsImpl userDetails = userDetailService.loadUserByUsername(email);
                 if (userDetails != null && jwtUtils.validateToken(userDetails,jwt)){
                     UsernamePasswordAuthenticationToken authenticationToken = new
                             UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
@@ -71,10 +59,6 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
-        }catch (InvalidException e){
-            log.error("Occurred an error authentication: "+ e.getMessage());
-            handleValidationException(e.getMessage(),httpServletResponse);
-            return;
         }catch (ExpiredJwtException e){
             log.error("Occurred an error authentication: "+e.getMessage());
             handleValidationException("Token has expired",httpServletResponse);

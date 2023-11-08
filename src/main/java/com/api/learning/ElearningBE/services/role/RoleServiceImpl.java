@@ -2,12 +2,12 @@ package com.api.learning.ElearningBE.services.role;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.Role.RoleDto;
+import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
 import com.api.learning.ElearningBE.mapper.RoleMapper;
 import com.api.learning.ElearningBE.repositories.RoleRepository;
 import com.api.learning.ElearningBE.repositories.PermissionRepository;
-import com.api.learning.ElearningBE.security.JwtUtils;
 import com.api.learning.ElearningBE.storage.entities.Role;
 import com.api.learning.ElearningBE.storage.entities.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,6 @@ import java.util.List;
 @Service
 public class RoleServiceImpl implements RoleService {
     @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private RoleMapper roleMapper;
@@ -29,8 +27,8 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ApiMessageDto<String> create(CreateRoleForm createRoleForm) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        Boolean groupExisted = roleRepository.existsByName(createRoleForm.getRoleName().trim());
-        if (groupExisted){
+        Boolean roleExisted = roleRepository.existsByName(createRoleForm.getRoleName().trim());
+        if (roleExisted){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(String.format("Role name %s is existed", createRoleForm.getRoleName()));
             return apiMessageDto;
@@ -47,12 +45,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ApiMessageDto<String> update(UpdateRoleForm updateRoleForm) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        Role role = roleRepository.findById(updateRoleForm.getId()).orElse(null);
-        if (role == null){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage(String.format("Role with id %s not found", updateRoleForm.getId()));
-            return apiMessageDto;
-        }
+        Role role = roleRepository.findById(updateRoleForm.getId())
+                .orElseThrow(() -> new NotFoundException(String.format("Role with id %s not found", updateRoleForm.getId())));
+
         roleMapper.fromUpdateGroupFormToEntity(updateRoleForm, role);
         List<Permission> permissions = permissionRepository.findAllByIdIn(updateRoleForm.getPermissions());
         role.setPermissions(permissions);
@@ -63,18 +58,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiMessageDto<RoleDto> get(Long id) {
+    public ApiMessageDto<RoleDto> retrieve(Long id) {
         ApiMessageDto<RoleDto> apiMessageDto = new ApiMessageDto<>();
-        Role role = roleRepository.findById(id).orElse(null);
-        if (role == null){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage(String.format("Role with id %s not found", id));
-            return apiMessageDto;
-        }
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Role with id %s not found", id)));
         RoleDto roleDto = roleMapper.fromEntityToRoleDto(role);
 
         apiMessageDto.setData(roleDto);
-        apiMessageDto.setMessage("Get role successfully");
+        apiMessageDto.setMessage("Retrieve role successfully");
         return apiMessageDto;
     }
 
@@ -85,7 +76,7 @@ public class RoleServiceImpl implements RoleService {
         List<RoleDto> roleDtos = roleMapper.fromEntityToRoleDtoList(roles);
 
         apiMessageDto.setData(roleDtos);
-        apiMessageDto.setMessage("Get list role successfully");
+        apiMessageDto.setMessage("Retrieve role list successfully");
         return apiMessageDto;
     }
 }

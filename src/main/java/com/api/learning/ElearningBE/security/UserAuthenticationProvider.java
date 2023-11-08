@@ -1,8 +1,6 @@
 package com.api.learning.ElearningBE.security;
 
 import com.api.learning.ElearningBE.constant.ELearningConstant;
-import com.api.learning.ElearningBE.exceptions.InvalidException;
-import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
 import com.api.learning.ElearningBE.security.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +22,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String email = userAuthenticationToken.getName();
         String password = userAuthenticationToken.getCredentials() == null ? null : authentication.getCredentials().toString();
         boolean verifyCredentials = Boolean.parseBoolean(userAuthenticationToken.getVerifyCredentials().toString());
-        System.out.println("Provider: "+ userAuthenticationToken.getUserKind());
-        Integer userKind = userAuthenticationToken.getUserKind();
-        UserDetailsImpl userDetails;
-        if (userKind.equals(ELearningConstant.ROLE_KIND_STUDENT)){
-            userDetails = userDetailsService.loadUserByUsername(email);
-        }else {
-            if (userKind.equals(ELearningConstant.ROLE_KIND_TEACHER)) {
-                userDetails = userDetailsService.loadTeacherByEmail(email);
-            }else{
-                throw new InvalidException("Invalid user kind");
-            }
-        }
-//        UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(email);
         if (userDetails.getStatus().equals(ELearningConstant.ACCOUNT_STATUS_LOCKED)){
             throw new BadCredentialsException("Account has been locked, please contact the administrator");
         }
@@ -44,12 +30,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
             assert password != null;
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if (passwordEncoder.matches(password, userDetails.getPassword())){
-                return new UserAuthenticationToken(email, password, userDetails.getAuthorities(), true, userDetails.getUserKind());
+                return new UserAuthenticationToken(email, password, userDetails.getAuthorities(), true);
             }else {
                 throw new BadCredentialsException("Incorrect password, please enter again");
             }
         }else {
-            return new UserAuthenticationToken(email, "N/A", userDetails.getAuthorities(), false, userDetails.getUserKind());
+            return new UserAuthenticationToken(email, "N/A", userDetails.getAuthorities(), false);
         }
     }
 

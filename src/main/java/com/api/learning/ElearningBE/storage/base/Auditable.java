@@ -30,7 +30,7 @@ public class Auditable<T> implements Serializable {
     @Column(name = "create_by", nullable = false)
     private T createBy;
     @LastModifiedBy
-    @Column(name = "modified", nullable = false)
+    @Column(name = "modified_by", nullable = false)
     private T modifiedBy;
     private Integer status = 1;
 }

@@ -1,12 +1,16 @@
 package com.api.learning.ElearningBE.constant;
 
 public class ELearningConstant {
-    //Group kind
+    //Group
     public static final Integer ROLE_KIND_ADMIN = 1;
     public static final Integer ROLE_KIND_TEACHER = 2;
     public static final Integer ROLE_KIND_STUDENT = 3;
 
-    //Account status
+    //Account
     public static final Integer ACCOUNT_STATUS_ACTIVE = 1;
     public static final Integer ACCOUNT_STATUS_LOCKED = 0;
+
+    public static final Integer ACCOUNT_KIND_ADMIN = 1;
+    public static final Integer ACCOUNT_KIND_TEACHER = 2;
+    public static final Integer ACCOUNT_KIND_STUDENT = 3;
 }

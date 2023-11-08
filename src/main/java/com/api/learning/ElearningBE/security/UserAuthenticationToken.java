@@ -11,22 +11,19 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
     private final Object verifyCredentials;
-    private final Integer userKind;
-    public UserAuthenticationToken(Object principal, Object credentials, Object verifyCredentials, Integer userKind) {
+    public UserAuthenticationToken(Object principal, Object credentials, Object verifyCredentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
         this.verifyCredentials = verifyCredentials;
-        this.userKind = userKind;
         setAuthenticated(false);
     }
     public UserAuthenticationToken(Object principal, Object credentials,
-                                   Collection<? extends GrantedAuthority> authorities, Object verifyCredentials, Integer userKind) {
+                                   Collection<? extends GrantedAuthority> authorities, Object verifyCredentials) {
         super(authorities);
         this.principal = principal;
         this.credentials = credentials;
         this.verifyCredentials = verifyCredentials;
-        this.userKind = userKind;
         super.setAuthenticated(true); // must use super, as we override
     }
 
@@ -42,9 +39,6 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
         return this.verifyCredentials;
     }
 
-    public Integer getUserKind() {
-        return userKind;
-    }
 
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
