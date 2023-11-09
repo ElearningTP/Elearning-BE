@@ -3,7 +3,6 @@ package com.api.learning.ElearningBE.controller;
 import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.TokenDetail;
-import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.form.LoginForm;
 import com.api.learning.ElearningBE.repositories.AccountRepository;
 import com.api.learning.ElearningBE.repositories.RoleRepository;
@@ -18,6 +17,7 @@ import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
@@ -106,6 +106,10 @@ public class AuthenticationController {
             TokenDetail tokenDetail = jwtUtils.getTokenDetail(userDetails);
             tokenDetail.setAvatar(avatar);
             apiMessageDto.setData(tokenDetail);
+        }catch (HttpClientErrorException e) {
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage("Invalid Credentials");
+            apiMessageDto.setCode(e.getStatusCode().toString());
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

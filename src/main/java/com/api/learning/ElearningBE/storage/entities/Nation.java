@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
@@ -15,5 +16,6 @@ import javax.persistence.Table;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "db_nation")
 public class Nation extends Auditable<String> {
+    @Column(unique = true)
     private String name;
 }
