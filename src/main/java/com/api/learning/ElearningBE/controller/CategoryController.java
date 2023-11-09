@@ -2,12 +2,12 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
-import com.api.learning.ElearningBE.dto.subject.SubjectAdminDto;
+import com.api.learning.ElearningBE.dto.category.CategoryAdminDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
-import com.api.learning.ElearningBE.form.subject.CreateSubjectForm;
-import com.api.learning.ElearningBE.form.subject.UpdateSubjectForm;
-import com.api.learning.ElearningBE.services.subject.SubjectService;
-import com.api.learning.ElearningBE.storage.criteria.SubjectCriteria;
+import com.api.learning.ElearningBE.form.category.CreateCategoryForm;
+import com.api.learning.ElearningBE.form.category.UpdateCategoryForm;
+import com.api.learning.ElearningBE.services.category.CategoryService;
+import com.api.learning.ElearningBE.storage.criteria.CategoryCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,18 +18,18 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/subject")
-public class SubjectController {
+@RequestMapping("/v1/category")
+public class CategoryController {
 
     @Autowired
-    private SubjectService subjectService;
+    private CategoryService categoryService;
 
     @GetMapping("/list")
-    @PreAuthorize("hasRole('SUB_L')")
-    public ApiMessageDto<ResponseListDto<List<SubjectAdminDto>>> list(SubjectCriteria subjectCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<SubjectAdminDto>>> apiMessageDto = new ApiMessageDto<>();
-        try{
-            apiMessageDto = subjectService.list(subjectCriteria,pageable);
+    @PreAuthorize("hasRole('CATE_L')")
+    public ApiMessageDto<ResponseListDto<List<CategoryAdminDto>>> list(CategoryCriteria categoryCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<CategoryAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = categoryService.list(categoryCriteria,pageable);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -39,11 +39,11 @@ public class SubjectController {
     }
 
     @GetMapping("/retrieve/{id}")
-    @PreAuthorize("hasRole('SUB_V')")
-    public ApiMessageDto<SubjectAdminDto> retrieve(@PathVariable Long id){
-        ApiMessageDto<SubjectAdminDto> apiMessageDto = new ApiMessageDto<>();
-        try{
-            apiMessageDto = subjectService.retrieve(id);
+    @PreAuthorize("hasRole('CATE_V')")
+    public ApiMessageDto<CategoryAdminDto> retrieve(@PathVariable Long id){
+        ApiMessageDto<CategoryAdminDto> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = categoryService.retrieve(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -57,11 +57,11 @@ public class SubjectController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('SUB_C')")
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateSubjectForm createSubjectForm){
+    @PreAuthorize("hasRole('CATE_C')")
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateCategoryForm createCategoryForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        try{
-            apiMessageDto = subjectService.create(createSubjectForm);
+        try {
+            apiMessageDto = categoryService.create(createCategoryForm);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -71,11 +71,11 @@ public class SubjectController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('SUB_U')")
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateSubjectForm updateSubjectForm){
+    @PreAuthorize("hasRole('CATE_U')")
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateCategoryForm updateCategoryForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        try{
-            apiMessageDto = subjectService.update(updateSubjectForm);
+        try {
+            apiMessageDto = categoryService.update(updateCategoryForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -89,11 +89,11 @@ public class SubjectController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('SUB_D')")
-    public ApiMessageDto<String> delete(@PathVariable Long id){
+    @PreAuthorize("hasRole('CATE_D')")
+    public ApiMessageDto<String> update(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        try{
-            apiMessageDto = subjectService.delete(id);
+        try {
+            apiMessageDto = categoryService.delete(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

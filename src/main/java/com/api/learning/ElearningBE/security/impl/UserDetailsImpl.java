@@ -12,21 +12,22 @@ public class UserDetailsImpl implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
     private final Integer status;
     private final String avatar;
+    private final String role;
 
-    public UserDetailsImpl(String fullName, String email, String password, Collection<? extends GrantedAuthority> authorities, Integer status, String avatar) {
+    public UserDetailsImpl(String fullName, String email, String password, Collection<? extends GrantedAuthority> authorities, Integer status, String avatar, String role) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.status = status;
         this.avatar = avatar;
+        this.role = role;
     }
 
 
     public String getFullName() {
         return fullName;
     }
-
     public String getEmail() {
         return email;
     }
@@ -36,7 +37,9 @@ public class UserDetailsImpl implements UserDetails {
     public String getAvatar() {
         return avatar;
     }
-
+    public String getRole() {
+        return role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

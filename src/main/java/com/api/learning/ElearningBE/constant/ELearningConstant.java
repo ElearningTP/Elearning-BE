@@ -13,4 +13,8 @@ public class ELearningConstant {
     public static final Integer ACCOUNT_KIND_ADMIN = 1;
     public static final Integer ACCOUNT_KIND_TEACHER = 2;
     public static final Integer ACCOUNT_KIND_STUDENT = 3;
+
+    // Nation
+    public static final Integer NATION_STATUS_ACTIVE = 1;
+
 }

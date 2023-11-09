@@ -11,4 +11,5 @@ public class TokenDetail {
     private String token;
     private String avatar;
     private long expiresIn;
+    private String role;
 }

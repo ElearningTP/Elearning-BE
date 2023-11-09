@@ -70,6 +70,7 @@ public class JwtUtils {
         tokenDetail.setAvatar(userDetails.getAvatar());
         tokenDetail.setToken(generateToken(userDetails));
         tokenDetail.setExpiresIn(JWT_VALIDITY_SECONDS);
+        tokenDetail.setRole(userDetails.getRole());
         return tokenDetail;
     }
 }

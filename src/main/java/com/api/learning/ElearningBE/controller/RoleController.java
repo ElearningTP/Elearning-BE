@@ -8,6 +8,7 @@ import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
 import com.api.learning.ElearningBE.services.role.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +21,7 @@ public class RoleController {
     private RoleService roleService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ROL_L')")
     public ApiMessageDto<List<RoleDto>> list(){
         ApiMessageDto<List<RoleDto>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -32,8 +34,9 @@ public class RoleController {
         return apiMessageDto;
     }
 
-    @GetMapping("/get/{id}")
-    public ApiMessageDto<RoleDto> get(@PathVariable Long id){
+    @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('ROL_V')")
+    public ApiMessageDto<RoleDto> retrieve(@PathVariable Long id){
         ApiMessageDto<RoleDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = roleService.retrieve(id);
@@ -50,6 +53,7 @@ public class RoleController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ROL_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateRoleForm createRoleForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -63,6 +67,7 @@ public class RoleController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ROL_U')")
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateRoleForm updateRoleForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
