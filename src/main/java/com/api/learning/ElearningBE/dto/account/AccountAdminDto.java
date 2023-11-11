@@ -12,7 +12,6 @@ import java.util.Date;
 public class AccountAdminDto extends BaseAdminDto {
     private String fullName;
     private String email;
-    private String password;
     private Integer kind;
     private String avatarPath;
     private Boolean isSuperAdmin = false;
