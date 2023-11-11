@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.mapper;
 
+import com.api.learning.ElearningBE.dto.lesson_plan.LessonPLanAdminDto;
 import com.api.learning.ElearningBE.form.lesson_plan.CreateLessonPlanForm;
 import com.api.learning.ElearningBE.form.lesson_plan.UpdateLessonPlanForm;
 import com.api.learning.ElearningBE.storage.entities.LessonPlan;
@@ -19,4 +20,15 @@ public interface LessonPlanMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "status", target = "status")
     void fromUpdateLessonPlanFormToEntity(UpdateLessonPlanForm updateLessonPlanForm, @MappingTarget LessonPlan lessonPlan);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "teacher", target = "teacherInfo")
+    @Mapping(source = "createDate", target = "createDate")
+    @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Named("fromEntityToLessonPlanAdminDto")
+    LessonPLanAdminDto fromEntityToLessonPlanAdminDto(LessonPlan lessonPlan);
 }

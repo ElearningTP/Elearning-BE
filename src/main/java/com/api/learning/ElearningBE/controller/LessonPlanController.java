@@ -58,7 +58,8 @@ public class LessonPlanController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ApiMessageDto<String> delete(@PathVariable Long id){
+    public ApiMessageDto<String> delete(@PathVariable Long id
+                                        ){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = lessonPlanService.delete(id);

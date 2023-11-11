@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
+    private final Long accountId;
     private final String fullName;
     private final String email;
     private final String password;
@@ -13,8 +14,10 @@ public class UserDetailsImpl implements UserDetails {
     private final Integer status;
     private final String avatar;
     private final String role;
+    private final Integer kind;
 
-    public UserDetailsImpl(String fullName, String email, String password, Collection<? extends GrantedAuthority> authorities, Integer status, String avatar, String role) {
+    public UserDetailsImpl(Long accountId, String fullName, String email, String password, Collection<? extends GrantedAuthority> authorities, Integer status, String avatar, String role, Integer kind) {
+        this.accountId = accountId;
         this.fullName = fullName;
         this.email = email;
         this.password = password;
@@ -22,9 +25,12 @@ public class UserDetailsImpl implements UserDetails {
         this.status = status;
         this.avatar = avatar;
         this.role = role;
+        this.kind = kind;
     }
 
-
+    public Long getAccountId() {
+        return accountId;
+    }
     public String getFullName() {
         return fullName;
     }
@@ -39,6 +45,10 @@ public class UserDetailsImpl implements UserDetails {
     }
     public String getRole() {
         return role;
+    }
+
+    public Integer getKind() {
+        return kind;
     }
 
     @Override

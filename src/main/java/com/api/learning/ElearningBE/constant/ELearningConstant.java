@@ -17,4 +17,8 @@ public class ELearningConstant {
     // Nation
     public static final Integer NATION_STATUS_ACTIVE = 1;
 
+    // Course
+    public static final Integer COURSE_STATE_CREATED = 1;
+    public static final Integer COURSE_STATE_STARTED = 2;
+
 }
