@@ -19,5 +19,5 @@ public class CourseAdminDto extends BaseAdminDto {
     private Date startDate;
     private AccountAdminDto teacherInfo;
     private LessonPLanAdminDto lessonPlanInfo;
-    private CategoryAdminDto categoryId;
+    private CategoryAdminDto categoryInfo;
 }

@@ -14,5 +14,5 @@ public class CourseDto {
     private Integer state;
     private Date startDate;
     private AccountDto teacherInfo;
-    private CategoryDto categoryId;
+    private CategoryDto categoryInfo;
 }
