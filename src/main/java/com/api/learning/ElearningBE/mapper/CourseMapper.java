@@ -27,7 +27,7 @@ public interface CourseMapper {
     @Mapping(source = "state", target = "state")
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
-    @Mapping(source = "category", target = "categoryId", qualifiedByName = "fromEntityToCategoryDtoAutoComplete")
+    @Mapping(source = "category", target = "categoryInfo", qualifiedByName = "fromEntityToCategoryDtoAutoComplete")
     @Named("fromEntityToCourseDtoAutoComplete")
     CourseDto fromEntityToCourseDtoAutoComplete(Course course);
     @IterableMapping(elementTargetType = CourseDto.class, qualifiedByName = "fromEntityToCourseDtoAutoComplete")
@@ -41,7 +41,7 @@ public interface CourseMapper {
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountAdminDto")
     @Mapping(source = "lessonPlan", target = "lessonPlanInfo", qualifiedByName = "fromEntityToLessonPlanAdminDto")
-    @Mapping(source = "category", target = "categoryId", qualifiedByName = "fromEntityToCategoryAdminDtoForGet")
+    @Mapping(source = "category", target = "categoryInfo", qualifiedByName = "fromEntityToCategoryAdminDtoForGet")
     @Named("fromEntityToCourseAdminDto")
     CourseAdminDto fromEntityToCourseAdminDto(Course course);
 
