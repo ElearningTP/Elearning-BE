@@ -1,7 +1,7 @@
 package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
-import com.api.learning.ElearningBE.dto.Role.RoleDto;
+import com.api.learning.ElearningBE.dto.Role.RoleAdminDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
@@ -22,8 +22,8 @@ public class RoleController {
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('ROL_L')")
-    public ApiMessageDto<List<RoleDto>> list(){
-        ApiMessageDto<List<RoleDto>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<List<RoleAdminDto>> list(){
+        ApiMessageDto<List<RoleAdminDto>> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = roleService.list();
         }catch (Exception e){
@@ -36,8 +36,8 @@ public class RoleController {
 
     @GetMapping("/retrieve/{id}")
     @PreAuthorize("hasRole('ROL_V')")
-    public ApiMessageDto<RoleDto> retrieve(@PathVariable Long id){
-        ApiMessageDto<RoleDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<RoleAdminDto> retrieve(@PathVariable Long id){
+        ApiMessageDto<RoleAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = roleService.retrieve(id);
         }catch (NotFoundException e){

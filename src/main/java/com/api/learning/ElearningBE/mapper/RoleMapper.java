@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.mapper;
 
+import com.api.learning.ElearningBE.dto.Role.RoleAdminDto;
 import com.api.learning.ElearningBE.dto.Role.RoleDto;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
@@ -33,7 +34,15 @@ public interface RoleMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "permissions", target = "permissions", qualifiedByName = "fromEntityToPermissionDto")
     @Named("fromEntityToRoleDto")
-    RoleDto fromEntityToRoleDto(Role role);
-    @IterableMapping(elementTargetType = RoleDto.class, qualifiedByName = "fromEntityToRoleDto")
-    List<RoleDto> fromEntityToRoleDtoList(List<Role> roleList);
+    RoleAdminDto fromEntityToRoleDto(Role role);
+    @IterableMapping(elementTargetType = RoleAdminDto.class, qualifiedByName = "fromEntityToRoleDto")
+    List<RoleAdminDto> fromEntityToRoleDtoList(List<Role> roleList);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "kind", target = "kind")
+    @Mapping(source = "description", target = "description")
+    @Named("fromEntityToRoleDtoForMe")
+    RoleDto fromEntityToRoleDtoForMe(Role role);
 }
