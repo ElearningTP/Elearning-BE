@@ -1,7 +1,7 @@
 package com.api.learning.ElearningBE.services.role;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
-import com.api.learning.ElearningBE.dto.Role.RoleDto;
+import com.api.learning.ElearningBE.dto.Role.RoleAdminDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
@@ -58,24 +58,24 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiMessageDto<RoleDto> retrieve(Long id) {
-        ApiMessageDto<RoleDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<RoleAdminDto> retrieve(Long id) {
+        ApiMessageDto<RoleAdminDto> apiMessageDto = new ApiMessageDto<>();
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Role with id %s not found", id)));
-        RoleDto roleDto = roleMapper.fromEntityToRoleDto(role);
+        RoleAdminDto roleAdminDto = roleMapper.fromEntityToRoleDto(role);
 
-        apiMessageDto.setData(roleDto);
+        apiMessageDto.setData(roleAdminDto);
         apiMessageDto.setMessage("Retrieve role successfully");
         return apiMessageDto;
     }
 
     @Override
-    public ApiMessageDto<List<RoleDto>> list() {
-        ApiMessageDto<List<RoleDto>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<List<RoleAdminDto>> list() {
+        ApiMessageDto<List<RoleAdminDto>> apiMessageDto = new ApiMessageDto<>();
         List<Role> roles = roleRepository.findAll();
-        List<RoleDto> roleDtos = roleMapper.fromEntityToRoleDtoList(roles);
+        List<RoleAdminDto> roleAdminDtos = roleMapper.fromEntityToRoleDtoList(roles);
 
-        apiMessageDto.setData(roleDtos);
+        apiMessageDto.setData(roleAdminDtos);
         apiMessageDto.setMessage("Retrieve role list successfully");
         return apiMessageDto;
     }
