@@ -31,7 +31,7 @@ public class NationServiceImpl implements NationService{
     public ApiMessageDto<ResponseListDto<List<NationDto>>> autoComplete(NationCriteria nationCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<NationDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<NationDto>> responseListDto = new ResponseListDto<>();
-        nationCriteria.setStatus(ELearningConstant.NATION_STATUS_ACTIVE);
+        nationCriteria.setStatus(ELearningConstant.STATUS_ACTIVE);
         Page<Nation> nations =  nationRepository.findAll(nationCriteria.getSpecification(),pageable);
         List<NationDto> nationDtoS = nationMapper.fromEntityToNationDtoList(nations.getContent());
 

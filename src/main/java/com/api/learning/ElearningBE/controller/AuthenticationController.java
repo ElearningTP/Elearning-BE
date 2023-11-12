@@ -100,6 +100,7 @@ public class AuthenticationController {
 
             Account account = accountRepository.findByEmail(email);
             account.setLastLogin(new Date());
+            account.setAvatarPath(avatar);
             accountRepository.save(account);
 
             UserDetailsImpl userDetails = userDetailService.loadUserByUsername(email);
