@@ -23,7 +23,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String password = userAuthenticationToken.getCredentials() == null ? null : authentication.getCredentials().toString();
         boolean verifyCredentials = Boolean.parseBoolean(userAuthenticationToken.getVerifyCredentials().toString());
         UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(email);
-        if (userDetails.getStatus().equals(ELearningConstant.ACCOUNT_STATUS_LOCKED)){
+        if (userDetails.getStatus().equals(ELearningConstant.STATUS_LOCKED)){
             throw new BadCredentialsException("Account has been locked, please contact the administrator");
         }
         if (verifyCredentials){

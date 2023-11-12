@@ -42,11 +42,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
-//    @Bean
-//    public FilterRegistrationBean<CorsFilter> filterRegistrationBean(){
-//        final UrlBasedCorsConfigurationSource source = corsConfigurationSource();
-//        return new FilterRegistrationBean<>(new CorsFilter(source));
-//    }
+    @Bean
+    public FilterRegistrationBean<CorsFilter> filterRegistrationBean(){
+        final UrlBasedCorsConfigurationSource source = corsConfigurationSource();
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
+    }
     @Bean
     public CorsFilter corsFilter(){
         final UrlBasedCorsConfigurationSource source = corsConfigurationSource();
