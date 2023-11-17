@@ -12,7 +12,6 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CourseAdminDto extends BaseAdminDto {
-    private Long id;
     private String courseName;
     private String thumbnail;
     private Integer state;

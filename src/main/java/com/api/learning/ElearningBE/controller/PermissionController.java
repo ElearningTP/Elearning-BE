@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/permission")
+@RequestMapping("/api/permission")
 public class PermissionController {
     @Autowired
     private PermissionService permissionService;

@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,11 +67,11 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public ApiMessageDto<ResponseListDto<List<CourseAdminDto>>> list(CourseCriteria courseCriteria, Pageable pageable) {
-        ApiMessageDto<ResponseListDto<List<CourseAdminDto>>> apiMessageDto = new ApiMessageDto<>();
-        ResponseListDto<List<CourseAdminDto>> responseListDto = new ResponseListDto<>();
+    public ApiMessageDto<ResponseListDto<List<CourseDto>>> list(CourseCriteria courseCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<CourseDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<CourseDto>> responseListDto = new ResponseListDto<>();
         Page<Course> courses = courseRepository.findAll(courseCriteria.getSpecification(),pageable);
-        List<CourseAdminDto> courseDtoS = courseMapper.fromEntityToCourseAdminDtoList(courses.getContent());
+        List<CourseDto> courseDtoS = courseMapper.fromEntityToCourseAdminDtoList(courses.getContent());
 
         responseListDto.setContent(courseDtoS);
         responseListDto.setTotalElements(courses.getTotalElements());

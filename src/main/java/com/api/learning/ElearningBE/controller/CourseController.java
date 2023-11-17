@@ -12,13 +12,14 @@ import com.api.learning.ElearningBE.storage.criteria.CourseCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/course")
+@RequestMapping("/api/course")
 public class CourseController {
 
     @Autowired
@@ -38,8 +39,9 @@ public class CourseController {
     }
 
     @GetMapping("/list")
-    public ApiMessageDto<ResponseListDto<List<CourseAdminDto>>> list(CourseCriteria courseCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<CourseAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+    @PreAuthorize("hasRole('COURSE_L')")
+    public ApiMessageDto<ResponseListDto<List<CourseDto>>> list(CourseCriteria courseCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<CourseDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = courseService.list(courseCriteria, pageable);
         }catch (Exception e) {
@@ -51,6 +53,7 @@ public class CourseController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('COURSE_V')")
     public ApiMessageDto<CourseAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<CourseAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -68,6 +71,7 @@ public class CourseController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('COURSE_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateCourseForm createCourseForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

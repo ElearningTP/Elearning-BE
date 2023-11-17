@@ -1,6 +1,10 @@
 package com.api.learning.ElearningBE.constant;
 
+import com.api.learning.ElearningBE.utils.ConfigurationService;
+
 public class ELearningConstant {
+    public static final String PATH_DIRECTORY = ConfigurationService.getInstance().getString("file.upload-dir", "/tmp/upload");
+
     // Global status
     public static final Integer STATUS_LOCKED = 0;
     public static final Integer STATUS_ACTIVE = 1;
