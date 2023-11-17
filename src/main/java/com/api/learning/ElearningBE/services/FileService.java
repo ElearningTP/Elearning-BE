@@ -3,6 +3,7 @@ package com.api.learning.ElearningBE.services;
 import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.UploadFileDto;
+import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.UploadFileForm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -73,7 +74,6 @@ public class FileService {
             }
         } catch (MalformedURLException ex) {
             log.error(ex.getMessage(), ex);
-
         }
         return null;
     }
@@ -82,6 +82,8 @@ public class FileService {
         File file = new File(ELearningConstant.PATH_DIRECTORY + filePath);
         if (file.exists()){
             file.delete();
+        }else{
+            throw new NotFoundException("File not found");
         }
     }
 }

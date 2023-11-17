@@ -55,7 +55,7 @@ node{
                     sh "echo '''$secretFileContent''' | ssh -o StrictHostKeyChecking=no -i key $remoteServer 'cat > $remoteFilePath'"
                 }
             }
-            sh" ssh -o StrictHostKeyChecking=no -i key $remoteServer 'docker run -d --env-file $remoteFilePath -p $ports --name $containerName $imagesName'"
+            sh "ssh -o StrictHostKeyChecking=no -i key $remoteServer 'docker run -d -v /root/upload/:/tmp/upload --env-file $remoteFilePath -p $ports --name $containerName $imagesName'"
         }
     }
 }
