@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/subject")
+@RequestMapping("/api/subject")
 public class SubjectController {
 
     @Autowired

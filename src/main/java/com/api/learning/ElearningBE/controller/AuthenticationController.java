@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/v1/auth")
+@RequestMapping("/api/auth")
 public class AuthenticationController {
 
     @Value("${google.verifyUrl}")

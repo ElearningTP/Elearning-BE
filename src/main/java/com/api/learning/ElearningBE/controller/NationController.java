@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/nation")
+@RequestMapping("/api/nation")
 public class NationController {
     @Autowired
     private NationService nationService;

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/account")
+@RequestMapping("/api/account")
 @Slf4j
 public class AccountController {
     @Autowired

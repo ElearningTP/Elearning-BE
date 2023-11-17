@@ -24,10 +24,10 @@ public class Auditable<T> implements Serializable {
     @Column(name = "create_date", nullable = false, updatable = false)
     private Date createDate;
     @LastModifiedDate
-    @Column(name = "modified_date", nullable = false, updatable = false)
+    @Column(name = "modified_date", nullable = false)
     private Date modifiedDate;
     @CreatedBy
-    @Column(name = "create_by", nullable = false)
+    @Column(name = "create_by", nullable = false, updatable = false)
     private T createBy;
     @LastModifiedBy
     @Column(name = "modified_by", nullable = false)

@@ -13,6 +13,6 @@ import java.util.List;
 public interface CourseService {
     ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable);
     ApiMessageDto<CourseAdminDto> retrieve(Long id);
-    ApiMessageDto<ResponseListDto<List<CourseAdminDto>>> list(CourseCriteria courseCriteria, Pageable pageable);
+    ApiMessageDto<ResponseListDto<List<CourseDto>>> list(CourseCriteria courseCriteria, Pageable pageable);
     ApiMessageDto<String> create(CreateCourseForm createCourseForm);
 }

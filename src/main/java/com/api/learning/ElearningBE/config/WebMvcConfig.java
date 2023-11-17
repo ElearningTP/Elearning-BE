@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -32,6 +33,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         builder.dateFormat(new SimpleDateFormat(DATE_TIME_FORMAT));
         builder.indentOutput(true);
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
+        converters.add(new ResourceHttpMessageConverter());
     }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -60,8 +62,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Accept", "Origin"));
-        configuration.setExposedHeaders(Arrays.asList("Accept", "Origin", "Content-Type", "Depth", "User-Agent", "Authorization", "Cache-Control"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Accept", "Origin","Content-Disposition","Cache-Control"));
+        configuration.setExposedHeaders(Arrays.asList("Accept", "Origin", "Content-Type", "Depth", "User-Agent", "Authorization", "Cache-Control","Content-Disposition"));
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
