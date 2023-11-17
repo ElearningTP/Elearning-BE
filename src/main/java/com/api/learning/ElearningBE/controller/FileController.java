@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.UploadFileDto;
+import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.UploadFileForm;
 import com.api.learning.ElearningBE.services.FileService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,32 @@ public class FileController {
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiMessageDto<UploadFileDto> upload(@Valid UploadFileForm uploadFileForm){
-        return fileService.storeFile(uploadFileForm);
+        ApiMessageDto<UploadFileDto> apiMessageDto = new ApiMessageDto<>();
+        if (uploadFileForm.getFile() == null || uploadFileForm.getFile().isEmpty()){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage("File is required");
+            return apiMessageDto;
+        }
+        apiMessageDto = fileService.storeFile(uploadFileForm);
+        return apiMessageDto;
+    }
+
+    @DeleteMapping("/delete")
+    public ApiMessageDto<String> delete(@RequestParam String filePath){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        try {
+            fileService.deleteFile(filePath);
+            apiMessageDto.setMessage("Delete file successfully");
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }
+        catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
     }
 }
