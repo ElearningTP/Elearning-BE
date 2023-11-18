@@ -28,8 +28,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
-        builder.serializationInclusion(JsonInclude.Include.NON_EMPTY);
+//        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+//        builder.serializationInclusion(JsonInclude.Include.NON_EMPTY);
         builder.dateFormat(new SimpleDateFormat(DATE_TIME_FORMAT));
         builder.indentOutput(true);
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
