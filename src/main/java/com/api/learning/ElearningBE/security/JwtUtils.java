@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
-    private static final long JWT_VALIDITY_SECONDS = 60 * 60;
+    private static final long JWT_VALIDITY_SECONDS = 24 * 60 * 60;
     private static final String DELIM = "\\|";
     @Value("${elearning.jwt.secret}")
     private String secret;
