@@ -14,7 +14,7 @@ public interface CourseRegistrationMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "student", target = "studentInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
-    @Mapping(source = "course", target = "courseInfo", qualifiedByName = "fromEntityToCourseDtoAutoComplete")
+    @Mapping(source = "course", target = "courseInfo", qualifiedByName = "fromEntityToCourseDto")
     @Mapping(source = "status", target = "status")
     @Named("fromEntityToCourseRegistrationDto")
     CourseRegistrationDto fromEntityToCourseRegistrationDto(CourseRegistration courseRegistration);

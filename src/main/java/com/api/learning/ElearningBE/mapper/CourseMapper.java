@@ -18,6 +18,9 @@ public interface CourseMapper {
     @Mapping(source = "thumbnail", target = "thumbnail")
     @Mapping(source = "state", target = "state")
     @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "requirements", target = "requirements")
+    @Mapping(source = "objectives", target = "objectives")
+    @Mapping(source = "description", target = "description")
     Course fromCreateCourseFormToEntity(CreateCourseForm createCourseForm);
 
     @BeanMapping(ignoreByDefault = true)
@@ -39,12 +42,28 @@ public interface CourseMapper {
     @Mapping(source = "thumbnail", target = "thumbnail")
     @Mapping(source = "state", target = "state")
     @Mapping(source = "startDate", target = "startDate")
-    @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountAdminDto")
+    @Mapping(source = "requirements", target = "requirements")
+    @Mapping(source = "objectives", target = "objectives")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
     @Mapping(source = "lessonPlan", target = "lessonPlanInfo", qualifiedByName = "fromEntityToLessonPlanAdminDto")
     @Mapping(source = "category", target = "categoryInfo", qualifiedByName = "fromEntityToCategoryAdminDtoForGet")
     @Named("fromEntityToCourseAdminDto")
     CourseAdminDto fromEntityToCourseAdminDto(Course course);
 
-    @IterableMapping(elementTargetType = CourseDto.class, qualifiedByName = "fromEntityToCourseDtoAutoComplete")
-    List<CourseDto> fromEntityToCourseAdminDtoList(List<Course> courses);
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "courseName")
+    @Mapping(source = "thumbnail", target = "thumbnail")
+    @Mapping(source = "state", target = "state")
+    @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
+    @Mapping(source = "lessonPlan", target = "lessonPlanInfo", qualifiedByName = "fromEntityToLessonPlanDto")
+    @Mapping(source = "category", target = "categoryInfo", qualifiedByName = "fromEntityToCategoryDtoAutoComplete")
+    @Named("fromEntityToCourseDto")
+    CourseDto fromEntityToCourseDto(Course course);
+
+    @IterableMapping(elementTargetType = CourseDto.class, qualifiedByName = "fromEntityToCourseDto")
+    List<CourseDto> fromEntityToCourseDtoList(List<Course> courses);
 }

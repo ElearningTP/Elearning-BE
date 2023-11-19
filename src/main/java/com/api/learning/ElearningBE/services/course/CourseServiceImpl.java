@@ -71,7 +71,7 @@ public class CourseServiceImpl implements CourseService{
         ApiMessageDto<ResponseListDto<List<CourseDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<CourseDto>> responseListDto = new ResponseListDto<>();
         Page<Course> courses = courseRepository.findAll(courseCriteria.getSpecification(),pageable);
-        List<CourseDto> courseDtoS = courseMapper.fromEntityToCourseAdminDtoList(courses.getContent());
+        List<CourseDto> courseDtoS = courseMapper.fromEntityToCourseDtoList(courses.getContent());
 
         responseListDto.setContent(courseDtoS);
         responseListDto.setTotalElements(courses.getTotalElements());

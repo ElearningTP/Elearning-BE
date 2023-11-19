@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class CreateCourseForm {
@@ -22,6 +23,12 @@ public class CreateCourseForm {
     @NotNull(message = "Start date can not be null")
     @ApiModelProperty(name = "startDate", required = true)
     private Date startDate;
+    @ApiModelProperty(name = "requirements")
+    private List<String> requirements;
+    @ApiModelProperty(name = "objectives")
+    private List<String> objectives;
+    @ApiModelProperty(name = "description")
+    private String description;
     @NotNull(message = "Teacher id can not be null")
     @ApiModelProperty(name = "teacherId", required = true)
     private Long teacherId;

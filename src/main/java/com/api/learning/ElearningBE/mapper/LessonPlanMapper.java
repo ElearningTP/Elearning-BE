@@ -28,7 +28,7 @@ public interface LessonPlanMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "status", target = "status")
-    @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountAdminDto")
+    @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
     @Named("fromEntityToLessonPlanAdminDto")
