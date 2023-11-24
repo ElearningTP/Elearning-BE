@@ -8,7 +8,6 @@ import com.api.learning.ElearningBE.form.category.CreateCategoryForm;
 import com.api.learning.ElearningBE.form.category.UpdateCategoryForm;
 import com.api.learning.ElearningBE.services.category.CategoryService;
 import com.api.learning.ElearningBE.storage.criteria.CategoryCriteria;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +20,11 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('CATE_L')")

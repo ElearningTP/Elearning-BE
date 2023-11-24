@@ -2,11 +2,10 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.UploadFileDto;
-import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.UploadFileForm;
 import com.api.learning.ElearningBE.services.FileService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -22,18 +21,60 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class FileController {
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
+
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     @GetMapping("/download/{folder}/{fileName:.+}")
     @Cacheable("images")
-    public ResponseEntity<Resource> download(@PathVariable String folder, @PathVariable String fileName, HttpServletRequest request){
-        Resource  resource= fileService.loadFileAsResource(folder , fileName);
+    public ResponseEntity<Resource> download(@PathVariable String folder,
+                                             @PathVariable String fileName, HttpServletRequest request){
+        Resource resource = fileService.loadFileAsResource(folder , fileName);
+        if (resource == null || !resource.exists()){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(new ByteArrayResource("An error occurred. The resource could not be loaded".getBytes()));
+        }
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             log.info("Could not determine file type");
+        } catch (Exception ex){
+            log.error("Occurred an error when loading file: "+ex.getMessage());
+        }
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(7776000, TimeUnit.SECONDS))
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/download/{accountId}/{folder}/{fileName:.+}")
+    @Cacheable("images")
+    public ResponseEntity<Resource> downloadWithAccount(@PathVariable Long accountId,
+                                                        @PathVariable String folder,
+                                                        @PathVariable String fileName, HttpServletRequest request){
+        final String path = accountId.toString() + "/" + folder;
+        Resource resource = fileService.loadFileAsResource(path , fileName);
+        if (resource == null || !resource.exists()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body(new ByteArrayResource("An error occurred. The resource could not be loaded".getBytes()));
+        }
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            log.info("Could not determine file type");
+        } catch (Exception ex){
+            log.error("Occurred an error when loading file: "+ex.getMessage());
         }
         if(contentType == null) {
             contentType = "application/octet-stream";
@@ -63,12 +104,7 @@ public class FileController {
         try {
             fileService.deleteFile(filePath);
             apiMessageDto.setMessage("Delete file successfully");
-        }catch (NotFoundException e){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage(e.getMessage());
-            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
-        }
-        catch (Exception e){
+        }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());

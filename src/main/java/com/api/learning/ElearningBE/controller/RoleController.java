@@ -6,7 +6,6 @@ import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
 import com.api.learning.ElearningBE.services.role.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/role")
 public class RoleController {
-    @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
+
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('ROL_L')")

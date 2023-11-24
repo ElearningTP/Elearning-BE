@@ -2,14 +2,12 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
-import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanAdminDto;
-import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanDto;
+import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
-import com.api.learning.ElearningBE.exceptions.UnauthorizedException;
-import com.api.learning.ElearningBE.form.lesson_plan.CreateLessonPlanForm;
-import com.api.learning.ElearningBE.form.lesson_plan.UpdateLessonPlanForm;
-import com.api.learning.ElearningBE.services.lesson_plan.LessonPlanService;
-import com.api.learning.ElearningBE.storage.criteria.LessonPlanCriteria;
+import com.api.learning.ElearningBE.form.resources.CreateResourcesForm;
+import com.api.learning.ElearningBE.form.resources.UpdateResourcesForm;
+import com.api.learning.ElearningBE.services.resources.ResourcesService;
+import com.api.learning.ElearningBE.storage.criteria.ResourcesCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,18 +17,18 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/lesson-plan")
-public class LessonPlanController {
+@RequestMapping("/api/resources")
+public class ResourceController {
 
     @Autowired
-    private LessonPlanService lessonPlanService;
+    private ResourcesService resourcesService;
 
     @GetMapping("/list")
-    public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> list(LessonPlanCriteria lessonPlanCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<ResponseListDto<List<ResourcesDto>>> list(ResourcesCriteria resourcesCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<ResourcesDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = lessonPlanService.list(lessonPlanCriteria, pageable);
-        }catch (Exception e){
+            apiMessageDto = resourcesService.list(resourcesCriteria,pageable);
+        }catch (Exception e) {
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
@@ -39,15 +37,15 @@ public class LessonPlanController {
     }
 
     @GetMapping("/retrieve/{id}")
-    public ApiMessageDto<LessonPlanAdminDto> retrieve(@PathVariable Long id){
-        ApiMessageDto<LessonPlanAdminDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<ResourcesDto> retrieve(@PathVariable Long id){
+        ApiMessageDto<ResourcesDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = lessonPlanService.retrieve(id);
+            apiMessageDto = resourcesService.retrieve(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
-        }catch (Exception e){
+        }catch (Exception e) {
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
@@ -56,19 +54,15 @@ public class LessonPlanController {
     }
 
     @PostMapping("/create")
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateLessonPlanForm createLessonPlanForm){
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateResourcesForm createResourcesForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        try{
-            apiMessageDto = lessonPlanService.create(createLessonPlanForm);
+        try {
+            apiMessageDto = resourcesService.create(createResourcesForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
-        }catch (UnauthorizedException e){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage(e.getMessage());
-            apiMessageDto.setCode(HttpStatus.UNAUTHORIZED.toString());
-        }catch (Exception e){
+        }catch (Exception e) {
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
@@ -77,15 +71,15 @@ public class LessonPlanController {
     }
 
     @PutMapping("/update")
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateLessonPlanForm updateLessonPlanForm){
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateResourcesForm updateResourcesForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = lessonPlanService.update(updateLessonPlanForm);
+            apiMessageDto = resourcesService.update(updateResourcesForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
-        }catch (Exception e){
+        }catch (Exception e) {
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
@@ -94,16 +88,15 @@ public class LessonPlanController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ApiMessageDto<String> delete(@PathVariable Long id
-                                        ){
+    public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = lessonPlanService.delete(id);
+            apiMessageDto = resourcesService.delete(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
-        }catch (Exception e){
+        }catch (Exception e) {
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());

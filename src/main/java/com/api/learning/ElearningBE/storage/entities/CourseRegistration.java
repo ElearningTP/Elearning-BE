@@ -14,8 +14,10 @@ import javax.persistence.*;
 @Table(name = "db_course_registration")
 public class CourseRegistration extends Auditable<String>{
     @ManyToOne
+    @JoinColumn(name = "student_id")
     private Account student;
     @ManyToOne
+    @JoinColumn(name = "course_id")
     private Course course;
     @Column(name = "total_gpa")
     private Double totalGPA = 0.0;

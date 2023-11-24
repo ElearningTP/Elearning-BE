@@ -8,7 +8,6 @@ import com.api.learning.ElearningBE.form.modules.CreateModulesForm;
 import com.api.learning.ElearningBE.form.modules.UpdateModuleForm;
 import com.api.learning.ElearningBE.services.modules.ModulesService;
 import com.api.learning.ElearningBE.storage.criteria.ModulesCriteria;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,11 @@ import java.util.List;
 @RequestMapping("/api/modules")
 public class ModulesController {
 
-    @Autowired
-    private ModulesService modulesService;
+    private final ModulesService modulesService;
+
+    public ModulesController(ModulesService modulesService) {
+        this.modulesService = modulesService;
+    }
 
     @GetMapping("/list")
     public ApiMessageDto<ResponseListDto<List<ModulesDto>>> list(ModulesCriteria modulesCriteria, Pageable pageable){

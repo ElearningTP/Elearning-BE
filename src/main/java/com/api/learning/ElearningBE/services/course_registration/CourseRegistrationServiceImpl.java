@@ -73,6 +73,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
         List<Modules> modules = modulesRepository.findAllByLessonPlanIdIn(lessonPlanIds);
         List<CourseRegistrationDto> courseRegistrationDtoS = courseRegistrationMapper.fromEntityToCourseRegistrationDtoList(courseRegistrations.getContent());
         List<ModulesDto> modulesDtoS = modulesMapper.fromEntityToModulesDtoList(modules);
+
         courseRegistrationDtoS.stream()
                 .filter(courseRegistrationDto -> courseRegistrationDto.getCourseInfo().getLessonPlanInfo() != null)
                 .forEach(courseRegistrationDto -> {
@@ -86,17 +87,6 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
                     });
                     courseRegistrationDto.getCourseInfo().setModulesInfo(modulesDtoList);
                 });
-//        for (CourseRegistrationDto courseRegistrationDto : courseRegistrationDtoS){
-//            List<ModulesDto> modulesDtoList = new ArrayList<>();
-//            for (ModulesDto modulesDto : modulesDtoS){
-//                Long lessonPlanIdInCourse = courseRegistrationDto.getCourseInfo().getLessonPlanInfo().getId();
-//                Long lessonPlanIdInModules = modulesDto.getLessonPlanInfo().getId();
-//                if (lessonPlanIdInCourse.equals(lessonPlanIdInModules)) {
-//                    modulesDtoList.add(modulesDto);
-//                }
-//            }
-//            courseRegistrationDto.setModulesInfo(modulesDtoList);
-//        }
 
         responseListDto.setContent(courseRegistrationDtoS);
         responseListDto.setTotalElements(courseRegistrations.getTotalElements());

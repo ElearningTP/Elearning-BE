@@ -3,7 +3,6 @@ package com.api.learning.ElearningBE.controller;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.form.permission.CreatePermissionForm;
 import com.api.learning.ElearningBE.services.permission.PermissionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +14,11 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/permission")
 public class PermissionController {
-    @Autowired
-    private PermissionService permissionService;
+    private final PermissionService permissionService;
+
+    public PermissionController(PermissionService permissionService) {
+        this.permissionService = permissionService;
+    }
 
     @PostMapping("/create")
     public ApiMessageDto<String> create(@Valid @RequestBody CreatePermissionForm createPermissionForm){

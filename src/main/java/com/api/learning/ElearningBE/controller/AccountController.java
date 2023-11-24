@@ -18,8 +18,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/account")
 @Slf4j
 public class AccountController {
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     @GetMapping("/me")
     public ApiMessageDto<AccountDto> retrieveMe(@RequestHeader(name = "Authorization") String token){

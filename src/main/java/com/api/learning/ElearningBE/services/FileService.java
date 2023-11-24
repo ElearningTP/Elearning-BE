@@ -10,6 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,22 +27,26 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class FileService {
-    static final String[] UPLOAD_TYPES = new String[]{"LOGO", "AVATAR", "IMAGE", "DOCUMENT", "THUMBNAIL"};
+    static final String[] UPLOAD_TYPES = new String[]{"LOGO", "AVATAR", "IMAGE", "DOCUMENT", "THUMBNAIL", "SUBMISSION_FILE"};
+
     public ApiMessageDto<UploadFileDto> storeFile(UploadFileForm uploadFileForm){
         ApiMessageDto<UploadFileDto> apiMessageDto = new ApiMessageDto<>();
         try {
             boolean matches = Arrays.stream(UPLOAD_TYPES).anyMatch(uploadFileForm.getType()::equalsIgnoreCase);
             if (!matches){
                 apiMessageDto.setResult(false);
-                apiMessageDto.setMessage("Type is required: LOGO, AVATAR, IMAGE, DOCUMENT, THUMBNAIL");
+                apiMessageDto.setMessage("Type is required: LOGO, AVATAR, IMAGE, DOCUMENT, THUMBNAIL,SUBMISSION_FILE");
                 return apiMessageDto;
             }
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(uploadFileForm.getFile().getOriginalFilename()));
             String ext = FilenameUtils.getExtension(fileName);
             //Upload
-            String finalFile = uploadFileForm.getType() + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
+            String baseFileName = FilenameUtils.getBaseName(fileName);
+            String finalFile = baseFileName + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
             String typeFolder = File.separator + uploadFileForm.getType();
-
+            if (uploadFileForm.getAccountId() != null){
+                typeFolder = File.separator + uploadFileForm.getAccountId() + typeFolder;
+            }
             Path fileStorageLocation = Paths.get(ELearningConstant.PATH_DIRECTORY + typeFolder).toAbsolutePath().normalize();
             Files.createDirectories(fileStorageLocation);
             Path targetLocation = fileStorageLocation.resolve(finalFile);
@@ -59,6 +64,7 @@ public class FileService {
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage("[Ex2]: "+e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
             log.error("Occurred an error when uploading file: "+e.getMessage());
         }
         return apiMessageDto;
@@ -83,7 +89,7 @@ public class FileService {
         if (file.exists()){
             file.delete();
         }else{
-            throw new NotFoundException("File not found");
+            log.error(String.format("Can not find file with path: %s", filePath));
         }
     }
 }
