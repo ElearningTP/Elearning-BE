@@ -1,11 +1,13 @@
 package com.api.learning.ElearningBE.mapper;
 
-import com.api.learning.ElearningBE.dto.lesson_plan.LessonPLanAdminDto;
+import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanAdminDto;
 import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanDto;
 import com.api.learning.ElearningBE.form.lesson_plan.CreateLessonPlanForm;
 import com.api.learning.ElearningBE.form.lesson_plan.UpdateLessonPlanForm;
 import com.api.learning.ElearningBE.storage.entities.LessonPlan;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -32,7 +34,7 @@ public interface LessonPlanMapper {
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
     @Named("fromEntityToLessonPlanAdminDto")
-    LessonPLanAdminDto fromEntityToLessonPlanAdminDto(LessonPlan lessonPlan);
+    LessonPlanAdminDto fromEntityToLessonPlanAdminDto(LessonPlan lessonPlan);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
@@ -41,4 +43,7 @@ public interface LessonPlanMapper {
     @Mapping(source = "teacher", target = "teacherInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
     @Named("fromEntityToLessonPlanDto")
     LessonPlanDto fromEntityToLessonPlanDto(LessonPlan lessonPlan);
+
+    @IterableMapping(elementTargetType = LessonPlanDto.class, qualifiedByName = "fromEntityToLessonPlanDto")
+    List<LessonPlanDto> fromEntityToLessonPlanDtoList(List<LessonPlan> lessonPlans);
 }

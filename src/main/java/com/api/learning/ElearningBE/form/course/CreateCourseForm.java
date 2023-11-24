@@ -21,7 +21,7 @@ public class CreateCourseForm {
     @CourseState
     private Integer state;
     @NotNull(message = "Start date can not be null")
-    @ApiModelProperty(name = "startDate", required = true)
+    @ApiModelProperty(name = "startDate", required = true, example = "dd/MM/yyyy HH:mm:ss")
     private Date startDate;
     @ApiModelProperty(name = "requirements")
     private List<String> requirements;

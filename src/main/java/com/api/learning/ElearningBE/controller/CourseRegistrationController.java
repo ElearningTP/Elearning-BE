@@ -7,7 +7,6 @@ import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course_registration.CreateCourseRegistrationForm;
 import com.api.learning.ElearningBE.services.course_registration.CourseRegistrationService;
 import com.api.learning.ElearningBE.storage.criteria.CourseRegistrationCriteria;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,8 +19,11 @@ import java.util.List;
 @RequestMapping("/api/course-registration")
 public class CourseRegistrationController {
 
-    @Autowired
-    private CourseRegistrationService courseRegistrationService;
+    private final CourseRegistrationService courseRegistrationService;
+
+    public CourseRegistrationController(CourseRegistrationService courseRegistrationService) {
+        this.courseRegistrationService = courseRegistrationService;
+    }
 
 //    @GetMapping("/auto-complete")
 //    public ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> autoComplete(CourseRegistrationCriteria courseRegistrationCriteria, Pageable pageable){

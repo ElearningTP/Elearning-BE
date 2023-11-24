@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class LessonPLanAdminDto extends BaseAdminDto {
+public class LessonPlanAdminDto extends BaseAdminDto {
     private String name;
     private String description;
     private AccountDto teacherInfo;

@@ -8,6 +8,8 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 public class UploadFileForm {
+    @ApiModelProperty(name = "accountId")
+    private Long  accountId;
     @NotEmpty(message = "Type is required")
     @ApiModelProperty(name = "type", required = true)
     private String type;

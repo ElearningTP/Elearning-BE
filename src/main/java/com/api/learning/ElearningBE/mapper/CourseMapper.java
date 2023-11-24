@@ -33,6 +33,7 @@ public interface CourseMapper {
     @Mapping(source = "category", target = "categoryInfo", qualifiedByName = "fromEntityToCategoryDtoAutoComplete")
     @Named("fromEntityToCourseDtoAutoComplete")
     CourseDto fromEntityToCourseDtoAutoComplete(Course course);
+
     @IterableMapping(elementTargetType = CourseDto.class, qualifiedByName = "fromEntityToCourseDtoAutoComplete")
     List<CourseDto> fromEntityToCourseDtoAutoCompleteList(List<Course> courses);
 

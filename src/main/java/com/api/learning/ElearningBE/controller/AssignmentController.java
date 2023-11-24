@@ -2,49 +2,35 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
-import com.api.learning.ElearningBE.dto.nation.NationAdminDto;
-import com.api.learning.ElearningBE.dto.nation.NationDto;
+import com.api.learning.ElearningBE.dto.assignment.AssignmentAdminDto;
+import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
-import com.api.learning.ElearningBE.form.nation.CreateNationForm;
-import com.api.learning.ElearningBE.form.nation.UpdateNationForm;
-import com.api.learning.ElearningBE.services.nation.NationService;
-import com.api.learning.ElearningBE.storage.criteria.NationCriteria;
+import com.api.learning.ElearningBE.form.assignment.CreateAssignmentForm;
+import com.api.learning.ElearningBE.form.assignment.UpdateAssignmentForm;
+import com.api.learning.ElearningBE.services.assignment.AssignmentService;
+import com.api.learning.ElearningBE.storage.criteria.AssignmentCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/nation")
-public class NationController {
-    private final NationService nationService;
+@RequestMapping("/api/assignment")
+public class AssignmentController {
 
-    public NationController(NationService nationService) {
-        this.nationService = nationService;
-    }
+    private final AssignmentService assignmentService;
 
-    @GetMapping("/auto-complete")
-    public ApiMessageDto<ResponseListDto<List<NationDto>>> autoComplete(NationCriteria nationCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<NationDto>>> apiMessageDto = new ApiMessageDto<>();
-        try {
-            apiMessageDto = nationService.autoComplete(nationCriteria,pageable);
-        }catch (Exception e){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage(e.getMessage());
-            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
-        }
-        return apiMessageDto;
+    public AssignmentController(AssignmentService assignmentService) {
+        this.assignmentService = assignmentService;
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasRole('NATION_L')")
-    public ApiMessageDto<ResponseListDto<List<NationAdminDto>>> list(NationCriteria nationCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<NationAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<ResponseListDto<List<AssignmentDto>>> list(AssignmentCriteria assignmentCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<AssignmentDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = nationService.list(nationCriteria,pageable);
+            apiMessageDto = assignmentService.list(assignmentCriteria, pageable);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -54,11 +40,10 @@ public class NationController {
     }
 
     @GetMapping("/retrieve/{id}")
-    @PreAuthorize("hasRole('NATION_V')")
-    public ApiMessageDto<NationAdminDto> retrieve(@PathVariable Long id){
-        ApiMessageDto<NationAdminDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<AssignmentAdminDto> retrieve(@PathVariable Long id){
+        ApiMessageDto<AssignmentAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = nationService.retrieve(id);
+            apiMessageDto = assignmentService.retrieve(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -72,11 +57,14 @@ public class NationController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('NATION_C')")
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateNationForm createNationForm){
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateAssignmentForm createAssignmentForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = nationService.create(createNationForm);
+            apiMessageDto = assignmentService.create(createAssignmentForm);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -86,11 +74,27 @@ public class NationController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('NATION_U')")
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateNationForm updateNationForm){
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateAssignmentForm updateAssignmentForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = nationService.update(updateNationForm);
+            apiMessageDto = assignmentService.update(updateAssignmentForm);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ApiMessageDto<String> delete(@PathVariable Long id){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = assignmentService.delete(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

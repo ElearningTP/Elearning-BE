@@ -11,12 +11,11 @@ import javax.persistence.*;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "db_lesson_plan")
-public class LessonPlan extends Auditable<String> {
-    private String name;
-    @Column(columnDefinition = "text")
-    private String description;
+@Table(name = "db_resources")
+public class Resources extends Auditable<String> {
+    private String title;
+    private String urlDocument;
     @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private Account teacher;
+    @JoinColumn(name = "modules_id")
+    private Modules modules;
 }

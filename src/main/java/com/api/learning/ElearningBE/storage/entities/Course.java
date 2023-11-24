@@ -22,18 +22,20 @@ public class Course extends Auditable<String> {
     private Integer state;
     private Date startDate;
     @Column(columnDefinition = "text")
-    @Convert(converter = StringListConverter.class)
+    @ElementCollection(targetClass = String.class)
     private List<String> requirements =  new ArrayList<>();
     @Column(columnDefinition = "text")
-    @Convert(converter = StringListConverter.class)
+    @ElementCollection(targetClass = String.class)
     private List<String> objectives = new ArrayList<>();
     @Column(columnDefinition = "longtext")
     private String description;
     @ManyToOne
+    @JoinColumn(name = "teacher_id")
     private Account teacher;
     @ManyToOne
     @JoinColumn(name = "lesson_plan_id")
     private LessonPlan lessonPlan;
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 }
