@@ -4,6 +4,7 @@ import com.api.learning.ElearningBE.dto.BaseAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.category.CategoryAdminDto;
 import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanAdminDto;
+import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

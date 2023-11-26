@@ -3,27 +3,30 @@ package com.api.learning.ElearningBE.services.course;
 import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
+import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
 import com.api.learning.ElearningBE.dto.course.CourseAdminDto;
 import com.api.learning.ElearningBE.dto.course.CourseDto;
+import com.api.learning.ElearningBE.dto.lecture.LectureDto;
+import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course.CreateCourseForm;
+import com.api.learning.ElearningBE.mapper.AssignmentMapper;
 import com.api.learning.ElearningBE.mapper.CourseMapper;
-import com.api.learning.ElearningBE.repositories.AccountRepository;
-import com.api.learning.ElearningBE.repositories.CategoryRepository;
-import com.api.learning.ElearningBE.repositories.CourseRepository;
-import com.api.learning.ElearningBE.repositories.LessonPlanRepository;
+import com.api.learning.ElearningBE.mapper.LectureMapper;
+import com.api.learning.ElearningBE.mapper.ModulesMapper;
+import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.storage.criteria.CourseCriteria;
-import com.api.learning.ElearningBE.storage.entities.Account;
-import com.api.learning.ElearningBE.storage.entities.Category;
-import com.api.learning.ElearningBE.storage.entities.Course;
-import com.api.learning.ElearningBE.storage.entities.LessonPlan;
+import com.api.learning.ElearningBE.storage.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService{
@@ -38,6 +41,18 @@ public class CourseServiceImpl implements CourseService{
     private CategoryRepository categoryRepository;
     @Autowired
     private CourseMapper courseMapper;
+    @Autowired
+    private ModulesRepository modulesRepository;
+    @Autowired
+    private ModulesMapper modulesMapper;
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+    @Autowired
+    private LectureRepository lectureRepository;
+    @Autowired
+    private AssignmentMapper assignmentMapper;
+    @Autowired
+    private LectureMapper lectureMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -60,6 +75,41 @@ public class CourseServiceImpl implements CourseService{
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Course with id %s not found", id)));
         CourseAdminDto courseAdminDto = courseMapper.fromEntityToCourseAdminDto(course);
+        if (course.getLessonPlan() != null){
+            List<Modules> modules = modulesRepository.findAllByLessonPlanId(course.getLessonPlan().getId());
+            List<Long> modulesIds = modules.stream().map(Modules::getId).collect(Collectors.toList());
+            List<ModulesAdminDto> modulesAdminDtoS = modulesMapper.fromEntityToModulesAdminDtoList(modules);
+
+            List<Assignment> assignments = assignmentRepository.findAllByModulesIdIn(modulesIds);
+            List<AssignmentDto> assignmentDtoS = assignmentMapper.fromEntityToAssignmentDtoList(assignments);
+            modulesAdminDtoS.forEach(modulesAdminDto -> {
+                List<AssignmentDto> assignmentDtoList = new ArrayList<>();
+                assignmentDtoS.forEach(assignmentDto -> {
+                    Long modulesId = modulesAdminDto.getId();
+                    Long modulesIdInAssignment = assignmentDto.getModulesInfo().getId();
+                    if (Objects.equals(modulesId,modulesIdInAssignment)){
+                        assignmentDtoList.add(assignmentDto);
+                    }
+                });
+                modulesAdminDto.setAssignmentInfo(assignmentDtoList);
+            });
+
+            List<Lecture> lectures = lectureRepository.findAllByModulesIdIn(modulesIds);
+            List<LectureDto> lectureDtoS = lectureMapper.fromEntityToLectureDtoList(lectures);
+            modulesAdminDtoS.forEach(modulesAdminDto -> {
+                List<LectureDto> lectureDtoList = new ArrayList<>();
+                lectureDtoS.forEach(lectureDto -> {
+                    Long modulesId = modulesAdminDto.getId();
+                    Long modulesIdInLecture = lectureDto.getModulesInfo().getId();
+                    if (Objects.equals(modulesId,modulesIdInLecture)){
+                        lectureDtoList.add(lectureDto);
+                    }
+                });
+                modulesAdminDto.setLectureInfo(lectureDtoList);
+            });
+
+            courseAdminDto.getLessonPlanInfo().setModulesInfo(modulesAdminDtoS);
+        }
 
         apiMessageDto.setData(courseAdminDto);
         apiMessageDto.setMessage("Retrieve course successfully");
