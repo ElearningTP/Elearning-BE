@@ -42,5 +42,8 @@ public interface ModulesMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Named("fromEntityToModulesAdminDto")
     ModulesAdminDto fromEntityToModulesAdminDto(Modules modules);
+    @IterableMapping(elementTargetType = ModulesAdminDto.class, qualifiedByName = "fromEntityToModulesAdminDto")
+    List<ModulesAdminDto> fromEntityToModulesAdminDtoList(List<Modules> modules);
 }

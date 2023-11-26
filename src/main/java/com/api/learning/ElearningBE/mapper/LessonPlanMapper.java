@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {AccountMapper.class})
+        uses = {AccountMapper.class, ModulesMapper.class})
 public interface LessonPlanMapper {
 
     @BeanMapping(ignoreByDefault = true)
