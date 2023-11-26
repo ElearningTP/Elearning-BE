@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.mapper;
 
+import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesDto;
 import com.api.learning.ElearningBE.form.modules.CreateModulesForm;
 import com.api.learning.ElearningBE.form.modules.UpdateModuleForm;
@@ -32,4 +33,14 @@ public interface ModulesMapper {
     ModulesDto fromEntityToModulesDto(Modules modules);
     @IterableMapping(elementTargetType = ModulesDto.class, qualifiedByName = "fromEntityToModulesDto")
     List<ModulesDto> fromEntityToModulesDtoList(List<Modules> modules);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "modulesName")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "lessonPlan", target = "lessonPlanInfo", qualifiedByName = "fromEntityToLessonPlanAdminDto")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "createDate", target = "createDate")
+    @Mapping(source = "modifiedDate", target = "modifiedDate")
+    ModulesAdminDto fromEntityToModulesAdminDto(Modules modules);
 }

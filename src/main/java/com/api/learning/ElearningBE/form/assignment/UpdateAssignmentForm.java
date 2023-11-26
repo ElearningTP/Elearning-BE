@@ -1,5 +1,7 @@
 package com.api.learning.ElearningBE.form.assignment;
 
+import com.api.learning.ElearningBE.validation.AssignmentState;
+import com.api.learning.ElearningBE.validation.AssignmentType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -19,9 +21,11 @@ public class UpdateAssignmentForm {
     private String assignmentContent;
     @NotNull(message = "Assignment type can not be null")
     @ApiModelProperty(name = "assignmentType", required = true, notes = "This is assignment type: 1 file, 2 text")
+    @AssignmentType
     private Integer assignmentType;
     @NotNull(message = "State can not be null")
     @ApiModelProperty(name = "state", required = true, notes = "This is state of assignment: 1 created, 2 started, 3 expired")
+    @AssignmentState
     private Integer state;
     @ApiModelProperty(name = "startDate", example = "dd/MM/yyyy HH:mm:ss")
     private Date startDate;

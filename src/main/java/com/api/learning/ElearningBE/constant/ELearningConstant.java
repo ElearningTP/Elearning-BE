@@ -25,4 +25,12 @@ public class ELearningConstant {
     public static final Integer COURSE_STATE_CREATED = 1;
     public static final Integer COURSE_STATE_STARTED = 2;
 
+    //Assignment
+    public static final Integer ASSIGNMENT_STATE_CREATED = 1;
+    public static final Integer ASSIGNMENT_STATE_STARTED = 2;
+    public static final Integer ASSIGNMENT_STATE_EXPIRED = 3;
+
+    public static final Integer ASSIGNMENT_TYPE_FILE = 1;
+    public static final Integer ASSIGNMENT_TYPE_TEXT = 2;
+
 }

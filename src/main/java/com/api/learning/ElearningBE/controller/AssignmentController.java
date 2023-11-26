@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.assignment.AssignmentService;
 import com.api.learning.ElearningBE.storage.criteria.AssignmentCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class AssignmentController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ASSIGN_L')")
     public ApiMessageDto<ResponseListDto<List<AssignmentDto>>> list(AssignmentCriteria assignmentCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<AssignmentDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -40,6 +42,7 @@ public class AssignmentController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('ASSIGN_V')")
     public ApiMessageDto<AssignmentAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<AssignmentAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -57,6 +60,7 @@ public class AssignmentController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ASSIGN_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateAssignmentForm createAssignmentForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -74,6 +78,7 @@ public class AssignmentController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ASSIGN_U')")
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateAssignmentForm updateAssignmentForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -91,6 +96,7 @@ public class AssignmentController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ASSIGN_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

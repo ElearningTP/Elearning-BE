@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.services.modules;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
+import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.modules.CreateModulesForm;
@@ -46,6 +47,18 @@ public class ModulesServiceImpl implements ModulesService{
     }
 
     @Override
+    public ApiMessageDto<ModulesAdminDto> retrieve(Long id) {
+        ApiMessageDto<ModulesAdminDto> apiMessageDto = new ApiMessageDto<>();
+        Modules modules = modulesRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Modules with id %s not found", id)));
+        ModulesAdminDto modulesAdminDto = modulesMapper.fromEntityToModulesAdminDto(modules);
+
+        apiMessageDto.setData(modulesAdminDto);
+        apiMessageDto.setMessage("Retrieve modules successfully");
+        return apiMessageDto;
+    }
+
+    @Override
     public ApiMessageDto<String> create(CreateModulesForm createModulesForm) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         LessonPlan lessonPlan = lessonPlanRepository.findById(createModulesForm.getLessonPlanId())
@@ -67,6 +80,17 @@ public class ModulesServiceImpl implements ModulesService{
         modulesRepository.save(modules);
 
         apiMessageDto.setMessage("Update modules successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<String> delete(Long id) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Modules modules = modulesRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Modules with id %s not found",id)));
+        modulesRepository.delete(modules);
+
+        apiMessageDto.setMessage("Delete modules successfully");
         return apiMessageDto;
     }
 }

@@ -13,6 +13,7 @@ import com.api.learning.ElearningBE.storage.criteria.LessonPlanCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ public class LessonPlanController {
     private LessonPlanService lessonPlanService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('LESS_P_L')")
     public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> list(LessonPlanCriteria lessonPlanCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -39,6 +41,7 @@ public class LessonPlanController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('LESS_P_V')")
     public ApiMessageDto<LessonPlanAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<LessonPlanAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -56,6 +59,7 @@ public class LessonPlanController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('LESS_P_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateLessonPlanForm createLessonPlanForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try{
@@ -77,6 +81,7 @@ public class LessonPlanController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('LESS_P_U')")
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateLessonPlanForm updateLessonPlanForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -94,6 +99,7 @@ public class LessonPlanController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('LESS_P_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id
                                         ){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
