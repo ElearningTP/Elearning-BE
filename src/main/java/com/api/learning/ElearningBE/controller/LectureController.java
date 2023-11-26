@@ -2,13 +2,13 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
-import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
-import com.api.learning.ElearningBE.dto.modules.ModulesDto;
+import com.api.learning.ElearningBE.dto.lecture.LectureAdminDto;
+import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
-import com.api.learning.ElearningBE.form.modules.CreateModulesForm;
-import com.api.learning.ElearningBE.form.modules.UpdateModuleForm;
-import com.api.learning.ElearningBE.services.modules.ModulesService;
-import com.api.learning.ElearningBE.storage.criteria.ModulesCriteria;
+import com.api.learning.ElearningBE.form.lecture.CreateLectureForm;
+import com.api.learning.ElearningBE.form.lecture.UpdateLectureForm;
+import com.api.learning.ElearningBE.services.lecture.LectureService;
+import com.api.learning.ElearningBE.storage.criteria.LectureCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,21 +18,21 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/modules")
-public class ModulesController {
+@RequestMapping("/api/lecture")
+public class LectureController {
 
-    private final ModulesService modulesService;
+    private final LectureService lectureService;
 
-    public ModulesController(ModulesService modulesService) {
-        this.modulesService = modulesService;
+    public LectureController(LectureService lectureService) {
+        this.lectureService = lectureService;
     }
 
     @GetMapping("/list")
-    @PreAuthorize("hasRole('MODULE_L')")
-    public ApiMessageDto<ResponseListDto<List<ModulesDto>>> list(ModulesCriteria modulesCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<ModulesDto>>> apiMessageDto = new ApiMessageDto<>();
+    @PreAuthorize("hasRole('LEC_L')")
+    public ApiMessageDto<ResponseListDto<List<LectureDto>>> list(LectureCriteria lectureCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<LectureDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = modulesService.list(modulesCriteria,pageable);
+            apiMessageDto = lectureService.list(lectureCriteria, pageable);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -42,11 +42,11 @@ public class ModulesController {
     }
 
     @GetMapping("/retrieve/{id}")
-    @PreAuthorize("hasRole('MODULE_V')")
-    public ApiMessageDto<ModulesAdminDto> retrieve(@PathVariable Long id){
-        ApiMessageDto<ModulesAdminDto> apiMessageDto = new ApiMessageDto<>();
+    @PreAuthorize("hasRole('LEC_V')")
+    public ApiMessageDto<LectureAdminDto> retrieve(@PathVariable Long id){
+        ApiMessageDto<LectureAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = modulesService.retrieve(id);
+            apiMessageDto = lectureService.retrieve(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -60,11 +60,11 @@ public class ModulesController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('MODULE_C')")
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateModulesForm createModulesForm){
+    @PreAuthorize("hasRole('LEC_C')")
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateLectureForm createLectureForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = modulesService.create(createModulesForm);
+            apiMessageDto = lectureService.create(createLectureForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -78,11 +78,11 @@ public class ModulesController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasRole('MODULE_U')")
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateModuleForm updateModuleForm){
+    @PreAuthorize("hasRole('LEC_U')")
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateLectureForm updateLectureForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = modulesService.update(updateModuleForm);
+            apiMessageDto = lectureService.update(updateLectureForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -96,11 +96,11 @@ public class ModulesController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('MODULE_D')")
+    @PreAuthorize("hasRole('LEC_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = modulesService.delete(id);
+            apiMessageDto = lectureService.delete(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

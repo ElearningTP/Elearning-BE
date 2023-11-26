@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.storage.criteria.ResourcesCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ public class ResourceController {
     private ResourcesService resourcesService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('RESOU_L')")
     public ApiMessageDto<ResponseListDto<List<ResourcesDto>>> list(ResourcesCriteria resourcesCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<ResourcesDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -37,6 +39,7 @@ public class ResourceController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('RESOU_V')")
     public ApiMessageDto<ResourcesDto> retrieve(@PathVariable Long id){
         ApiMessageDto<ResourcesDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -54,6 +57,7 @@ public class ResourceController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('RESOU_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateResourcesForm createResourcesForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -71,6 +75,7 @@ public class ResourceController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('RESOU_U')")
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateResourcesForm updateResourcesForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -88,6 +93,7 @@ public class ResourceController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('RESOU_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
