@@ -8,13 +8,12 @@ import com.api.learning.ElearningBE.dto.course.CourseAdminDto;
 import com.api.learning.ElearningBE.dto.course.CourseDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
+import com.api.learning.ElearningBE.dto.modules.ModulesDto;
+import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course.CreateCourseForm;
-import com.api.learning.ElearningBE.mapper.AssignmentMapper;
-import com.api.learning.ElearningBE.mapper.CourseMapper;
-import com.api.learning.ElearningBE.mapper.LectureMapper;
-import com.api.learning.ElearningBE.mapper.ModulesMapper;
+import com.api.learning.ElearningBE.mapper.*;
 import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.storage.criteria.CourseCriteria;
 import com.api.learning.ElearningBE.storage.entities.*;
@@ -53,6 +52,10 @@ public class CourseServiceImpl implements CourseService{
     private AssignmentMapper assignmentMapper;
     @Autowired
     private LectureMapper lectureMapper;
+    @Autowired
+    private ResourcesRepository resourcesRepository;
+    @Autowired
+    private ResourcesMapper resourcesMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -106,6 +109,20 @@ public class CourseServiceImpl implements CourseService{
                     }
                 });
                 modulesAdminDto.setLectureInfo(lectureDtoList);
+            });
+
+            List<Resources> resources = resourcesRepository.findAllByModulesIdIn(modulesIds);
+            List<ResourcesDto> resourcesDtoS = resourcesMapper.fromEntityToResourcesDtoList(resources);
+            modulesAdminDtoS.forEach(modulesAdminDto -> {
+                List<ResourcesDto> resourcesDtoList = new ArrayList<>();
+                resourcesDtoS.forEach(resourcesDto -> {
+                    Long modulesId = modulesAdminDto.getId();
+                    Long modulesIdInResource = resourcesDto.getModulesInfo().getId();
+                    if (Objects.equals(modulesId,modulesIdInResource)){
+                        resourcesDtoList.add(resourcesDto);
+                    }
+                });
+                modulesAdminDto.setResourceInfo(resourcesDtoList);
             });
 
             courseAdminDto.getLessonPlanInfo().setModulesInfo(modulesAdminDtoS);
