@@ -1,9 +1,11 @@
 package com.api.learning.ElearningBE.dto.assignment;
 
+import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesDto;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class AssignmentDto {
@@ -16,4 +18,5 @@ public class AssignmentDto {
     private Date endDate;
     private String urlDocument;
     private ModulesDto modulesInfo;
+    private List<AssignmentSubmissionDto> assignmentSubmissionInfo;
 }

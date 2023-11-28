@@ -2,21 +2,14 @@ package com.api.learning.ElearningBE.security;
 
 import com.api.learning.ElearningBE.dto.TokenDetail;
 import com.api.learning.ElearningBE.security.impl.UserDetailsImpl;
-import com.api.learning.ElearningBE.utils.ZipUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
@@ -25,7 +18,6 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtils {
     private static final long JWT_VALIDITY_SECONDS = 24 * 60 * 60;
-    private static final String DELIM = "\\|";
     @Value("${elearning.jwt.secret}")
     private String secret;
 
@@ -61,10 +53,8 @@ public class JwtUtils {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        String additionalInfo = ZipUtils.zipString(userDetails.getAccountId() + DELIM + userDetails.getEmail() + DELIM + userDetails.getKind());
         claims.put("authorities", pCode);
         claims.put("name", userDetails.getFullName());
-        claims.put("additional_info", additionalInfo);
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         Key key = Keys.hmacShaKeyFor(keyBytes);
         return Jwts

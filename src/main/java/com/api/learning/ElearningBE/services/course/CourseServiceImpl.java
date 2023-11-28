@@ -4,6 +4,7 @@ import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
+import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionDto;
 import com.api.learning.ElearningBE.dto.course.CourseAdminDto;
 import com.api.learning.ElearningBE.dto.course.CourseDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
@@ -15,6 +16,7 @@ import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course.CreateCourseForm;
 import com.api.learning.ElearningBE.mapper.*;
 import com.api.learning.ElearningBE.repositories.*;
+import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.storage.criteria.CourseCriteria;
 import com.api.learning.ElearningBE.storage.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class CourseServiceImpl implements CourseService{
 
+    @Autowired
+    private UserService userService;
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
@@ -56,6 +60,10 @@ public class CourseServiceImpl implements CourseService{
     private ResourcesRepository resourcesRepository;
     @Autowired
     private ResourcesMapper resourcesMapper;
+    @Autowired
+    private AssignmentSubmissionRepository assignmentSubmissionRepository;
+    @Autowired
+    private AssignmentSubmissionMapper assignmentSubmissionMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -96,6 +104,22 @@ public class CourseServiceImpl implements CourseService{
                 });
                 modulesAdminDto.setAssignmentInfo(assignmentDtoList);
             });
+
+            List<Long> assignmentIds = assignments.stream().map(Assignment::getId).collect(Collectors.toList());
+            List<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionRepository.findAllByAssignmentIdInAndStudentIdAndCourseId(assignmentIds, userService.getAccountId(),course.getId());
+            List<AssignmentSubmissionDto> assignmentSubmissionDtoS = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDtoList(assignmentSubmissions);
+            assignmentDtoS.forEach(assignmentDto -> {
+                List<AssignmentSubmissionDto> assignmentSubmissionDtoList = new ArrayList<>();
+                assignmentSubmissionDtoS.forEach(assignmentSubmissionDto -> {
+                    Long assignmentId = assignmentDto.getId();
+                    Long assignmentInInSubmission = assignmentSubmissionDto.getAssignmentInfo().getId();
+                    if (Objects.equals(assignmentId, assignmentInInSubmission)){
+                        assignmentSubmissionDtoList.add(assignmentSubmissionDto);
+                    }
+                });
+                assignmentDto.setAssignmentSubmissionInfo(assignmentSubmissionDtoList);
+            });
+
 
             List<Lecture> lectures = lectureRepository.findAllByModulesIdIn(modulesIds);
             List<LectureDto> lectureDtoS = lectureMapper.fromEntityToLectureDtoList(lectures);
@@ -143,6 +167,8 @@ public class CourseServiceImpl implements CourseService{
         responseListDto.setContent(courseDtoS);
         responseListDto.setTotalElements(courses.getTotalElements());
         responseListDto.setTotalPages(courses.getTotalPages());
+        responseListDto.setPageIndex(courses.getNumber());
+        responseListDto.setPageSize(courses.getSize());
 
         apiMessageDto.setData(responseListDto);
         return apiMessageDto;

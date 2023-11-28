@@ -1,6 +1,5 @@
 package com.api.learning.ElearningBE.form.assignment_submission;
 
-import com.api.learning.ElearningBE.validation.AssignmentType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,7 +9,7 @@ import java.util.Date;
 @Data
 public class CreateAssignmentSubmissionForm {
     @NotNull(message = "Submission date can not be null")
-    @ApiModelProperty(name = "submissionDate", required = true, example = "dd/MM/yyyy HH:mm:ss")
+    @ApiModelProperty(name = "submissionDate", required = true, example = "yyyy-MM-dd HH:mm:ss")
     private Date submissionDate;
     @ApiModelProperty(name = "textSubmission", notes = "The submission type is text")
     private String textSubmission;

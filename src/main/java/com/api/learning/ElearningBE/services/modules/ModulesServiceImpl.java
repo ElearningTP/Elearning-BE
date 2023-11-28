@@ -40,6 +40,8 @@ public class ModulesServiceImpl implements ModulesService{
         responseListDto.setContent(modulesDtoS);
         responseListDto.setTotalPages(modules.getTotalPages());
         responseListDto.setTotalElements(modules.getTotalElements());
+        responseListDto.setPageSize(modules.getSize());
+        responseListDto.setPageIndex(modules.getNumber());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve modules list successfully");

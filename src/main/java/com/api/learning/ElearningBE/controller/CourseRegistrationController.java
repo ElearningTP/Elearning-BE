@@ -25,19 +25,6 @@ public class CourseRegistrationController {
         this.courseRegistrationService = courseRegistrationService;
     }
 
-//    @GetMapping("/auto-complete")
-//    public ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> autoComplete(CourseRegistrationCriteria courseRegistrationCriteria, Pageable pageable){
-//        ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> apiMessageDto = new ApiMessageDto<>();
-//        try {
-//            apiMessageDto = courseRegistrationService.autoComplete(courseRegistrationCriteria,pageable);
-//        }catch (Exception e){
-//            apiMessageDto.setResult(false);
-//            apiMessageDto.setMessage(e.getMessage());
-//            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
-//        }
-//        return apiMessageDto;
-//    }
-
     @GetMapping("/list")
     @PreAuthorize("hasRole('REGISTRATION_L')")
     public ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> list(CourseRegistrationCriteria courseRegistrationCriteria, Pageable pageable){

@@ -35,6 +35,8 @@ public class CategoryServiceImpl implements CategoryService{
         responseListDto.setContent(categoryAdminDtoS);
         responseListDto.setTotalPages(categories.getTotalPages());
         responseListDto.setTotalElements(categories.getTotalElements());
+        responseListDto.setPageIndex(categories.getNumber());
+        responseListDto.setPageSize(categories.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve category list successfully");

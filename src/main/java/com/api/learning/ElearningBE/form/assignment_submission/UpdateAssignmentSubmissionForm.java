@@ -12,7 +12,7 @@ public class UpdateAssignmentSubmissionForm {
     @ApiModelProperty(name = "id", required = true)
     private Long id;
     @NotNull(message = "Submission date can not be null")
-    @ApiModelProperty(name = "submissionDate", required = true, example = "dd/MM/yyyy HH:mm:ss")
+    @ApiModelProperty(name = "submissionDate", required = true, example = "yyyy-MM-dd HH:mm:ss")
     private Date submissionDate;
     @ApiModelProperty(name = "textSubmission", notes = "The submission type is text")
     private String textSubmission;

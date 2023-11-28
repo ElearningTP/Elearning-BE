@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new NotFoundException(String.format("Email %s does not exist",email));
         }
         Set<GrantedAuthority> grantedAuthorities = grantedAuthority(account);
-        return new UserDetailsImpl(account.getId(), account.getFullName(), account.getEmail(), account.getPassword(), grantedAuthorities, account.getStatus(), account.getAvatarPath(), account.getRole().getName(), account.getKind());
+        return new UserDetailsImpl(account.getId(),account.getKind(),account.getFullName(), account.getEmail(), account.getPassword(), grantedAuthorities, account.getStatus(), account.getAvatarPath(), account.getRole().getName());
     }
     private Set<GrantedAuthority> grantedAuthority(Account account){
         List<String> roles = new ArrayList<>();

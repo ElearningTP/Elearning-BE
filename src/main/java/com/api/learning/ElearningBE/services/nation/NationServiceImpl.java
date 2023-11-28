@@ -54,6 +54,8 @@ public class NationServiceImpl implements NationService{
         responseListDto.setContent(nationAdminDtoS);
         responseListDto.setTotalPages(nations.getTotalPages());
         responseListDto.setTotalElements(nations.getTotalElements());
+        responseListDto.setPageIndex(nations.getNumber());
+        responseListDto.setPageSize(nations.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve nation list successfully");
