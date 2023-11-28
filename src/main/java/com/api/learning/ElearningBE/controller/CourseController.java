@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class CourseController {
 
     @GetMapping("/retrieve/{id}")
     @PreAuthorize("hasRole('COURSE_V')")
-    public ApiMessageDto<CourseAdminDto> retrieve(@PathVariable Long id){
+    public ApiMessageDto<CourseAdminDto> retrieve(@PathVariable Long id, HttpServletRequest httpServletRequest){
         ApiMessageDto<CourseAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = courseService.retrieve(id);

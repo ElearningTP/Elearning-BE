@@ -35,6 +35,8 @@ public class SubjectServiceImpl implements SubjectService{
         responseListDto.setContent(subjectAdminDtoList);
         responseListDto.setTotalPages(subjects.getTotalPages());
         responseListDto.setTotalElements(subjects.getTotalElements());
+        responseListDto.setPageIndex(subjects.getNumber());
+        responseListDto.setPageSize(subjects.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve subject list successfully");

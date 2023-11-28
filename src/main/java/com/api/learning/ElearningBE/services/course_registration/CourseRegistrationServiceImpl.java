@@ -91,6 +91,8 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
         responseListDto.setContent(courseRegistrationDtoS);
         responseListDto.setTotalElements(courseRegistrations.getTotalElements());
         responseListDto.setTotalPages(courseRegistrations.getTotalPages());
+        responseListDto.setPageIndex(courseRegistrations.getNumber());
+        responseListDto.setPageSize(courseRegistrations.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve successfully");

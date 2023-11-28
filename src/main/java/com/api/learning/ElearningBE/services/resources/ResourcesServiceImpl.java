@@ -42,6 +42,8 @@ public class ResourcesServiceImpl implements ResourcesService{
         responseListDto.setContent(resourcesDtoS);
         responseListDto.setTotalPages(resources.getTotalPages());
         responseListDto.setTotalElements(resources.getTotalElements());
+        responseListDto.setPageSize(resources.getSize());
+        responseListDto.setPageIndex(resources.getNumber());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve resources list successfully");

@@ -8,4 +8,6 @@ public class ResponseListDto<T>{
     private T content;
     private Integer totalPages;
     private Long totalElements;
+    private Integer pageIndex;
+    private Integer pageSize;
 }

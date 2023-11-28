@@ -40,6 +40,8 @@ public class LectureServiceImpl implements LectureService{
         responseListDto.setContent(lectureDtoS);
         responseListDto.setTotalPages(lectures.getTotalPages());
         responseListDto.setTotalElements(lectures.getTotalElements());
+        responseListDto.setPageIndex(lectures.getNumber());
+        responseListDto.setPageSize(lectures.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve lecture list successfully");

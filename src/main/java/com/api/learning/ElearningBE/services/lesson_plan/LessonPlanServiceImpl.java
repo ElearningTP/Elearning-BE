@@ -42,6 +42,8 @@ public class LessonPlanServiceImpl implements LessonPlanService{
         responseListDto.setContent(lessonPlanDtoS);
         responseListDto.setTotalPages(lessonPlans.getTotalPages());
         responseListDto.setTotalElements(lessonPlans.getTotalElements());
+        responseListDto.setPageIndex(lessonPlans.getNumber());
+        responseListDto.setPageSize(lessonPlans.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve lesson plan list successfully");

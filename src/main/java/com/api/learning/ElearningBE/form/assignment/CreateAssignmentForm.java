@@ -24,9 +24,9 @@ public class CreateAssignmentForm {
     @ApiModelProperty(name = "state", required = true, notes = "This is state of assignment: 1 created, 2 started, 3 expired")
     @AssignmentState
     private Integer state;
-    @ApiModelProperty(name = "startDate", example = "dd/MM/yyyy HH:mm:ss")
+    @ApiModelProperty(name = "startDate", example = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;
-    @ApiModelProperty(name = "endDate", example = "dd/MM/yyyy HH:mm:ss")
+    @ApiModelProperty(name = "endDate", example = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
     @ApiModelProperty(name = "urlDocument")
     private String urlDocument;

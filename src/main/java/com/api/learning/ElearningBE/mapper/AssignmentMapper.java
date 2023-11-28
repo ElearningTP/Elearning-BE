@@ -56,6 +56,7 @@ public interface AssignmentMapper {
     @Mapping(source = "assignmentType", target = "assignmentType")
     @Mapping(source = "state", target = "state")
     @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "urlDocument", target = "urlDocument")
     @Mapping(source = "modules", target = "modulesInfo", qualifiedByName = "fromEntityToModulesDto")
     @Named("fromEntityToAssignmentDto")

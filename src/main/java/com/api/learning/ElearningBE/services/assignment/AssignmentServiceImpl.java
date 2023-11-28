@@ -40,6 +40,8 @@ public class AssignmentServiceImpl implements AssignmentService{
         responseListDto.setContent(assignmentDtoS);
         responseListDto.setTotalPages(assignments.getTotalPages());
         responseListDto.setTotalElements(assignments.getTotalElements());
+        responseListDto.setPageIndex(assignments.getNumber());
+        responseListDto.setPageSize(assignments.getSize());
 
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Retrieve assigment list successfully");

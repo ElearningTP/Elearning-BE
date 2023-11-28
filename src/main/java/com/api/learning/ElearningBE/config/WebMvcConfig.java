@@ -23,7 +23,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
-    private static final String DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 //    private static final String DATE_FORMAT = "dd/MM/yyyy";
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {

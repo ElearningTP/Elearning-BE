@@ -1,7 +1,6 @@
 package com.api.learning.ElearningBE.storage.entities;
 
 import com.api.learning.ElearningBE.storage.base.Auditable;
-import com.api.learning.ElearningBE.storage.converter.StringListConverter;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
