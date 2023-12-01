@@ -10,7 +10,7 @@ import com.api.learning.ElearningBE.dto.course.CourseDto;
 import com.api.learning.ElearningBE.dto.forum.ForumAdminDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
-import com.api.learning.ElearningBE.dto.modules.ModulesDto;
+import com.api.learning.ElearningBE.dto.quiz.QuizDto;
 import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,6 +70,10 @@ public class CourseServiceImpl implements CourseService{
     private ForumRepository forumRepository;
     @Autowired
     private ForumMapper forumMapper;
+    @Autowired
+    private QuizRepository quizRepository;
+    @Autowired
+    private QuizMapper quizMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -154,6 +157,20 @@ public class CourseServiceImpl implements CourseService{
                     }
                 });
                 modulesAdminDto.setResourceInfo(resourcesDtoList);
+            });
+
+            List<Quiz> quizzes = quizRepository.findAllByModulesIdIn(modulesIds);
+            List<QuizDto> quizDtoS = quizMapper.fromEntityToQuizDtoList(quizzes);
+            modulesAdminDtoS.forEach(modulesAdminDto -> {
+                List<QuizDto> quizDtoList = new ArrayList<>();
+                quizDtoS.forEach(quizDto -> {
+                    Long modulesId = modulesAdminDto.getId();
+                    Long modulesIdInQuiz = quizDto.getModulesInfo().getId();
+                    if (Objects.equals(modulesId,modulesIdInQuiz)){
+                        quizDtoList.add(quizDto);
+                    }
+                });
+                modulesAdminDto.setQuizInfo(quizDtoList);
             });
 
             Forum forum = forumRepository.findByCourseId(course.getId());
