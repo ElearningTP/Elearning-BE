@@ -7,6 +7,7 @@ import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
 import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionDto;
 import com.api.learning.ElearningBE.dto.course.CourseAdminDto;
 import com.api.learning.ElearningBE.dto.course.CourseDto;
+import com.api.learning.ElearningBE.dto.forum.ForumAdminDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesDto;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -65,6 +67,10 @@ public class CourseServiceImpl implements CourseService{
     private AssignmentSubmissionRepository assignmentSubmissionRepository;
     @Autowired
     private AssignmentSubmissionMapper assignmentSubmissionMapper;
+    @Autowired
+    private ForumRepository forumRepository;
+    @Autowired
+    private ForumMapper forumMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -122,7 +128,6 @@ public class CourseServiceImpl implements CourseService{
                 assignmentDto.setAssignmentSubmissionInfo(assignmentSubmissionDtoList);
             });
 
-
             List<Lecture> lectures = lectureRepository.findAllByModulesIdIn(modulesIds);
             List<LectureDto> lectureDtoS = lectureMapper.fromEntityToLectureDtoList(lectures);
             modulesAdminDtoS.forEach(modulesAdminDto -> {
@@ -151,6 +156,10 @@ public class CourseServiceImpl implements CourseService{
                 modulesAdminDto.setResourceInfo(resourcesDtoList);
             });
 
+            Forum forum = forumRepository.findByCourseId(course.getId());
+            ForumAdminDto forumAdminDto = forumMapper.fromEntityToForumAdminDto(forum);
+
+            courseAdminDto.setForumInfo(forumAdminDto);
             courseAdminDto.getLessonPlanInfo().setModulesInfo(modulesAdminDtoS);
         }
 

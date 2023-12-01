@@ -4,24 +4,29 @@ import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.topic.TopicAdminDto;
 import com.api.learning.ElearningBE.dto.topic.TopicDto;
+import com.api.learning.ElearningBE.dto.topic_comment.TopicCommentAdminDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.topic.CreateTopicForm;
 import com.api.learning.ElearningBE.form.topic.UpdateTopicForm;
+import com.api.learning.ElearningBE.mapper.TopicCommentMapper;
 import com.api.learning.ElearningBE.mapper.TopicMapper;
 import com.api.learning.ElearningBE.repositories.AccountRepository;
 import com.api.learning.ElearningBE.repositories.ForumRepository;
+import com.api.learning.ElearningBE.repositories.TopicCommentRepository;
 import com.api.learning.ElearningBE.repositories.TopicRepository;
 import com.api.learning.ElearningBE.storage.criteria.TopicCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.Forum;
 import com.api.learning.ElearningBE.storage.entities.Topic;
+import com.api.learning.ElearningBE.storage.entities.TopicComment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TopicServiceImpl implements TopicService{
@@ -34,6 +39,10 @@ public class TopicServiceImpl implements TopicService{
     private AccountRepository accountRepository;
     @Autowired
     private TopicMapper topicMapper;
+    @Autowired
+    private TopicCommentRepository topicCommentRepository;
+    @Autowired
+    private TopicCommentMapper topicCommentMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<TopicDto>>> list(TopicCriteria topicCriteria, Pageable pageable) {
@@ -41,9 +50,45 @@ public class TopicServiceImpl implements TopicService{
         ResponseListDto<List<TopicDto>> responseListDto = new ResponseListDto<>();
         Page<Topic> topics = topicRepository.findAll(topicCriteria.getSpecification(),pageable);
         List<TopicDto> topicDtoS = topicMapper.fromEntityToTopicDtoList(topics.getContent());
+        List<Long> topicIds = topics.getContent().stream().map(Topic::getId).collect(Collectors.toList());
+        List<TopicComment> topicComments = topicCommentRepository.findAllByTopicIdIn(topicIds);
+//        List<TopicCommentAdminDto> topicCommentAdminDtoList = topicCommentMapper.fromEntityToTopicCommentAdminDto(topicComments);
+//
+//        topicDtoS.forEach( topicDto -> {
+//            List<TopicCommentAdminDto> topicCommentAdminDtoS = new ArrayList<>();
+//            topicCommentAdminDtoList.forEach( topicCommentAdminDto -> {
+//                if (Objects.equals(topicDto.getId(), topicCommentAdminDto.getTopicInfo().getId())){
+//                    topicCommentAdminDtoS.add(topicCommentAdminDto);
+//                }
+//            });
+//            topicDto.setCommentInfo(topicCommentAdminDtoS);
+//        });
+
+//        Map<Long, List<TopicCommentAdminDto>> commentsMap = topicComments.stream()
+//                .map(topicCommentMapper::fromEntityToTopicCommentAdminDto)
+//                .collect(Collectors.groupingBy(comment -> comment.getTopicInfo().getId()));
+
+        Map<Long, List<TopicCommentAdminDto>> commentsMap = topicComments.parallelStream()
+                .map(topicCommentMapper::fromEntityToTopicCommentAdminDto)
+                .collect(Collectors.toMap(
+                        comment -> comment.getTopicInfo().getId(),
+                        Collections::singletonList,
+                        (existingList, newList) -> {
+                            List<TopicCommentAdminDto> mergedList = new ArrayList<>(existingList);
+                            mergedList.addAll(newList);
+                            return mergedList;
+                        }
+                ));
+        List<TopicDto> topicDtoList = topicDtoS.parallelStream()
+                .peek(topicDto -> {
+                    Long topicId = topicDto.getId();
+                    commentsMap.computeIfAbsent(topicId, k -> Collections.emptyList());
+                    topicDto.setCommentInfo(commentsMap.get(topicId));
+                })
+                .collect(Collectors.toList());
 
         responseListDto.setTotalPages(topics.getTotalPages());
-        responseListDto.setContent(topicDtoS);
+        responseListDto.setContent(topicDtoList);
         responseListDto.setTotalElements(topics.getTotalElements());
         responseListDto.setPageIndex(topics.getNumber());
         responseListDto.setPageSize(topics.getSize());
