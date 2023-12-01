@@ -4,6 +4,7 @@ import com.api.learning.ElearningBE.dto.BaseAdminDto;
 import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanAdminDto;
+import com.api.learning.ElearningBE.dto.quiz.QuizDto;
 import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,4 +20,5 @@ public class ModulesAdminDto extends BaseAdminDto {
     List<LectureDto> lectureInfo;
     List<AssignmentDto> assignmentInfo;
     List<ResourcesDto> resourceInfo;
+    List<QuizDto> quizInfo;
 }
