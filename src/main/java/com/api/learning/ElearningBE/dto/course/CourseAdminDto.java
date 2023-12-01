@@ -3,8 +3,8 @@ package com.api.learning.ElearningBE.dto.course;
 import com.api.learning.ElearningBE.dto.BaseAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.category.CategoryAdminDto;
+import com.api.learning.ElearningBE.dto.forum.ForumAdminDto;
 import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanAdminDto;
-import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,4 +24,5 @@ public class CourseAdminDto extends BaseAdminDto {
     private AccountDto teacherInfo;
     private LessonPlanAdminDto lessonPlanInfo;
     private CategoryAdminDto categoryInfo;
+    private ForumAdminDto forumInfo;
 }

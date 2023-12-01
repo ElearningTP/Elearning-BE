@@ -42,5 +42,6 @@ public interface ForumMapper {
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
     @Mapping(source = "course", target = "courseInfo", qualifiedByName = "fromEntityToCourseDtoAutoComplete")
+    @Named("fromEntityToForumAdminDto")
     ForumAdminDto fromEntityToForumAdminDto(Forum forum);
 }
