@@ -14,7 +14,6 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "db_assignment_submission")
 public class AssignmentSubmission extends Auditable<String> {
-    private Date submissionDate;
     private Double score;
     @Column(name = "text_submission")
     private String textSubmission;
