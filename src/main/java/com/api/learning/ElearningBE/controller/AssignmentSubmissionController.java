@@ -58,8 +58,8 @@ public class AssignmentSubmissionController {
     }
 
     @PostMapping("/submit")
-    public ApiMessageDto<String> submit(@Valid @RequestBody CreateAssignmentSubmissionForm createAssignmentSubmissionForm){
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<AssignmentSubmissionDto> submit(@Valid @RequestBody CreateAssignmentSubmissionForm createAssignmentSubmissionForm){
+        ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = assignmentSubmissionService.submit(createAssignmentSubmissionForm);
         }catch (NotFoundException e){
@@ -79,8 +79,8 @@ public class AssignmentSubmissionController {
     }
 
     @PutMapping("/update")
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm){
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<AssignmentSubmissionDto> update(@Valid @RequestBody UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm){
+        ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = assignmentSubmissionService.update(updateAssignmentSubmissionForm);
         }catch (NotFoundException e){
