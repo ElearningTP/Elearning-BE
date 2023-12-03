@@ -14,6 +14,7 @@ import com.api.learning.ElearningBE.repositories.AccountRepository;
 import com.api.learning.ElearningBE.repositories.AssignmentRepository;
 import com.api.learning.ElearningBE.repositories.AssignmentSubmissionRepository;
 import com.api.learning.ElearningBE.repositories.CourseRepository;
+import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.storage.criteria.AssignmentSubmissionCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.Assignment;
@@ -41,6 +42,8 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
     private CourseRepository courseRepository;
     @Autowired
     private AssignmentSubmissionMapper assignmentSubmissionMapper;
+    @Autowired
+    private UserService userService;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable) {
@@ -74,10 +77,11 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
 
     @Override
     @Transactional
-    public ApiMessageDto<String> submit(CreateAssignmentSubmissionForm createAssignmentSubmissionForm) {
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        Account student = accountRepository.findById(createAssignmentSubmissionForm.getStudentId())
-                .orElseThrow(() -> new NotFoundException(String.format("Student with id %s not found", createAssignmentSubmissionForm.getStudentId())));
+    public ApiMessageDto<AssignmentSubmissionDto> submit(CreateAssignmentSubmissionForm createAssignmentSubmissionForm) {
+        ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
+        Long studentId = userService.getAccountId();
+        Account student = accountRepository.findById(studentId)
+                .orElseThrow(() -> new NotFoundException(String.format("Student with id %s not found",studentId)));
         Assignment assignment = assignmentRepository.findById(createAssignmentSubmissionForm.getAssignmentId())
                 .orElseThrow(() -> new NotFoundException(String.format("Assignment with id %s not found", createAssignmentSubmissionForm.getAssignmentId())));
         Course course = courseRepository.findById(createAssignmentSubmissionForm.getCourseId())
@@ -97,15 +101,17 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
         assignmentSubmission.setAssignment(assignment);
         assignmentSubmission.setCourse(course);
         assignmentSubmissionRepository.save(assignmentSubmission);
+        AssignmentSubmissionDto assignmentSubmissionDto = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDto(assignmentSubmission);
 
+        apiMessageDto.setData(assignmentSubmissionDto);
         apiMessageDto.setMessage("Submit successfully");
         return apiMessageDto;
     }
 
     @Override
     @Transactional
-    public ApiMessageDto<String> update(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm) {
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<AssignmentSubmissionDto> update(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm) {
+        ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         AssignmentSubmission assignmentSubmission = assignmentSubmissionRepository.findById(updateAssignmentSubmissionForm.getId())
                 .orElseThrow(() -> new NotFoundException(String.format("Assignment submission with id %s not found", updateAssignmentSubmissionForm.getId())));
         if (Objects.equals(assignmentSubmission.getAssignment().getAssignmentType(), ELearningConstant.ASSIGNMENT_TYPE_FILE) && updateAssignmentSubmissionForm.getFileSubmissionUrl().isEmpty()){
@@ -116,7 +122,9 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
         }
         assignmentSubmissionMapper.fromUpdateAssignmentSubmissionFormToEntity(updateAssignmentSubmissionForm,assignmentSubmission);
         assignmentSubmissionRepository.save(assignmentSubmission);
+        AssignmentSubmissionDto assignmentSubmissionDto = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDto(assignmentSubmission);
 
+        apiMessageDto.setData(assignmentSubmissionDto);
         apiMessageDto.setMessage("Update submission successfully");
         return apiMessageDto;
     }

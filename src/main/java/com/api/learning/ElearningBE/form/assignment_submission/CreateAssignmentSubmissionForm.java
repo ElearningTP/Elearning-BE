@@ -18,9 +18,6 @@ public class CreateAssignmentSubmissionForm {
     @NotNull(message = "Assignment id can not be null")
     @ApiModelProperty(name = "assignmentId", required = true)
     private Long assignmentId;
-    @NotNull(message = "Modules id can not be null")
-    @ApiModelProperty(name = "studentId", required = true)
-    private Long studentId;
     @NotNull(message = "Course id can not be null")
     @ApiModelProperty(name = "courseId", required = true)
     private Long courseId;

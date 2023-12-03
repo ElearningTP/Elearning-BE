@@ -14,7 +14,7 @@ import java.util.List;
 public interface AssignmentSubmissionService {
     ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable);
     ApiMessageDto<AssignmentSubmissionAdminDto> retrieve(Long id);
-    ApiMessageDto<String> submit(CreateAssignmentSubmissionForm createAssignmentSubmissionForm);
-    ApiMessageDto<String> update(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm);
+    ApiMessageDto<AssignmentSubmissionDto> submit(CreateAssignmentSubmissionForm createAssignmentSubmissionForm);
+    ApiMessageDto<AssignmentSubmissionDto> update(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm);
     ApiMessageDto<String> delete(Long id);
 }
