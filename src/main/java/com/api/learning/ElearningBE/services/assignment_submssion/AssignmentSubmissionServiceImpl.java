@@ -2,6 +2,9 @@ package com.api.learning.ElearningBE.services.assignment_submssion;
 
 import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
+import com.api.learning.ElearningBE.dto.ResponseListDto;
+import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionAdminDto;
+import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.assignment_submission.CreateAssignmentSubmissionForm;
@@ -11,14 +14,18 @@ import com.api.learning.ElearningBE.repositories.AccountRepository;
 import com.api.learning.ElearningBE.repositories.AssignmentRepository;
 import com.api.learning.ElearningBE.repositories.AssignmentSubmissionRepository;
 import com.api.learning.ElearningBE.repositories.CourseRepository;
+import com.api.learning.ElearningBE.storage.criteria.AssignmentSubmissionCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.Assignment;
 import com.api.learning.ElearningBE.storage.entities.AssignmentSubmission;
 import com.api.learning.ElearningBE.storage.entities.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -34,6 +41,36 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
     private CourseRepository courseRepository;
     @Autowired
     private AssignmentSubmissionMapper assignmentSubmissionMapper;
+
+    @Override
+    public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<AssignmentSubmissionDto>> responseListDto = new ResponseListDto<>();
+        Page<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionRepository.findAll(assignmentSubmissionCriteria.getSpecification(), pageable);
+        List<AssignmentSubmissionDto> assignmentSubmissionDtoS = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDtoList(assignmentSubmissions.getContent());
+
+        responseListDto.setPageIndex(assignmentSubmissions.getNumber());
+        responseListDto.setContent(assignmentSubmissionDtoS);
+        responseListDto.setTotalPages(assignmentSubmissions.getTotalPages());
+        responseListDto.setPageSize(assignmentSubmissions.getSize());
+        responseListDto.setTotalElements(assignmentSubmissions.getTotalElements());
+
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Retrieve submission list successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<AssignmentSubmissionAdminDto> retrieve(Long id) {
+        ApiMessageDto<AssignmentSubmissionAdminDto> apiMessageDto = new ApiMessageDto<>();
+        AssignmentSubmission assignmentSubmission = assignmentSubmissionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Assignment submission with id %s not found", id)));
+        AssignmentSubmissionAdminDto assignmentSubmissionAdminDto = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionAdminDto(assignmentSubmission);
+
+        apiMessageDto.setData(assignmentSubmissionAdminDto);
+        apiMessageDto.setMessage("Retrieve submission successfully");
+        return apiMessageDto;
+    }
 
     @Override
     @Transactional

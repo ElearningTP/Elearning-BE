@@ -3,11 +3,12 @@ package com.api.learning.ElearningBE.services;
 import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.UploadFileDto;
-import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.UploadFileForm;
+import com.api.learning.ElearningBE.security.impl.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ import java.util.Objects;
 @Service
 @Slf4j
 public class FileService {
+    @Autowired
+    private UserService userService;
+
     static final String[] UPLOAD_TYPES = new String[]{"LOGO", "AVATAR", "IMAGE", "DOCUMENT", "THUMBNAIL", "SUBMISSION_FILE"};
 
     public ApiMessageDto<UploadFileDto> storeFile(UploadFileForm uploadFileForm){
@@ -44,8 +48,10 @@ public class FileService {
             String baseFileName = FilenameUtils.getBaseName(fileName);
             String finalFile = baseFileName + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
             String typeFolder = File.separator + uploadFileForm.getType();
-            if (uploadFileForm.getAccountId() != null){
-                typeFolder = File.separator + uploadFileForm.getAccountId() + typeFolder;
+
+            Long accountId = userService.getAccountId();
+            if (accountId != null){
+                typeFolder = File.separator + accountId + typeFolder;
             }
             Path fileStorageLocation = Paths.get(ELearningConstant.PATH_DIRECTORY + typeFolder).toAbsolutePath().normalize();
             Files.createDirectories(fileStorageLocation);
