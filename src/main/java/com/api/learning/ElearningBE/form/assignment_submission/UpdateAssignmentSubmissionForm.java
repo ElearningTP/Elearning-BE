@@ -11,9 +11,6 @@ public class UpdateAssignmentSubmissionForm {
     @NotNull(message = "Id can not be null")
     @ApiModelProperty(name = "id", required = true)
     private Long id;
-    @NotNull(message = "Submission date can not be null")
-    @ApiModelProperty(name = "submissionDate", required = true, example = "yyyy-MM-dd HH:mm:ss")
-    private Date submissionDate;
     @ApiModelProperty(name = "textSubmission", notes = "The submission type is text")
     private String textSubmission;
     @ApiModelProperty(name = "fileSubmissionUrl", notes = "The submission type is file")

@@ -15,20 +15,17 @@ import java.util.List;
 public interface AssignmentSubmissionMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "submissionDate", target = "submissionDate")
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
     AssignmentSubmission fromCreateAssignmentSubmissionFormToEntity(CreateAssignmentSubmissionForm createAssignmentSubmissionForm);
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "submissionDate", target = "submissionDate")
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
     void fromUpdateAssignmentSubmissionFormToEntity(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm, @MappingTarget AssignmentSubmission assignmentSubmission);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "submissionDate", target = "submissionDate")
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
     @Mapping(source = "status",target = "status")
@@ -39,7 +36,6 @@ public interface AssignmentSubmissionMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "submissionDate", target = "submissionDate")
     @Mapping(source = "score", target = "score")
     @Mapping(source = "assignment", target = "assignmentInfo", qualifiedByName = "fromEntityToAssignmentDto")
     @Named("fromEntityToAssignmentSubmissionDto")
