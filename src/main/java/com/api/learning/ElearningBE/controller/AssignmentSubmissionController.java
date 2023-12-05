@@ -28,8 +28,8 @@ public class AssignmentSubmissionController {
     }
 
     @GetMapping("/list")
-    public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = assignmentSubmissionService.list(assignmentSubmissionCriteria, pageable);
         }catch (Exception e){
