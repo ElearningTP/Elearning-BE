@@ -32,27 +32,34 @@ public class FileController {
     public ResponseEntity<Resource> download(@PathVariable String folder,
                                              @PathVariable String fileName, HttpServletRequest request){
         Resource resource = fileService.loadFileAsResource(folder , fileName);
-        if (resource == null || !resource.exists()){
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
+
+        if (resource == null || !resource.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.TEXT_PLAIN)
                     .body(new ByteArrayResource("An error occurred. The resource could not be loaded".getBytes()));
         }
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            log.info("Could not determine file type");
-        } catch (Exception ex){
-            log.error("Occurred an error when loading file: "+ex.getMessage());
-        }
-        if(contentType == null) {
+
+        String contentType = getContentType(resource, request);
+
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
+
+        // Check if the content type is suitable for inline display
+        boolean isInlineDisplayable = isInlineDisplayable(contentType);
+
+        HttpHeaders headers = new HttpHeaders();
+        if (isInlineDisplayable) {
+            // If the content type is suitable for inline display, use inline instead of attachment
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"");
+        } else {
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+        }
+
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(7776000, TimeUnit.SECONDS))
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .headers(headers)
                 .body(resource);
     }
 
@@ -60,31 +67,55 @@ public class FileController {
     @Cacheable("images")
     public ResponseEntity<Resource> downloadWithAccount(@PathVariable Long accountId,
                                                         @PathVariable String folder,
-                                                        @PathVariable String fileName, HttpServletRequest request){
+                                                        @PathVariable String fileName,
+                                                        HttpServletRequest request) {
         final String path = accountId.toString() + "/" + folder;
-        Resource resource = fileService.loadFileAsResource(path , fileName);
-        if (resource == null || !resource.exists()){
+        Resource resource = fileService.loadFileAsResource(path, fileName);
+
+        if (resource == null || !resource.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.TEXT_PLAIN)
                     .body(new ByteArrayResource("An error occurred. The resource could not be loaded".getBytes()));
         }
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException ex) {
-            log.info("Could not determine file type");
-        } catch (Exception ex){
-            log.error("Occurred an error when loading file: "+ex.getMessage());
-        }
-        if(contentType == null) {
+
+        String contentType = getContentType(resource, request);
+
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
+
+        // Check if the content type is suitable for inline display
+        boolean isInlineDisplayable = isInlineDisplayable(contentType);
+
+        HttpHeaders headers = new HttpHeaders();
+        if (isInlineDisplayable) {
+            // If the content type is suitable for inline display, use inline instead of attachment
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"");
+        } else {
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+        }
+
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(7776000, TimeUnit.SECONDS))
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .headers(headers)
                 .body(resource);
     }
+
+    private String getContentType(Resource resource, HttpServletRequest request) {
+        try {
+            return request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            log.info("Could not determine file type");
+            return null;
+        }
+    }
+
+    private boolean isInlineDisplayable(String contentType) {
+        // Add any additional content types that you want to display inline
+        return contentType.startsWith("image/") || contentType.startsWith("application/pdf");
+    }
+
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiMessageDto<UploadFileDto> upload(@Valid UploadFileForm uploadFileForm){
