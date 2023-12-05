@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface AssignmentSubmissionService {
-    ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable);
+    ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable);
     ApiMessageDto<AssignmentSubmissionAdminDto> retrieve(Long id);
     ApiMessageDto<AssignmentSubmissionDto> submit(CreateAssignmentSubmissionForm createAssignmentSubmissionForm);
     ApiMessageDto<AssignmentSubmissionDto> update(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm);

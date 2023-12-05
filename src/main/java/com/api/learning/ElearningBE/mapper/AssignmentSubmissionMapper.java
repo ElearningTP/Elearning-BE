@@ -31,8 +31,12 @@ public interface AssignmentSubmissionMapper {
     @Mapping(source = "status",target = "status")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Mapping(source = "score", target = "score")
+    @Mapping(source = "assignment", target = "assignmentInfo", qualifiedByName = "fromEntityToAssignmentDto")
     @Named("fromEntityToAssignmentSubmissionAdminDto")
     AssignmentSubmissionAdminDto fromEntityToAssignmentSubmissionAdminDto(AssignmentSubmission assignmentSubmission);
+    @IterableMapping(elementTargetType = AssignmentSubmissionAdminDto.class, qualifiedByName = "fromEntityToAssignmentSubmissionAdminDto")
+    List<AssignmentSubmissionAdminDto> fromEntityToAssignmentSubmissionAdminDtoList(List<AssignmentSubmission> assignmentSubmissions);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
