@@ -17,8 +17,6 @@ public class Assignment extends Auditable<String> {
     private String title;
     @Column(columnDefinition = "longtext")
     private String content;
-    @Column(name = "assignment_type")
-    private Integer assignmentType; // 1 file, 2 text
     private Integer state; // 1 created, 2 started, 3 expired
     private Date startDate;
     private Date endDate;

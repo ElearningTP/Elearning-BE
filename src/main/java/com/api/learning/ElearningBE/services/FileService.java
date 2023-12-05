@@ -94,6 +94,7 @@ public class FileService {
         File file = new File(ELearningConstant.PATH_DIRECTORY + filePath);
         if (file.exists()){
             file.delete();
+            log.info(String.format("----------------> Delete file with path '%s' successfully", filePath));
         }else{
             log.error(String.format("Can not find file with path: %s", filePath));
         }
