@@ -8,7 +8,6 @@ import java.util.Date;
 @Data
 public class AssignmentSubmissionDto {
     private Long id;
-    private Date submissionDate;
     private Double score;
     private AssignmentDto assignmentInfo;
 }

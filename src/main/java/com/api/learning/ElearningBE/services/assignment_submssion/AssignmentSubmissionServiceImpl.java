@@ -46,11 +46,11 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
     private UserService userService;
 
     @Override
-    public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable) {
-        ApiMessageDto<ResponseListDto<List<AssignmentSubmissionDto>>> apiMessageDto = new ApiMessageDto<>();
-        ResponseListDto<List<AssignmentSubmissionDto>> responseListDto = new ResponseListDto<>();
+    public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<AssignmentSubmissionAdminDto>> responseListDto = new ResponseListDto<>();
         Page<AssignmentSubmission> assignmentSubmissions = assignmentSubmissionRepository.findAll(assignmentSubmissionCriteria.getSpecification(), pageable);
-        List<AssignmentSubmissionDto> assignmentSubmissionDtoS = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDtoList(assignmentSubmissions.getContent());
+        List<AssignmentSubmissionAdminDto> assignmentSubmissionDtoS = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionAdminDtoList(assignmentSubmissions.getContent());
 
         responseListDto.setPageIndex(assignmentSubmissions.getNumber());
         responseListDto.setContent(assignmentSubmissionDtoS);
