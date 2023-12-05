@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "db_assignment_submission")
 public class AssignmentSubmission extends Auditable<String> {
     private Double score;
-    @Column(name = "text_submission")
+    @Column(name = "text_submission", columnDefinition = "longtext")
     private String textSubmission;
     @Column(name = "file_submission_url")
     private String fileSubmissionUrl;
