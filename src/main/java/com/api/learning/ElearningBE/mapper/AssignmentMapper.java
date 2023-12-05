@@ -42,6 +42,7 @@ public interface AssignmentMapper {
     @Mapping(source = "assignmentType", target = "assignmentType")
     @Mapping(source = "state", target = "state")
     @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "urlDocument", target = "urlDocument")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "createDate", target = "createDate")
