@@ -15,6 +15,7 @@ import com.api.learning.ElearningBE.repositories.AssignmentRepository;
 import com.api.learning.ElearningBE.repositories.AssignmentSubmissionRepository;
 import com.api.learning.ElearningBE.repositories.CourseRepository;
 import com.api.learning.ElearningBE.security.impl.UserService;
+import com.api.learning.ElearningBE.services.FileService;
 import com.api.learning.ElearningBE.storage.criteria.AssignmentSubmissionCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.Assignment;
@@ -44,6 +45,8 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
     private AssignmentSubmissionMapper assignmentSubmissionMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileService fileService;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable) {
@@ -90,12 +93,7 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
         if (existSubmission){
             throw new InvalidException("You have successfully submitted your assignment. No further submissions are allowed");
         }
-        if (Objects.equals(assignment.getAssignmentType(), ELearningConstant.ASSIGNMENT_TYPE_FILE) && createAssignmentSubmissionForm.getFileSubmissionUrl().isEmpty()){
-            throw new IllegalArgumentException("File can not be empty");
-        }
-        if (Objects.equals(assignment.getAssignmentType(), ELearningConstant.ASSIGNMENT_TYPE_TEXT) && createAssignmentSubmissionForm.getTextSubmission().isEmpty()){
-            throw new IllegalArgumentException("Content can not be empty");
-        }
+
         AssignmentSubmission assignmentSubmission = assignmentSubmissionMapper.fromCreateAssignmentSubmissionFormToEntity(createAssignmentSubmissionForm);
         assignmentSubmission.setStudent(student);
         assignmentSubmission.setAssignment(assignment);
@@ -114,12 +112,7 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
         ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         AssignmentSubmission assignmentSubmission = assignmentSubmissionRepository.findById(updateAssignmentSubmissionForm.getId())
                 .orElseThrow(() -> new NotFoundException(String.format("Assignment submission with id %s not found", updateAssignmentSubmissionForm.getId())));
-        if (Objects.equals(assignmentSubmission.getAssignment().getAssignmentType(), ELearningConstant.ASSIGNMENT_TYPE_FILE) && updateAssignmentSubmissionForm.getFileSubmissionUrl().isEmpty()){
-            throw new IllegalArgumentException("File can not be empty");
-        }
-        if (Objects.equals(assignmentSubmission.getAssignment().getAssignmentType(), ELearningConstant.ASSIGNMENT_TYPE_TEXT) && updateAssignmentSubmissionForm.getTextSubmission().isEmpty()){
-            throw new IllegalArgumentException("Content can not be empty");
-        }
+
         assignmentSubmissionMapper.fromUpdateAssignmentSubmissionFormToEntity(updateAssignmentSubmissionForm,assignmentSubmission);
         assignmentSubmissionRepository.save(assignmentSubmission);
         AssignmentSubmissionDto assignmentSubmissionDto = assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDto(assignmentSubmission);
@@ -130,10 +123,12 @@ public class AssignmentSubmissionServiceImpl implements AssignmentSubmissionServ
     }
 
     @Override
+    @Transactional
     public ApiMessageDto<String> delete(Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         AssignmentSubmission assignmentSubmission = assignmentSubmissionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Assignment submission with id %s not found", id)));
+        fileService.deleteFile(assignmentSubmission.getFileSubmissionUrl());
         assignmentSubmissionRepository.delete(assignmentSubmission);
 
         apiMessageDto.setMessage("Delete submission successfully");
