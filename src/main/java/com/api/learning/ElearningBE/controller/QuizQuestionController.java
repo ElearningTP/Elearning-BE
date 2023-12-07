@@ -2,14 +2,13 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
-import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionAdminDto;
-import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionDto;
-import com.api.learning.ElearningBE.exceptions.InvalidException;
+import com.api.learning.ElearningBE.dto.quiz_question.QuizQuestionAdminDto;
+import com.api.learning.ElearningBE.dto.quiz_question.QuizQuestionDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
-import com.api.learning.ElearningBE.form.assignment_submission.CreateAssignmentSubmissionForm;
-import com.api.learning.ElearningBE.form.assignment_submission.UpdateAssignmentSubmissionForm;
-import com.api.learning.ElearningBE.services.assignment_submssion.AssignmentSubmissionService;
-import com.api.learning.ElearningBE.storage.criteria.AssignmentSubmissionCriteria;
+import com.api.learning.ElearningBE.form.quiz_question.CreateQuizQuestionForm;
+import com.api.learning.ElearningBE.form.quiz_question.UpdateQuizQuestionForm;
+import com.api.learning.ElearningBE.services.quiz_question.QuizQuestionService;
+import com.api.learning.ElearningBE.storage.criteria.QuizQuestionCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,20 +17,20 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/assignment-submission")
-public class AssignmentSubmissionController {
+@RequestMapping("/api/quiz-question")
+public class QuizQuestionController {
 
-    private final AssignmentSubmissionService assignmentSubmissionService;
+    private final QuizQuestionService quizQuestionService;
 
-    public AssignmentSubmissionController(AssignmentSubmissionService assignmentSubmissionService) {
-        this.assignmentSubmissionService = assignmentSubmissionService;
+    public QuizQuestionController(QuizQuestionService quizQuestionService) {
+        this.quizQuestionService = quizQuestionService;
     }
 
     @GetMapping("/list")
-    public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<ResponseListDto<List<QuizQuestionDto>>> list(QuizQuestionCriteria quizQuestionCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<QuizQuestionDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = assignmentSubmissionService.list(assignmentSubmissionCriteria, pageable);
+            apiMessageDto = quizQuestionService.list(quizQuestionCriteria, pageable);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -41,10 +40,10 @@ public class AssignmentSubmissionController {
     }
 
     @GetMapping("/retrieve/{id}")
-    public ApiMessageDto<AssignmentSubmissionAdminDto> retrieve(@PathVariable Long id){
-        ApiMessageDto<AssignmentSubmissionAdminDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<QuizQuestionAdminDto> retrieve(@PathVariable Long id){
+        ApiMessageDto<QuizQuestionAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = assignmentSubmissionService.retrieve(id);
+            apiMessageDto = quizQuestionService.retrieve(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -57,19 +56,15 @@ public class AssignmentSubmissionController {
         return apiMessageDto;
     }
 
-    @PostMapping("/submit")
-    public ApiMessageDto<AssignmentSubmissionDto> submit(@Valid @RequestBody CreateAssignmentSubmissionForm createAssignmentSubmissionForm){
-        ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
+    @PostMapping("/create")
+    public ApiMessageDto<QuizQuestionDto> create(@Valid @RequestBody CreateQuizQuestionForm createQuizQuestionForm){
+        ApiMessageDto<QuizQuestionDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = assignmentSubmissionService.submit(createAssignmentSubmissionForm);
+            apiMessageDto = quizQuestionService.create(createQuizQuestionForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
-        }catch (InvalidException e){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage(e.getMessage());
-            apiMessageDto.setCode(HttpStatus.BAD_REQUEST.toString());
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -79,10 +74,10 @@ public class AssignmentSubmissionController {
     }
 
     @PutMapping("/update")
-    public ApiMessageDto<AssignmentSubmissionDto> update(@Valid @RequestBody UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm){
-        ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<QuizQuestionDto> update(@Valid @RequestBody UpdateQuizQuestionForm updateQuizQuestionForm){
+        ApiMessageDto<QuizQuestionDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = assignmentSubmissionService.update(updateAssignmentSubmissionForm);
+            apiMessageDto = quizQuestionService.update(updateQuizQuestionForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
@@ -99,7 +94,7 @@ public class AssignmentSubmissionController {
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = assignmentSubmissionService.delete(id);
+            apiMessageDto = quizQuestionService.delete(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

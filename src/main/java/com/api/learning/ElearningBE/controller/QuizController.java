@@ -4,13 +4,17 @@ import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizAdminDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizDto;
+import com.api.learning.ElearningBE.dto.quiz.StartQuizDto;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.quiz.CreateQuizForm;
 import com.api.learning.ElearningBE.form.quiz.UpdateQuizForm;
+import com.api.learning.ElearningBE.form.quiz_submission.CreateQuizSubmissionForm;
 import com.api.learning.ElearningBE.services.quiz.QuizService;
 import com.api.learning.ElearningBE.storage.criteria.QuizCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,12 +22,36 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/quiz")
+@Validated
 public class QuizController {
 
     private final QuizService quizService;
 
     public QuizController(QuizService quizService) {
         this.quizService = quizService;
+    }
+
+
+    @GetMapping("/start")
+    public ApiMessageDto<StartQuizDto> start(@RequestParam("id") Long id,
+                                             @RequestParam("courseId") Long courseId){
+        ApiMessageDto<StartQuizDto> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = quizService.start(id, courseId);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }catch (InvalidException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.BAD_REQUEST.toString());
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
     }
 
     @GetMapping("/list")

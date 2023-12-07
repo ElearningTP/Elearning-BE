@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.mapper;
 
 import com.api.learning.ElearningBE.dto.quiz.QuizAdminDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizDto;
+import com.api.learning.ElearningBE.dto.quiz.StartQuizDto;
 import com.api.learning.ElearningBE.form.quiz.CreateQuizForm;
 import com.api.learning.ElearningBE.form.quiz.UpdateQuizForm;
 import com.api.learning.ElearningBE.storage.entities.Quiz;
@@ -20,6 +21,7 @@ public interface QuizMapper {
     @Mapping(source = "quizTimeLimit", target = "timeLimit")
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
+    @Mapping(source = "attemptNumber", target = "attemptNumber")
     Quiz fromCreateQuizFormToEntity(CreateQuizForm createQuizForm);
 
     @BeanMapping(ignoreByDefault = true)
@@ -28,6 +30,7 @@ public interface QuizMapper {
     @Mapping(source = "quizTimeLimit", target = "timeLimit")
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
+    @Mapping(source = "attemptNumber", target = "attemptNumber")
     void fromUpdateQuizFormToEntity(UpdateQuizForm updateQuizForm, @MappingTarget Quiz quiz);
 
     @BeanMapping(ignoreByDefault = true)
@@ -37,6 +40,7 @@ public interface QuizMapper {
     @Mapping(source = "timeLimit", target = "quizTimeLimit")
     @Mapping(source = "startDate", target = "startDate")
     @Mapping(source = "endDate", target = "endDate")
+    @Mapping(source = "attemptNumber", target = "attemptNumber")
     @Mapping(source = "modules", target = "modulesInfo", qualifiedByName = "fromEntityToModulesDto")
     @Named("fromEntityToQuizDto")
     QuizDto fromEntityToQuizDto(Quiz quiz);
@@ -52,7 +56,18 @@ public interface QuizMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Mapping(source = "attemptNumber", target = "attemptNumber")
     @Mapping(source = "modules", target = "modulesInfo", qualifiedByName = "fromEntityToModulesDto")
     @Named("fromEntityToQuizAdminDto")
     QuizAdminDto fromEntityToQuizAdminDto(Quiz quiz);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "title", target = "quizTitle")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "timeLimit", target = "quizTimeLimit")
+    @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "endDate", target = "endDate")
+    @Mapping(source = "attemptNumber", target = "attemptNumber")
+    StartQuizDto fromEntityToStartQuizDto(Quiz quiz);
 }

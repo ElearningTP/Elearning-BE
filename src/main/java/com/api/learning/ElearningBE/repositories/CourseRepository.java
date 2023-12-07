@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course,Long>, JpaSpecificationExecutor<Course> {
     List<Course> findAllByIdIn(List<Long> ids);
+    boolean existsById(Long id);
 }

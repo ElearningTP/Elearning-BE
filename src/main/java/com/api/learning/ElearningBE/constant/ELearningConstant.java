@@ -30,7 +30,9 @@ public class ELearningConstant {
     public static final Integer ASSIGNMENT_STATE_STARTED = 2;
     public static final Integer ASSIGNMENT_STATE_EXPIRED = 3;
 
-    public static final Integer ASSIGNMENT_TYPE_FILE = 1;
-    public static final Integer ASSIGNMENT_TYPE_TEXT = 2;
-
+    // Quiz question
+    public static final Integer QUIZ_QUESTION_TYPE_SINGLE_CHOICE = 1;
+    public static final Integer QUIZ_QUESTION_TYPE_MULTI_CHOICE = 2;
+    public static final Double QUIZ_QUESTION_SCORE_DEFAULT = 1D;
+    public static final Integer QUIZ_QUESTION_ATTEMPT_NUMBER_UNLIMITED = 0;
 }

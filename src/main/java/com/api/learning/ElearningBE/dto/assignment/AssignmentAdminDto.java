@@ -12,7 +12,6 @@ import java.util.Date;
 public class AssignmentAdminDto extends BaseAdminDto {
     private String assignmentTitle;
     private String assignmentContent;
-    private Integer assignmentType;
     private Integer state;
     private Date startDate;
     private Date endDate;
