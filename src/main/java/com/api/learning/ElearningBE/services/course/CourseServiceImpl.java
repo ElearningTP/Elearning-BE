@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.dto.forum.ForumAdminDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizDto;
+import com.api.learning.ElearningBE.dto.quiz_submission.QuizSubmissionDto;
 import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
@@ -26,9 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,6 +73,10 @@ public class CourseServiceImpl implements CourseService{
     private QuizRepository quizRepository;
     @Autowired
     private QuizMapper quizMapper;
+    @Autowired
+    private QuizSubmissionRepository quizSubmissionRepository;
+    @Autowired
+    private QuizSubmissionMapper quizSubmissionMapper;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -171,6 +174,15 @@ public class CourseServiceImpl implements CourseService{
                     }
                 });
                 modulesAdminDto.setQuizInfo(quizDtoList);
+            });
+
+            Long accountId = userService.getAccountId();
+            List<Long> quizIds = quizzes.stream().map(Quiz::getId).collect(Collectors.toList());
+            Map<Long,List<QuizSubmission>> quizSubmissionsMap = quizSubmissionRepository.findAllByStudentIdAndCourseIdAndQuizIdIn(accountId, course.getId(), quizIds).stream()
+                    .collect(Collectors.groupingByConcurrent(quizSubmission -> quizSubmission.getQuiz().getId()));
+            quizDtoS.forEach(quizDto -> {
+                List<QuizSubmissionDto> quizSubmissionDtoS = quizSubmissionMapper.fromEntityToQuizSubmissionDtoList(quizSubmissionsMap.getOrDefault(quizDto.getId(), Collections.emptyList()));
+                quizDto.setQuizSubmissionInfo(quizSubmissionDtoS);
             });
 
             Forum forum = forumRepository.findByCourseId(course.getId());

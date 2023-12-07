@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.services.quiz_submission;
 
 import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
+import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.answer_question.ReviewAnswerQuestionDto;
 import com.api.learning.ElearningBE.dto.quiz_question.ReviewQuizQuestionDto;
 import com.api.learning.ElearningBE.dto.quiz_submission.QuizSubmissionDto;
@@ -15,8 +16,11 @@ import com.api.learning.ElearningBE.mapper.QuizQuestionMapper;
 import com.api.learning.ElearningBE.mapper.QuizSubmissionMapper;
 import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.impl.UserService;
+import com.api.learning.ElearningBE.storage.criteria.QuizSubmissionCriteria;
 import com.api.learning.ElearningBE.storage.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +54,24 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
     private QuizSubmissionMapper quizSubmissionMapper;
     @Autowired
     private UserService userService;
+
+    @Override
+    public ApiMessageDto<ResponseListDto<List<QuizSubmissionDto>>> list(QuizSubmissionCriteria quizSubmissionCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<QuizSubmissionDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<QuizSubmissionDto>> responseListDto = new ResponseListDto<>();
+        Page<QuizSubmission> submissions = quizSubmissionRepository.findAll(quizSubmissionCriteria.getSpecification(),pageable);
+        List<QuizSubmissionDto> quizSubmissionDtoS = quizSubmissionMapper.fromEntityToQuizSubmissionDtoList(submissions.getContent());
+
+        responseListDto.setTotalElements(submissions.getTotalElements());
+        responseListDto.setContent(quizSubmissionDtoS);
+        responseListDto.setPageSize(submissions.getSize());
+        responseListDto.setTotalPages(submissions.getTotalPages());
+        responseListDto.setPageIndex(submissions.getNumber());
+
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Retrieve submission list successfully");
+        return apiMessageDto;
+    }
 
     @Override
     @Transactional
@@ -93,7 +115,6 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
 
         QuizSubmissionDto quizSubmissionDto = quizSubmissionMapper.fromEntityToQuizSubmissionDto(submission);
         quizSubmissionDto.setScore(score);
-
 
         apiMessageDto.setData(quizSubmissionDto);
         apiMessageDto.setMessage("Submit successfully");
