@@ -12,6 +12,7 @@ public interface QuizSubmissionMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "totalTime", target = "totalTime")
+    @Mapping(source = "score", target = "score")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
     ReviewQuizSubmissionDto fromEntityToReviewQuizSubmissionDto(QuizSubmission quizSubmission);

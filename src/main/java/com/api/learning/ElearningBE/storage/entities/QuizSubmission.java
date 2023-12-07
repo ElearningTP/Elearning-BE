@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Table(name = "db_quiz_submission")
 public class QuizSubmission extends Auditable<String> {
     private Long totalTime;
+    private Double score;
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Account student;
