@@ -12,7 +12,6 @@ public class AssignmentDto {
     private Long id;
     private String assignmentTitle;
     private String assignmentContent;
-    private Integer assignmentType;
     private Integer state;
     private Date startDate;
     private Date endDate;

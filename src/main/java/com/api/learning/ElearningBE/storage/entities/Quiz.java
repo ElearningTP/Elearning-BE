@@ -21,6 +21,7 @@ public class Quiz extends Auditable<String> {
     private Long timeLimit; //minutes
     private Date startDate;
     private Date endDate;
+    private Integer attemptNumber; // 0 unlimited, for any other positive number, it represents the maximum number of attempts allowed
     @ManyToOne
     @JoinColumn(name = "modules_id")
     private Modules modules;

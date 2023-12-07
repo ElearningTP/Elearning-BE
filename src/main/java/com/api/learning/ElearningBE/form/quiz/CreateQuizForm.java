@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.form.quiz;
 
+import com.api.learning.ElearningBE.validation.QuizAttemptNumber;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -23,6 +24,10 @@ public class CreateQuizForm {
     @NotNull(message = "End date can not be null")
     @ApiModelProperty(name = "endDate", required = true, example = "yyyy-MM-dd HH:mm:ss", notes = "This attribute stores the quiz time closed")
     private Date endDate;
+    @NotNull(message = "Quiz attempt number can not be null")
+    @ApiModelProperty(name = "attemptNumber", required = true, notes = "This attribute stores the quiz attempt number")
+    @QuizAttemptNumber
+    private Integer attemptNumber;
     @NotNull(message = "Modules id can not be null")
     @ApiModelProperty(name = "modulesId", required = true)
     private Long modulesId;

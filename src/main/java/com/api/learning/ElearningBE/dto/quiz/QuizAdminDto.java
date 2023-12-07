@@ -15,5 +15,6 @@ public class QuizAdminDto extends BaseAdminDto {
     private Long quizTimeLimit;
     private Date startDate;
     private Date endDate;
+    private Integer attemptNumber;
     private ModulesDto modulesInfo;
 }
