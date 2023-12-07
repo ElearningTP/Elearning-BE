@@ -74,10 +74,10 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
         submission.setCourse(course);
         quizSubmissionRepository.save(submission);
 
-        List<Long> answerIds = createQuizSubmissionForm.getResults().stream().map(CreateQuizSubmissionResult::getAnswerId).collect(Collectors.toList());
+        List<Long> answerIds = createQuizSubmissionForm.getResults().parallelStream().map(CreateQuizSubmissionResult::getAnswerId).collect(Collectors.toList());
         List<AnswerQuestion> answers = answerQuestionRepository.findAllByIdIn(answerIds);
 
-        List<QuizSubmissionResult> submissionResults = answers.stream()
+        List<QuizSubmissionResult> submissionResults = answers.parallelStream()
                 .map(answer -> {
                     QuizSubmissionResult submissionResult = new QuizSubmissionResult();
                     submissionResult.setSubmission(submission);
@@ -86,36 +86,31 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
                     return submissionResult;
                 }).collect(Collectors.toList());
         quizSubmissionResultRepository.saveAll(submissionResults);
+
+        Double score = calculateQuizSubmissionScore(submission, submissionResults);
+        submission.setScore(score);
+        quizSubmissionRepository.save(submission);
+
         QuizSubmissionDto quizSubmissionDto = quizSubmissionMapper.fromEntityToQuizSubmissionDto(submission);
-        quizSubmissionDto.setScore(calculateQuizSubmissionScore(submission));
+        quizSubmissionDto.setScore(score);
+
 
         apiMessageDto.setData(quizSubmissionDto);
         apiMessageDto.setMessage("Submit successfully");
         return apiMessageDto;
     }
-    private Double calculateQuizSubmissionScore(QuizSubmission submission){
-
+    private Double calculateQuizSubmissionScore(QuizSubmission submission, List<QuizSubmissionResult> submissionResults){
         //Group by answer result with questionId
-        Map<Long, List<AnswerQuestion>> answerResultsMap = quizSubmissionResultRepository.findAllBySubmissionId(submission.getId()).stream()
+        Map<Long, List<AnswerQuestion>> answerResultsMap = submissionResults.parallelStream()
                 .map(QuizSubmissionResult::getAnswer)
                 .collect(Collectors.groupingByConcurrent(submissionResult -> submissionResult.getQuestion().getId()));
-
         List<QuizQuestion> questions = quizQuestionRepository.findAllByQuizId(submission.getQuiz().getId());
-        List<Long> questionIds = questions.stream().map(QuizQuestion::getId).collect(Collectors.toList());
-
-        Map<Long, List<AnswerQuestion>> answersMap = answerQuestionRepository.findAllByQuestionIdIn(questionIds).stream()
-                .collect(Collectors.groupingByConcurrent(answer -> answer.getQuestion().getId()));
 
         AtomicInteger amountQuestionSelected = new AtomicInteger(0);
-        questions.forEach(question -> {
+        questions.parallelStream().forEach(question -> {
             if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_SINGLE_CHOICE)) {
-                List<ReviewAnswerQuestionDto> answerReviewDtoList = answersMap.getOrDefault(question.getId(), Collections.emptyList()).stream()
-                        .map(answerQuestionMapper::fromEntityToReviewAnswerQuestionDto)
-                        .peek(answerReviewDto -> answerReviewDto.setIsSelected(false))
-                        .collect(Collectors.toList());
                 List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
                 answerResults.forEach(answerResult -> {
-
                     if (answerResult.getIsCorrect().equals(true)) {
                         amountQuestionSelected.incrementAndGet();
                     }
@@ -144,11 +139,9 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
                 .collect(Collectors.groupingByConcurrent(answer -> answer.getQuestion().getId()));
 
         List<ReviewQuizQuestionDto> questionReviewDtoList = new ArrayList<>();
-        AtomicInteger amountQuestionSelected = new AtomicInteger(0);
-        questions.forEach(question -> {
+        questions.parallelStream().forEach(question -> {
             if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_SINGLE_CHOICE)) {
                 ReviewQuizQuestionDto questionReviewDto = quizQuestionMapper.fromEntityToReviewQuizQuestionDto(question);
-
                 List<ReviewAnswerQuestionDto> answerReviewDtoList = answersMap.getOrDefault(question.getId(), Collections.emptyList()).stream()
                         .map(answerQuestionMapper::fromEntityToReviewAnswerQuestionDto)
                         .peek(answerReviewDto -> answerReviewDto.setIsSelected(false))
@@ -158,18 +151,12 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
                 List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
                 answerResults.forEach(answerResult -> {
                     answerDtoListMap.get(answerResult.getId()).setIsSelected(true);
-                    if (answerResult.getIsCorrect().equals(true)) {
-                        amountQuestionSelected.incrementAndGet();
-                    }
                 });
                 questionReviewDto.setAnswers(answerReviewDtoList);
                 questionReviewDtoList.add(questionReviewDto);
             }
             });
-        int finalAmountQuestionSelected = amountQuestionSelected.get();
-        Double score = ((ELearningConstant.QUIZ_QUESTION_SCORE_DEFAULT * 10.0 * finalAmountQuestionSelected) / questions.size());
         reviewQuizSubmissionDto.setQuestions(questionReviewDtoList);
-        reviewQuizSubmissionDto.setScore(score);
 
         apiMessageDto.setData(reviewQuizSubmissionDto);
         apiMessageDto.setMessage("");
