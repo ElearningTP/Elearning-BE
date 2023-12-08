@@ -30,4 +30,6 @@ public interface QuizSubmissionMapper {
     @IterableMapping(elementTargetType = QuizSubmissionDto.class, qualifiedByName = "fromEntityToQuizSubmissionDto")
     List<QuizSubmissionDto> fromEntityToQuizSubmissionDtoList(List<QuizSubmission> quizSubmissions);
 
+
+
 }

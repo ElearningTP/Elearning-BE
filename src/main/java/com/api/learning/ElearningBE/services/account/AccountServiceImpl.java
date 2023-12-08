@@ -111,7 +111,7 @@ public class AccountServiceImpl implements AccountService {
                 .collect(Collectors.toList());
         assignmentDtoList.replaceAll(assignmentDto -> {
             List<AssignmentSubmission> submissions = assignmentSubmissionsMap.getOrDefault(assignmentDto.getId(), Collections.emptyList());
-            assignmentDto.setAssignmentSubmissionInfo(assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDtoList(submissions));
+            assignmentDto.setAssignmentSubmissionInfo(assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDtoForMyScheduleList(submissions));
             return assignmentDto;
         });
 

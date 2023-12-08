@@ -46,4 +46,12 @@ public interface AssignmentSubmissionMapper {
     AssignmentSubmissionDto fromEntityToAssignmentSubmissionDto(AssignmentSubmission assignmentSubmission);
     @IterableMapping(elementTargetType = AssignmentSubmissionDto.class, qualifiedByName = "fromEntityToAssignmentSubmissionDto")
     List<AssignmentSubmissionDto> fromEntityToAssignmentSubmissionDtoList(List<AssignmentSubmission> assignmentSubmissions);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "score", target = "score")
+    @Named("fromEntityToAssignmentSubmissionDtoForMySchedule")
+    AssignmentSubmissionDto fromEntityToAssignmentSubmissionDtoForMySchedule(AssignmentSubmission assignmentSubmission);
+    @IterableMapping(elementTargetType = AssignmentSubmissionDto.class, qualifiedByName = "fromEntityToAssignmentSubmissionDtoForMySchedule")
+    List<AssignmentSubmissionDto> fromEntityToAssignmentSubmissionDtoForMyScheduleList(List<AssignmentSubmission> assignmentSubmissions);
 }
