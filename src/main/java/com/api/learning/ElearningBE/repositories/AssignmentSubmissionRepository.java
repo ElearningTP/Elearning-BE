@@ -11,4 +11,5 @@ import java.util.List;
 public interface AssignmentSubmissionRepository extends JpaRepository<AssignmentSubmission,Long>, JpaSpecificationExecutor<AssignmentSubmission> {
     Boolean existsByStudentIdAndAssignmentIdAndCourseId(Long studentId, Long assignmentId, Long courseId);
     List<AssignmentSubmission> findAllByAssignmentIdInAndStudentIdAndCourseId(List<Long> assignmentIds, Long studentId, Long courseId);
+    List<AssignmentSubmission> findAllByAssignmentIdInAndStudentIdAndCourseIdIn(List<Long> assignmentIds, Long studentId, List<Long> courseIds);
 }

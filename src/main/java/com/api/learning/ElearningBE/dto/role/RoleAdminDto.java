@@ -1,4 +1,4 @@
-package com.api.learning.ElearningBE.dto.Role;
+package com.api.learning.ElearningBE.dto.role;
 
 import com.api.learning.ElearningBE.dto.BaseAdminDto;
 import com.api.learning.ElearningBE.dto.permission.PermissionDto;

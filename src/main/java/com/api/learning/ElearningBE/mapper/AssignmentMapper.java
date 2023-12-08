@@ -58,7 +58,16 @@ public interface AssignmentMapper {
     @Mapping(source = "modules", target = "modulesInfo", qualifiedByName = "fromEntityToModulesDto")
     @Named("fromEntityToAssignmentDto")
     AssignmentDto fromEntityToAssignmentDto(Assignment assignment);
-
     @IterableMapping(elementTargetType = AssignmentDto.class, qualifiedByName = "fromEntityToAssignmentDto")
     List<AssignmentDto> fromEntityToAssignmentDtoList(List<Assignment> assignments);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "title",target = "assignmentTitle")
+    @Mapping(source = "content", target = "assignmentContent")
+    @Mapping(source = "state", target = "state")
+    @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "endDate", target = "endDate")
+    @Mapping(source = "urlDocument", target = "urlDocument")
+    AssignmentDto fromEntityToAssignmentDtoForMySchedule(Assignment assignment);
 }

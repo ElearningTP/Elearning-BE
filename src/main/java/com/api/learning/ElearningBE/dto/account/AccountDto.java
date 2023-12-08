@@ -1,6 +1,6 @@
 package com.api.learning.ElearningBE.dto.account;
 
-import com.api.learning.ElearningBE.dto.Role.RoleDto;
+import com.api.learning.ElearningBE.dto.role.RoleDto;
 import com.api.learning.ElearningBE.dto.nation.NationDto;
 import lombok.Data;
 

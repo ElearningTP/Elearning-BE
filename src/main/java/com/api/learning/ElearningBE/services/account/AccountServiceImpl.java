@@ -2,20 +2,28 @@ package com.api.learning.ElearningBE.services.account;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
+import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
+import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
+import com.api.learning.ElearningBE.dto.assignment.AssignmentScheduleDto;
+import com.api.learning.ElearningBE.dto.quiz.QuizDto;
+import com.api.learning.ElearningBE.dto.quiz.QuizScheduleDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
-import com.api.learning.ElearningBE.mapper.AccountMapper;
-import com.api.learning.ElearningBE.repositories.AccountRepository;
-import com.api.learning.ElearningBE.repositories.NationRepository;
-import com.api.learning.ElearningBE.repositories.RoleRepository;
+import com.api.learning.ElearningBE.mapper.*;
+import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.JwtUtils;
-import com.api.learning.ElearningBE.storage.entities.Account;
-import com.api.learning.ElearningBE.storage.entities.Nation;
-import com.api.learning.ElearningBE.storage.entities.Role;
+import com.api.learning.ElearningBE.security.impl.UserService;
+import com.api.learning.ElearningBE.storage.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -27,6 +35,26 @@ public class AccountServiceImpl implements AccountService {
     private RoleRepository roleRepository;
     @Autowired
     private NationRepository nationRepository;
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+    @Autowired
+    private AssignmentMapper assignmentMapper;
+    @Autowired
+    private QuizRepository quizRepository;
+    @Autowired
+    private QuizMapper quizMapper;
+    @Autowired
+    private CourseMapper courseMapper;
+    @Autowired
+    private AssignmentSubmissionRepository assignmentSubmissionRepository;
+    @Autowired
+    private AssignmentSubmissionMapper assignmentSubmissionMapper;
+    @Autowired
+    private QuizSubmissionRepository quizSubmissionRepository;
+    @Autowired
+    private QuizSubmissionMapper quizSubmissionMapper;
+    @Autowired
+    private UserService userService;
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -51,6 +79,76 @@ public class AccountServiceImpl implements AccountService {
 
         apiMessageDto.setData(accountDto);
         apiMessageDto.setMessage("Retrieve info successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<StudentScheduleDto> mySchedule() {
+        ApiMessageDto<StudentScheduleDto> apiMessageDto = new ApiMessageDto<>();
+        Long studentId = userService.getAccountId();
+        // Assignment
+        List<Object[]> assignments = assignmentRepository.findAllAssignmentByStudentId(studentId);
+        List<Long> assignmentIds = assignments.stream()
+                .map(objects -> (Assignment) objects[0])
+                .map(Assignment::getId)
+                .collect(Collectors.toList());
+        List<Long> courseIdsAssignment = assignments.stream()
+                .map(objects -> (Course) objects[1])
+                .map(Course::getId)
+                .collect(Collectors.toList());
+        Map<Long,List<AssignmentSubmission>> assignmentSubmissionsMap =
+                assignmentSubmissionRepository.findAllByAssignmentIdInAndStudentIdAndCourseIdIn(assignmentIds,studentId,courseIdsAssignment).parallelStream()
+                .collect(Collectors.groupingByConcurrent(assignmentSubmission -> assignmentSubmission.getAssignment().getId()));
+        List<AssignmentScheduleDto> assignmentSchedules = new ArrayList<>();
+        for (Object[] o: assignments){
+            AssignmentScheduleDto assignmentSchedule = new AssignmentScheduleDto();
+            assignmentSchedule.setAssignmentInfo(assignmentMapper.fromEntityToAssignmentDtoForMySchedule((Assignment) o[0]));
+            assignmentSchedule.setCourseInfo(courseMapper.fromEntityToCourseDtoForMySchedule((Course) o[1]));
+            assignmentSchedules.add(assignmentSchedule);
+        }
+        List<AssignmentDto> assignmentDtoList = assignmentSchedules.parallelStream()
+                .map(AssignmentScheduleDto::getAssignmentInfo)
+                .collect(Collectors.toList());
+        assignmentDtoList.replaceAll(assignmentDto -> {
+            List<AssignmentSubmission> submissions = assignmentSubmissionsMap.getOrDefault(assignmentDto.getId(), Collections.emptyList());
+            assignmentDto.setAssignmentSubmissionInfo(assignmentSubmissionMapper.fromEntityToAssignmentSubmissionDtoList(submissions));
+            return assignmentDto;
+        });
+
+        // Quiz
+        List<Object[]> quizzes = quizRepository.findAllQuizByStudentId(studentId);
+        List<Long> quizIds = quizzes.stream()
+                .map(objects -> (Quiz) objects[0])
+                .map(Quiz::getId)
+                .collect(Collectors.toList());
+        List<Long> courseIdsQuiz = quizzes.stream()
+                .map(objects -> (Course) objects[1])
+                .map(Course::getId)
+                .collect(Collectors.toList());
+        Map<Long,List<QuizSubmission>> quizSubmissionsMap = quizSubmissionRepository.findAllByStudentIdAndCourseIdInAndQuizIdIn(studentId,courseIdsQuiz,quizIds).parallelStream()
+                .collect(Collectors.groupingByConcurrent(quizSubmission -> quizSubmission.getQuiz().getId()));
+        List<QuizScheduleDto> quizSchedules = new ArrayList<>();
+        for (Object[] o: quizzes){
+            QuizScheduleDto quizSchedule = new QuizScheduleDto();
+            quizSchedule.setQuizInfo(quizMapper.fromEntityToQuizDtoForMySchedule((Quiz) o[0]));
+            quizSchedule.setCourseInfo(courseMapper.fromEntityToCourseDtoForMySchedule((Course) o[1]));
+            quizSchedules.add(quizSchedule);
+        }
+        List<QuizDto> quizDtoList = quizSchedules.parallelStream()
+                .map(QuizScheduleDto::getQuizInfo)
+                .collect(Collectors.toList());
+        quizDtoList.replaceAll(quizDto -> {
+            List<QuizSubmission> quizSubmissions = quizSubmissionsMap.getOrDefault(quizDto.getId(), Collections.emptyList());
+            quizDto.setQuizSubmissionInfo(quizSubmissionMapper.fromEntityToQuizSubmissionDtoList(quizSubmissions));
+            return quizDto;
+        });
+
+        StudentScheduleDto studentScheduleDto = new StudentScheduleDto();
+        studentScheduleDto.setAssignmentsInfo(assignmentSchedules);
+        studentScheduleDto.setQuizzesInfo(quizSchedules);
+
+        apiMessageDto.setData(studentScheduleDto);
+        apiMessageDto.setMessage("Retrieve schedule successfully");
         return apiMessageDto;
     }
 

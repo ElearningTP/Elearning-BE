@@ -1,7 +1,7 @@
 package com.api.learning.ElearningBE.dto.account;
 
 import com.api.learning.ElearningBE.dto.BaseAdminDto;
-import com.api.learning.ElearningBE.dto.Role.RoleAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
 import com.api.learning.ElearningBE.dto.nation.NationAdminDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
