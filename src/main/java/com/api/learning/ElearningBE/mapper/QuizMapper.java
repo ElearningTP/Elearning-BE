@@ -47,6 +47,7 @@ public interface QuizMapper {
     @IterableMapping(elementTargetType = QuizDto.class, qualifiedByName = "fromEntityToQuizDto")
     List<QuizDto> fromEntityToQuizDtoList(List<Quiz> quizzes);
 
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "title", target = "quizTitle")
     @Mapping(source = "description", target = "description")
@@ -70,4 +71,14 @@ public interface QuizMapper {
     @Mapping(source = "endDate", target = "endDate")
     @Mapping(source = "attemptNumber", target = "attemptNumber")
     StartQuizDto fromEntityToStartQuizDto(Quiz quiz);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "title", target = "quizTitle")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "timeLimit", target = "quizTimeLimit")
+    @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "endDate", target = "endDate")
+    @Mapping(source = "attemptNumber", target = "attemptNumber")
+    QuizDto fromEntityToQuizDtoForMySchedule(Quiz quiz);
 }

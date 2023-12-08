@@ -1,4 +1,4 @@
-package com.api.learning.ElearningBE.dto.Role;
+package com.api.learning.ElearningBE.dto.role;
 
 import lombok.Data;
 

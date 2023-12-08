@@ -52,7 +52,6 @@ public class ForumServiceImpl implements ForumService{
     private TopicCommentMapper topicCommentMapper;
 
     @Override
-    @Transactional
     public ApiMessageDto<ResponseListDto<List<ForumDto>>> list(ForumCriteria forumCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<ForumDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<ForumDto>> responseListDto = new ResponseListDto<>();

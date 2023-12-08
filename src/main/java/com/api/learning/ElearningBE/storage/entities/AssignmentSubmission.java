@@ -20,7 +20,6 @@ public class AssignmentSubmission extends Auditable<String> {
     @Column(name = "file_submission_url")
     private String fileSubmissionUrl;
     @OneToOne
-    @MapsId
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
     @ManyToOne

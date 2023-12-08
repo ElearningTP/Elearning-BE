@@ -1,7 +1,7 @@
 package com.api.learning.ElearningBE.mapper;
 
-import com.api.learning.ElearningBE.dto.Role.RoleAdminDto;
-import com.api.learning.ElearningBE.dto.Role.RoleDto;
+import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleDto;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
 import com.api.learning.ElearningBE.storage.entities.Role;

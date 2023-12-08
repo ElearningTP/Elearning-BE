@@ -1,7 +1,7 @@
 package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
-import com.api.learning.ElearningBE.dto.Role.RoleAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
