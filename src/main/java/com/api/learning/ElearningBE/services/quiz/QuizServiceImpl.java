@@ -12,12 +12,7 @@ import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.quiz.CreateQuizForm;
 import com.api.learning.ElearningBE.form.quiz.UpdateQuizForm;
-import com.api.learning.ElearningBE.form.quiz_submission.CreateQuizSubmissionForm;
-import com.api.learning.ElearningBE.form.quiz_submission_result.CreateQuizSubmissionResult;
-import com.api.learning.ElearningBE.mapper.AnswerQuestionMapper;
-import com.api.learning.ElearningBE.mapper.ModulesMapper;
-import com.api.learning.ElearningBE.mapper.QuizMapper;
-import com.api.learning.ElearningBE.mapper.QuizQuestionMapper;
+import com.api.learning.ElearningBE.mapper.*;
 import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.storage.criteria.QuizCriteria;
@@ -53,11 +48,11 @@ public class QuizServiceImpl implements QuizService{
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
     private QuizSubmissionRepository quizSubmissionRepository;
     @Autowired
-    private QuizSubmissionResultRepository quizSubmissionResultRepository;
+    private QuizSubmissionMapper quizSubmissionMapper;
+    @Autowired
+    private AccountRepository accountRepository;
     @Autowired
     private UserService userService;
 
@@ -123,11 +118,16 @@ public class QuizServiceImpl implements QuizService{
     }
 
     @Override
-    public ApiMessageDto<QuizAdminDto> retrieve(Long id) {
+    public ApiMessageDto<QuizAdminDto> retrieve(Long id, Long courseId) {
         ApiMessageDto<QuizAdminDto> apiMessageDto = new ApiMessageDto<>();
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Quiz with id %s not found", id)));
         QuizAdminDto quizAdminDto = quizMapper.fromEntityToQuizAdminDto(quiz);
+        if (courseId != null) {
+            Long studentId = userService.getAccountId();
+            List<QuizSubmission> quizSubmissions = quizSubmissionRepository.findAllByQuizIdAndStudentIdAndCourseId(quiz.getId(), studentId, courseId);
+            quizAdminDto.setQuizSubmissionInfo(quizSubmissionMapper.fromEntityToQuizSubmissionDtoList(quizSubmissions));
+        }
 
         apiMessageDto.setData(quizAdminDto);
         apiMessageDto.setMessage("Retrieve quiz successfully");
