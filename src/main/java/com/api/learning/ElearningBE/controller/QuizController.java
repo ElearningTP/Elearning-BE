@@ -68,10 +68,11 @@ public class QuizController {
     }
 
     @GetMapping("/retrieve/{id}")
-    public ApiMessageDto<QuizAdminDto> retrieve(@PathVariable Long id){
+    public ApiMessageDto<QuizAdminDto> retrieve(@PathVariable Long id,
+                                                @RequestParam(required = false) Long courseId){
         ApiMessageDto<QuizAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
-            apiMessageDto = quizService.retrieve(id);
+            apiMessageDto = quizService.retrieve(id, courseId);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

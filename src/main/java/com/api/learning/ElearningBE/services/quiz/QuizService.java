@@ -15,7 +15,7 @@ import java.util.List;
 public interface QuizService {
     ApiMessageDto<StartQuizDto> start(Long id, Long courseId);
     ApiMessageDto<ResponseListDto<List<QuizDto>>> list(QuizCriteria quizCriteria, Pageable pageable);
-    ApiMessageDto<QuizAdminDto> retrieve(Long id);
+    ApiMessageDto<QuizAdminDto> retrieve(Long id, Long courseId);
     ApiMessageDto<QuizDto> create(CreateQuizForm createQuizForm);
     ApiMessageDto<QuizDto> update(UpdateQuizForm updateQuizForm);
     ApiMessageDto<String> delete(Long id);
