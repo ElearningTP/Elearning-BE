@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.answer_question.AnswerQuestionServi
 import com.api.learning.ElearningBE.storage.criteria.AnswerQuestionCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class AnswerQuestionController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ANSWER_L')")
     public ApiMessageDto<ResponseListDto<List<AnswerQuestionDto>>> list(AnswerQuestionCriteria answerQuestionCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<AnswerQuestionDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -40,6 +42,7 @@ public class AnswerQuestionController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('ANSWER_V')")
     public ApiMessageDto<AnswerQuestionAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<AnswerQuestionAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -57,6 +60,7 @@ public class AnswerQuestionController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ANSWER_C')")
     public ApiMessageDto<AnswerQuestionDto> create(@Valid @RequestBody CreateAnswerQuestionForm createAnswerQuestionForm){
         ApiMessageDto<AnswerQuestionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -74,6 +78,7 @@ public class AnswerQuestionController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ANSWER_U')")
     public ApiMessageDto<AnswerQuestionDto> update(@Valid @RequestBody UpdateAnswerQuestionForm updateAnswerQuestionForm){
         ApiMessageDto<AnswerQuestionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -91,6 +96,7 @@ public class AnswerQuestionController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ANSWER_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

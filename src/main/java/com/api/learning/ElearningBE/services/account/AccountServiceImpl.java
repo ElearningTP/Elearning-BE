@@ -1,6 +1,7 @@
 package com.api.learning.ElearningBE.services.account;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
+import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
 import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
@@ -15,6 +16,8 @@ import com.api.learning.ElearningBE.security.JwtUtils;
 import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.storage.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -64,6 +67,26 @@ public class AccountServiceImpl implements AccountService {
         }
         return null;
     }
+
+    @Override
+    public ApiMessageDto<ResponseListDto<List<AccountDto>>> memberTheSameCourse(Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<AccountDto>> responseListDto = new ResponseListDto<>();
+        Long studentId = userService.getAccountId();
+        Page<Account> accounts = accountRepository.findAllMemberTheSameCourse(studentId,pageable);
+        List<AccountDto> accountDtoList = accountMapper.fromEntityToAccountDtForTheSameOfCourseList(accounts.getContent());
+
+        responseListDto.setContent(accountDtoList);
+        responseListDto.setTotalElements(accounts.getTotalElements());
+        responseListDto.setTotalPages(accounts.getTotalPages());
+        responseListDto.setPageSize(accounts.getSize());
+        responseListDto.setPageIndex(accounts.getNumber());
+
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Retrieve member list successfully");
+        return apiMessageDto;
+    }
+
     @Override
     public ApiMessageDto<AccountDto> retrieveMe(String token) {
         ApiMessageDto<AccountDto> apiMessageDto = new ApiMessageDto<>();

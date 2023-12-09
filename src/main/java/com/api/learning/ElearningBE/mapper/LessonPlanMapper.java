@@ -46,4 +46,13 @@ public interface LessonPlanMapper {
 
     @IterableMapping(elementTargetType = LessonPlanDto.class, qualifiedByName = "fromEntityToLessonPlanDto")
     List<LessonPlanDto> fromEntityToLessonPlanDtoList(List<LessonPlan> lessonPlans);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Named("fromEntityToLessonPlanDtoForAutoComplete")
+    LessonPlanDto fromEntityToLessonPlanDtoForAutoComplete(LessonPlan lessonPlan);
+
+    @IterableMapping(elementTargetType = LessonPlanDto.class, qualifiedByName = "fromEntityToLessonPlanDtoForAutoComplete")
+    List<LessonPlanDto> fromEntityToLessonPlanDtoForAutoCompleteList(List<LessonPlan> lessonPlans);
 }

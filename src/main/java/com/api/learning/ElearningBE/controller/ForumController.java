@@ -13,6 +13,7 @@ import com.api.learning.ElearningBE.storage.criteria.ForumCriteria;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,6 +30,7 @@ public class ForumController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('FORUM_L')")
     public ApiMessageDto<ResponseListDto<List<ForumDto>>> list(ForumCriteria forumCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<ForumDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -42,6 +44,7 @@ public class ForumController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('FORUM_V')")
     public ApiMessageDto<ForumAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<ForumAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -59,6 +62,7 @@ public class ForumController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('FORUM_C')")
     public ApiMessageDto<ForumDto> create(@Valid @RequestBody CreateForumForm createForumForm){
         ApiMessageDto<ForumDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -80,6 +84,7 @@ public class ForumController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('FORUM_U')")
     public ApiMessageDto<ForumDto> update(@Valid @RequestBody UpdateForumForm updateForumForm){
         ApiMessageDto<ForumDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -97,6 +102,7 @@ public class ForumController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('FORUM_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

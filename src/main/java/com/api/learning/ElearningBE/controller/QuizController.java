@@ -9,11 +9,11 @@ import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.quiz.CreateQuizForm;
 import com.api.learning.ElearningBE.form.quiz.UpdateQuizForm;
-import com.api.learning.ElearningBE.form.quiz_submission.CreateQuizSubmissionForm;
 import com.api.learning.ElearningBE.services.quiz.QuizService;
 import com.api.learning.ElearningBE.storage.criteria.QuizCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +33,7 @@ public class QuizController {
 
 
     @GetMapping("/start")
+    @PreAuthorize("hasRole('QUIZ_START')")
     public ApiMessageDto<StartQuizDto> start(@RequestParam("id") Long id,
                                              @RequestParam("courseId") Long courseId){
         ApiMessageDto<StartQuizDto> apiMessageDto = new ApiMessageDto<>();
@@ -55,6 +56,7 @@ public class QuizController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('QUIZ_L')")
     public ApiMessageDto<ResponseListDto<List<QuizDto>>> list(QuizCriteria quizCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<QuizDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -68,6 +70,7 @@ public class QuizController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('QUIZ_V')")
     public ApiMessageDto<QuizAdminDto> retrieve(@PathVariable Long id,
                                                 @RequestParam(required = false) Long courseId){
         ApiMessageDto<QuizAdminDto> apiMessageDto = new ApiMessageDto<>();
@@ -87,6 +90,7 @@ public class QuizController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('QUIZ_C')")
     public ApiMessageDto<QuizDto> create(@Valid @RequestBody CreateQuizForm createQuizForm){
         ApiMessageDto<QuizDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -105,6 +109,7 @@ public class QuizController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('QUIZ_U')")
     public ApiMessageDto<QuizDto> update(@Valid @RequestBody UpdateQuizForm updateQuizForm){
         ApiMessageDto<QuizDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -123,6 +128,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('QUIZ_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

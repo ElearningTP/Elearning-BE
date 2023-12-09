@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface LessonPlanService {
+    ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> autoComplete(LessonPlanCriteria lessonPlanCriteria, Pageable pageable);
     ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> list(LessonPlanCriteria lessonPlanCriteria, Pageable pageable);
     ApiMessageDto<LessonPlanAdminDto> retrieve(Long id);
     ApiMessageDto<String> create(CreateLessonPlanForm createLessonPlanForm);

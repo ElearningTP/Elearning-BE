@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.quiz_question.QuizQuestionService;
 import com.api.learning.ElearningBE.storage.criteria.QuizQuestionCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class QuizQuestionController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('Q_QUESTION_L')")
     public ApiMessageDto<ResponseListDto<List<QuizQuestionDto>>> list(QuizQuestionCriteria quizQuestionCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<QuizQuestionDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -40,6 +42,7 @@ public class QuizQuestionController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('Q_QUESTION_V')")
     public ApiMessageDto<QuizQuestionAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<QuizQuestionAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -57,6 +60,7 @@ public class QuizQuestionController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('Q_QUESTION_C')")
     public ApiMessageDto<QuizQuestionDto> create(@Valid @RequestBody CreateQuizQuestionForm createQuizQuestionForm){
         ApiMessageDto<QuizQuestionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -74,6 +78,7 @@ public class QuizQuestionController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('Q_QUESTION_U')")
     public ApiMessageDto<QuizQuestionDto> update(@Valid @RequestBody UpdateQuizQuestionForm updateQuizQuestionForm){
         ApiMessageDto<QuizQuestionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -91,6 +96,7 @@ public class QuizQuestionController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('Q_QUESTION_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

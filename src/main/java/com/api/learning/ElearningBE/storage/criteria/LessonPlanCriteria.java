@@ -15,6 +15,7 @@ public class LessonPlanCriteria {
     private Long id;
     private String name;
     private Long teacherId;
+    private Integer status;
 
     public Specification<LessonPlan> getSpecification(){
         return new Specification<LessonPlan>() {
@@ -31,6 +32,9 @@ public class LessonPlanCriteria {
                 if (getTeacherId() != null){
                     Join<LessonPlan, Account> join = root.join("teacher");
                     predicates.add(criteriaBuilder.equal(join.get("id"),getTeacherId()));
+                }
+                if (getStatus() != null){
+                    predicates.add(criteriaBuilder.equal(root.get("status"),getStatus()));
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
