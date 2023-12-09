@@ -10,6 +10,7 @@ import com.api.learning.ElearningBE.services.topic_comment.TopicCommentService;
 import com.api.learning.ElearningBE.storage.criteria.TopicCommentCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,6 +27,7 @@ public class TopicCommentController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('T_COMMENT_L')")
     public ApiMessageDto<ResponseListDto<List<TopicCommentAdminDto>>> list(TopicCommentCriteria topicCommentCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<TopicCommentAdminDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -39,6 +41,7 @@ public class TopicCommentController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('T_COMMENT_V')")
     public ApiMessageDto<TopicCommentAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<TopicCommentAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -56,6 +59,7 @@ public class TopicCommentController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('T_COMMENT_C')")
     public ApiMessageDto<TopicCommentAdminDto> create(@Valid @RequestBody CreateTopicCommentForm createTopicCommentForm){
         ApiMessageDto<TopicCommentAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -73,6 +77,7 @@ public class TopicCommentController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('T_COMMENT_U')")
     public ApiMessageDto<TopicCommentAdminDto> update(@Valid @RequestBody UpdateTopicCommentForm updateTopicCommentForm){
         ApiMessageDto<TopicCommentAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -90,6 +95,7 @@ public class TopicCommentController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('T_COMMENT_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

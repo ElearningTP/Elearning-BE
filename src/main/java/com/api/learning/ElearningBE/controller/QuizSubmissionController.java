@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.quiz_submission.QuizSubmissionServi
 import com.api.learning.ElearningBE.storage.criteria.QuizSubmissionCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class QuizSubmissionController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('Q_SUBMISSION_L')")
     public ApiMessageDto<ResponseListDto<List<QuizSubmissionDto>>> list(QuizSubmissionCriteria quizSubmissionCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<QuizSubmissionDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -41,6 +43,7 @@ public class QuizSubmissionController {
     }
 
     @GetMapping("/review/{id}")
+    @PreAuthorize("hasRole('Q_SUBMISSION_RV')")
     public ApiMessageDto<ReviewQuizSubmissionDto> review(@PathVariable Long id){
         ApiMessageDto<ReviewQuizSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -58,6 +61,7 @@ public class QuizSubmissionController {
     }
 
     @PostMapping("/submit")
+    @PreAuthorize("hasRole('Q_SUBMISSION_C')")
     public ApiMessageDto<QuizSubmissionDto> submit(@Valid @RequestBody CreateQuizSubmissionForm createQuizSubmissionForm){
         ApiMessageDto<QuizSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         try {
