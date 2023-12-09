@@ -33,6 +33,25 @@ public class LessonPlanServiceImpl implements LessonPlanService{
     private LessonPlanMapper lessonPlanMapper;
 
     @Override
+    public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> autoComplete(LessonPlanCriteria lessonPlanCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<LessonPlanDto>> responseListDto = new ResponseListDto<>();
+        lessonPlanCriteria.setStatus(ELearningConstant.STATUS_ACTIVE);
+        Page<LessonPlan> lessonPlans = lessonPlanRepository.findAll(lessonPlanCriteria.getSpecification(),pageable);
+        List<LessonPlanDto> lessonPlanDtoS = lessonPlanMapper.fromEntityToLessonPlanDtoForAutoCompleteList(lessonPlans.getContent());
+
+        responseListDto.setContent(lessonPlanDtoS);
+        responseListDto.setTotalPages(lessonPlans.getTotalPages());
+        responseListDto.setTotalElements(lessonPlans.getTotalElements());
+        responseListDto.setPageIndex(lessonPlans.getNumber());
+        responseListDto.setPageSize(lessonPlans.getSize());
+
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Retrieve lesson plan list successfully");
+        return apiMessageDto;
+    }
+
+    @Override
     public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> list(LessonPlanCriteria lessonPlanCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<LessonPlanDto>> responseListDto = new ResponseListDto<>();

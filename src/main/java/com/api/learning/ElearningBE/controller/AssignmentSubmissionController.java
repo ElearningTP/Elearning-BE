@@ -12,6 +12,7 @@ import com.api.learning.ElearningBE.services.assignment_submssion.AssignmentSubm
 import com.api.learning.ElearningBE.storage.criteria.AssignmentSubmissionCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class AssignmentSubmissionController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ASSIGN_SUB_L')")
     public ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> list(AssignmentSubmissionCriteria assignmentSubmissionCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<AssignmentSubmissionAdminDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -41,6 +43,7 @@ public class AssignmentSubmissionController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('ASSIGN_SUB_V')")
     public ApiMessageDto<AssignmentSubmissionAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<AssignmentSubmissionAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -58,6 +61,7 @@ public class AssignmentSubmissionController {
     }
 
     @PostMapping("/submit")
+    @PreAuthorize("hasRole('ASSIGN_SUB_C')")
     public ApiMessageDto<AssignmentSubmissionDto> submit(@Valid @RequestBody CreateAssignmentSubmissionForm createAssignmentSubmissionForm){
         ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -79,6 +83,7 @@ public class AssignmentSubmissionController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('ASSIGN_SUB_U')")
     public ApiMessageDto<AssignmentSubmissionDto> update(@Valid @RequestBody UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm){
         ApiMessageDto<AssignmentSubmissionDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -96,6 +101,7 @@ public class AssignmentSubmissionController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ASSIGN_SUB_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {

@@ -26,6 +26,19 @@ public class LessonPlanController {
     @Autowired
     private LessonPlanService lessonPlanService;
 
+    @GetMapping("/auto-complete")
+    public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> autoComplete(LessonPlanCriteria lessonPlanCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = lessonPlanService.autoComplete(lessonPlanCriteria, pageable);
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
     @GetMapping("/list")
     @PreAuthorize("hasRole('LESS_P_L')")
     public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> list(LessonPlanCriteria lessonPlanCriteria, Pageable pageable){
