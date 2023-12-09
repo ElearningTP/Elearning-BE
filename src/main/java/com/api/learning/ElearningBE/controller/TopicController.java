@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.topic.TopicService;
 import com.api.learning.ElearningBE.storage.criteria.TopicCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class TopicController {
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('TOPIC_L')")
     public ApiMessageDto<ResponseListDto<List<TopicDto>>> list(TopicCriteria topicCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<TopicDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -40,6 +42,7 @@ public class TopicController {
     }
 
     @GetMapping("/retrieve/{id}")
+    @PreAuthorize("hasRole('TOPIC_V')")
     public ApiMessageDto<TopicAdminDto> retrieve(@PathVariable Long id){
         ApiMessageDto<TopicAdminDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -57,6 +60,7 @@ public class TopicController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('TOPIC_C')")
     public ApiMessageDto<TopicDto> create(@Valid @RequestBody CreateTopicForm createTopicForm){
         ApiMessageDto<TopicDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -74,6 +78,7 @@ public class TopicController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasRole('TOPIC_U')")
     public ApiMessageDto<TopicDto> update(@Valid @RequestBody UpdateTopicForm updateTopicForm){
         ApiMessageDto<TopicDto> apiMessageDto = new ApiMessageDto<>();
         try {
@@ -91,6 +96,7 @@ public class TopicController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('TOPIC_D')")
     public ApiMessageDto<String> delete(@PathVariable Long id){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
