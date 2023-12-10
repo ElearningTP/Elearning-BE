@@ -13,8 +13,6 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "db_topic")
 public class Topic extends Auditable<String> {
-    @Column(columnDefinition = "text")
-    private String title;
     @Column(columnDefinition = "longtext")
     private String content;
     @ManyToOne

@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 public class TopicDto {
     private Long id;
-    private String topicTitle;
     private String topicContent;
     private ForumDto forumInfo;
     private AccountDto accountInfo;

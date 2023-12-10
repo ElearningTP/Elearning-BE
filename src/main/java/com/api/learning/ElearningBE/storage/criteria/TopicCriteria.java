@@ -13,7 +13,6 @@ import java.util.List;
 
 @Data
 public class TopicCriteria {
-    private String title;
     private Long forumId;
     private Long accountId;
 
@@ -23,9 +22,6 @@ public class TopicCriteria {
             @Override
             public Predicate toPredicate(Root<Topic> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (!StringUtils.isEmpty(getTitle())){
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),"%"+getTitle()+"%"));
-                }
                 if (getForumId() != null){
                     Join<Topic, Forum> join = root.join("forum");
                     predicates.add(criteriaBuilder.equal(join.get("id"), getForumId()));
