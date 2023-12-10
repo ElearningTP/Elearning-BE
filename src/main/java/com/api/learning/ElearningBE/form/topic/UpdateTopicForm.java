@@ -11,9 +11,6 @@ public class UpdateTopicForm {
     @NotNull(message = "Id can not be null")
     @ApiModelProperty(name = "id", required = true)
     private Long id;
-    @NotEmpty(message = "Topic title can not be empty")
-    @ApiModelProperty(name = "topicTitle", required = true)
-    private String topicTitle;
     @ApiModelProperty(name = "topicContent")
     private String topicContent;
 }

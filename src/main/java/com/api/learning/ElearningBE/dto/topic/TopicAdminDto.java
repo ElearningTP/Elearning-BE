@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TopicAdminDto extends BaseAdminDto {
-    private String topicTitle;
     private String topicContent;
     private ForumDto forumInfo;
     private AccountDto accountInfo;

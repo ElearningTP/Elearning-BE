@@ -15,18 +15,15 @@ import java.util.List;
 public interface TopicMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "topicTitle", target = "title")
     @Mapping(source = "topicContent", target = "content")
     Topic fromCreateTopicFormToEntity(CreateTopicForm createTopicForm);
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "topicTitle", target = "title")
     @Mapping(source = "topicContent", target = "content")
     void fromUpdateTopicFormToEntity(UpdateTopicForm updateTopicForm, @MappingTarget Topic topic);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "title", target = "topicTitle")
     @Mapping(source = "content", target = "topicContent")
     @Mapping(source = "forum", target = "forumInfo", qualifiedByName = "fromEntityToForumDto")
     @Mapping(source = "account", target = "accountInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
@@ -37,7 +34,6 @@ public interface TopicMapper {
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "title", target = "topicTitle")
     @Mapping(source = "content", target = "topicContent")
     @Mapping(source = "status",target = "status")
     @Mapping(source = "createDate", target = "createDate")
