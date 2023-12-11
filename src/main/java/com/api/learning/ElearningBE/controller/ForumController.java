@@ -29,6 +29,19 @@ public class ForumController {
         this.forumService = forumService;
     }
 
+    @GetMapping("/auto-complete")
+    public ApiMessageDto<ResponseListDto<List<ForumDto>>> autoComplete(ForumCriteria forumCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<ForumDto>>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = forumService.autoComplete(forumCriteria, pageable);
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
     @GetMapping("/list")
     @PreAuthorize("hasRole('FORUM_L')")
     public ApiMessageDto<ResponseListDto<List<ForumDto>>> list(ForumCriteria forumCriteria, Pageable pageable){

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 public class ForumCriteria {
-    private Long title;
+    private String title;
     private Long courseId;
     private Long accountId;
 
