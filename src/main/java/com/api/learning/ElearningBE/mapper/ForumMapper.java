@@ -44,4 +44,12 @@ public interface ForumMapper {
     @Mapping(source = "course", target = "courseInfo", qualifiedByName = "fromEntityToCourseDtoAutoComplete")
     @Named("fromEntityToForumAdminDto")
     ForumAdminDto fromEntityToForumAdminDto(Forum forum);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "title", target = "forumTitle")
+    @Named("fromEntityToForumDtoForAutoComplete")
+    ForumDto fromEntityToForumDtoForAutoComplete(Forum forum);
+    @IterableMapping(elementTargetType = ForumDto.class, qualifiedByName = "fromEntityToForumDtoForAutoComplete")
+    List<ForumDto> fromEntityToForumDtoForAutoCompleteList(List<Forum> forums);
 }

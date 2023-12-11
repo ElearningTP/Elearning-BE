@@ -52,6 +52,23 @@ public class ForumServiceImpl implements ForumService{
     private TopicCommentMapper topicCommentMapper;
 
     @Override
+    public ApiMessageDto<ResponseListDto<List<ForumDto>>> autoComplete(ForumCriteria forumCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<ForumDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<ForumDto>> responseListDto = new ResponseListDto<>();
+        Page<Forum> forums = forumRepository.findAll(forumCriteria.getSpecification(),pageable);
+        List<ForumDto> forumDtoS = forumMapper.fromEntityToForumDtoForAutoCompleteList(forums.getContent());
+
+        responseListDto.setContent(forumDtoS);
+        responseListDto.setTotalPages(forums.getTotalPages());
+        responseListDto.setTotalElements(forums.getTotalElements());
+        responseListDto.setPageSize(forums.getSize());
+        responseListDto.setPageIndex(forums.getNumber());
+
+        apiMessageDto.setData(responseListDto);
+        return apiMessageDto;
+    }
+
+    @Override
     public ApiMessageDto<ResponseListDto<List<ForumDto>>> list(ForumCriteria forumCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<ForumDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<ForumDto>> responseListDto = new ResponseListDto<>();
