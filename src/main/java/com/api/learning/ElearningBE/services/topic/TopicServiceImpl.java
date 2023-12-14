@@ -1,7 +1,9 @@
 package com.api.learning.ElearningBE.services.topic;
 
+import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
+import com.api.learning.ElearningBE.dto.notification.TopicNotificationMessage;
 import com.api.learning.ElearningBE.dto.topic.TopicAdminDto;
 import com.api.learning.ElearningBE.dto.topic.TopicDto;
 import com.api.learning.ElearningBE.dto.topic_comment.TopicCommentAdminDto;
@@ -10,15 +12,14 @@ import com.api.learning.ElearningBE.form.topic.CreateTopicForm;
 import com.api.learning.ElearningBE.form.topic.UpdateTopicForm;
 import com.api.learning.ElearningBE.mapper.TopicCommentMapper;
 import com.api.learning.ElearningBE.mapper.TopicMapper;
-import com.api.learning.ElearningBE.repositories.AccountRepository;
-import com.api.learning.ElearningBE.repositories.ForumRepository;
-import com.api.learning.ElearningBE.repositories.TopicCommentRepository;
-import com.api.learning.ElearningBE.repositories.TopicRepository;
+import com.api.learning.ElearningBE.repositories.*;
+import com.api.learning.ElearningBE.security.impl.UserService;
+import com.api.learning.ElearningBE.services.notitfication.NotifyService;
 import com.api.learning.ElearningBE.storage.criteria.TopicCriteria;
-import com.api.learning.ElearningBE.storage.entities.Account;
-import com.api.learning.ElearningBE.storage.entities.Forum;
-import com.api.learning.ElearningBE.storage.entities.Topic;
-import com.api.learning.ElearningBE.storage.entities.TopicComment;
+import com.api.learning.ElearningBE.storage.entities.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TopicServiceImpl implements TopicService{
 
     @Autowired
@@ -43,6 +45,14 @@ public class TopicServiceImpl implements TopicService{
     private TopicCommentRepository topicCommentRepository;
     @Autowired
     private TopicCommentMapper topicCommentMapper;
+    @Autowired
+    private NotifyService notifyService;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
+    private UserService userService;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<TopicDto>>> list(TopicCriteria topicCriteria, Pageable pageable) {
@@ -123,6 +133,7 @@ public class TopicServiceImpl implements TopicService{
         topic.setAccount(account);
         topicRepository.save(topic);
         TopicDto topicDto = topicMapper.fromEntityToTopicDto(topic);
+        createNotificationAndSendMessage(topic);
 
         apiMessageDto.setData(topicDto);
         apiMessageDto.setMessage("Create topic successfully");
@@ -152,5 +163,62 @@ public class TopicServiceImpl implements TopicService{
 
         apiMessageDto.setMessage("Delete topic successfully");
         return apiMessageDto;
+    }
+
+
+    private void createNotificationAndSendMessage(Topic topic) {
+        List<Notification> notifications = new ArrayList<>();
+        Long accountId = userService.getAccountId();
+        List<Object[]> objectsResult = accountRepository.findAllMemberOfCourseByTopicId(topic.getId(), accountId);
+        if (userService.getAccountKind().equals(ELearningConstant.ROLE_KIND_STUDENT)) {
+            List<Long> memberOfCourseId = objectsResult.parallelStream().map(objects -> (Long)objects[0]).collect(Collectors.toList());
+            Long teacherId = objectsResult.parallelStream().map(objects -> (Long)objects[1]).findFirst().orElse(null);
+            if (teacherId != null){
+                memberOfCourseId.add(teacherId);
+            }
+            notifications = notificationMapping(topic,memberOfCourseId);
+        }
+        if (userService.getAccountKind().equals(ELearningConstant.ROLE_KIND_TEACHER)) {
+            List<Long> studentIds = objectsResult.parallelStream().map(objects -> (Long)objects[0]).collect(Collectors.toList());
+            notifications = notificationMapping(topic, studentIds);
+        }
+        notificationRepository.saveAll(notifications);
+        for (Notification notification : notifications){
+            String jsonMessage = getJsonMessage(topic, notification);
+            notification.setMessage(jsonMessage);
+        }
+        notificationRepository.saveAll(notifications);
+        for (Notification notification: notifications){
+            notifyService.sendMessage(notification.getMessage(), null, notification.getIdUser());
+        }
+    }
+
+    private List<Notification> notificationMapping(Topic topic, List<Long> userIds){
+        List<Notification> notifications = new ArrayList<>();
+        for (Long userId : userIds) {
+            Notification notification = new Notification();
+            notification.setIdUser(userId);
+            notification.setRefId(topic.getId().toString());
+            notifications.add(notification);
+        }
+        return notifications;
+    }
+
+    private String getJsonMessage(Topic topic, Notification notification){
+        TopicNotificationMessage topicNotificationMessage = new TopicNotificationMessage();
+        topicNotificationMessage.setForumId(topic.getForum().getId());
+        topicNotificationMessage.setTopicId(topic.getId());
+        topicNotificationMessage.setNotificationId(notification.getId());
+        topicNotificationMessage.setTopicContent(topic.getContent());
+        topicNotificationMessage.setForumTitle(topic.getForum().getTitle());
+        return convertObjectToJson(topicNotificationMessage);
+    }
+    public String convertObjectToJson(Object object) {
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            return null;
+        }
     }
 }
