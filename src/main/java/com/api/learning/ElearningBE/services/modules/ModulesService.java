@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ModulesService {
-    ApiMessageDto<ResponseListDto<List<ModulesDto>>> list(ModulesCriteria modulesCriteria, Pageable pageable);
+    ApiMessageDto<ResponseListDto<List<ModulesAdminDto>>> list(ModulesCriteria modulesCriteria, Pageable pageable);
     ApiMessageDto<ModulesAdminDto> retrieve(Long id);
     ApiMessageDto<String> create(CreateModulesForm createModulesForm);
     ApiMessageDto<String> update(UpdateModuleForm updateModuleForm);
