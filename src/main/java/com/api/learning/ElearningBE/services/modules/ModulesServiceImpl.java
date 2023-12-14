@@ -3,12 +3,9 @@ package com.api.learning.ElearningBE.services.modules;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
-import com.api.learning.ElearningBE.dto.assignment_submission.AssignmentSubmissionDto;
 import com.api.learning.ElearningBE.dto.lecture.LectureDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesAdminDto;
-import com.api.learning.ElearningBE.dto.modules.ModulesDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizDto;
-import com.api.learning.ElearningBE.dto.quiz_submission.QuizSubmissionDto;
 import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.modules.CreateModulesForm;
@@ -60,9 +57,7 @@ public class ModulesServiceImpl implements ModulesService{
         List<ModulesAdminDto> modulesAdminDtoS = modulesMapper.fromEntityToModulesAdminDtoList(modules.getContent());
 
         if (!modulesAdminDtoS.isEmpty()) {
-//            List<Modules> modules = modulesRepository.findAllByLessonPlanId(modulesCriteria.getLessonPlanId());
             List<Long> modulesIds = modules.getContent().stream().map(Modules::getId).collect(Collectors.toList());
-//            List<ModulesAdminDto> modulesAdminDtoS = modulesMapper.fromEntityToModulesAdminDtoList(modules);
 
             List<Assignment> assignments = assignmentRepository.findAllByModulesIdIn(modulesIds);
             List<AssignmentDto> assignmentDtoS = assignmentMapper.fromEntityToAssignmentDtoList(assignments);
