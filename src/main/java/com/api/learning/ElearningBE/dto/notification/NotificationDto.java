@@ -9,4 +9,5 @@ public class NotificationDto {
     private Boolean isRead;
     private Long refId;
     private Long userId;
+    private String kind;
 }

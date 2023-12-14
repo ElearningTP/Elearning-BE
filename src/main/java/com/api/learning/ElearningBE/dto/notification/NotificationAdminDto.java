@@ -11,4 +11,5 @@ public class NotificationAdminDto extends BaseAdminDto {
     private Boolean isRead;
     private Long refId;
     private Long userId;
+    private String kind;
 }
