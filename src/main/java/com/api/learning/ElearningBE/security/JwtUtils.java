@@ -55,6 +55,8 @@ public class JwtUtils {
                 .collect(Collectors.toList());
         claims.put("authorities", pCode);
         claims.put("name", userDetails.getFullName());
+        claims.put("accountKind", userDetails.getKind());
+        claims.put("accountId", userDetails.getAccountId());
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         Key key = Keys.hmacShaKeyFor(keyBytes);
         return Jwts

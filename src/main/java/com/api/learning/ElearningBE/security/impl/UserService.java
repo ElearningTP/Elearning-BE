@@ -20,4 +20,17 @@ public class UserService {
         }
         return null;
     }
+
+    public Integer getAccountKind(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null  && authentication instanceof UsernamePasswordAuthenticationToken) {
+            // Extract UserDetails from the authentication object
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            if (userDetails != null) {
+                return userDetails.getKind();
+            }
+            return null;
+        }
+        return null;
+    }
 }

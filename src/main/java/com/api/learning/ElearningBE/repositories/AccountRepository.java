@@ -26,4 +26,26 @@ public interface AccountRepository extends JpaRepository<Account,Long>, JpaSpeci
             "   INNER JOIN Course c ON c.id = cr.course.id " +
             "   WHERE a.id = :studentId)")
     Page<Account> findAllMemberTheSameCourse(@Param("studentId") Long studentId, Pageable pageable);
+
+    @Query(value = "SELECT DISTINCT a.* " +
+            "FROM db_account AS a " +
+            "INNER JOIN db_course_registration AS cr ON cr.student_id = a.id " +
+            "INNER JOIN db_course AS c ON c.id = cr.course_id " +
+            "INNER JOIN db_lesson_plan AS lp ON lp.id = c.lesson_plan_id " +
+            "INNER JOIN db_modules AS m ON m.lesson_plan_id = lp.id " +
+            "INNER JOIN db_assignment AS assign ON assign.modules_id = m.id " +
+            "WHERE assign.id IN ( " +
+            "SELECT a.id " +
+            "FROM db_assignment AS a " +
+            "WHERE (a.end_date >= NOW()) AND (a.end_date <= DATE_ADD(NOW(), INTERVAL 1 DAY)))", nativeQuery = true)
+    List<Account> findAllStudentHaveAssignmentExpireAfterDay(@Param("numberDate") Integer numberDate);
+
+    @Query("SELECT a.id, c.teacher.id " +
+            "FROM Account a " +
+            "INNER JOIN CourseRegistration cr ON cr.student.id = a.id " +
+            "INNER JOIN Course c ON c.id = cr.course.id " +
+            "INNER JOIN Forum f ON f.course.id = c.id " +
+            "INNER JOIN Topic t ON t.forum.id = f.id " +
+            "WHERE t.id = :topicId AND a.id != :accountId")
+    List<Object[]> findAllMemberOfCourseByTopicId(@Param("topicId") Long topicId, @Param("accountId") Long accountId);
 }

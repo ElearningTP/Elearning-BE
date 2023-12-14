@@ -7,6 +7,7 @@ import com.api.learning.ElearningBE.dto.topic.TopicDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.topic.CreateTopicForm;
 import com.api.learning.ElearningBE.form.topic.UpdateTopicForm;
+import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.services.topic.TopicService;
 import com.api.learning.ElearningBE.storage.criteria.TopicCriteria;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +23,11 @@ import java.util.List;
 public class TopicController {
 
     private final TopicService topicService;
+    private final UserService userService;
 
-    public TopicController(TopicService topicService) {
+    public TopicController(TopicService topicService, UserService userService) {
         this.topicService = topicService;
+        this.userService = userService;
     }
 
     @GetMapping("/list")

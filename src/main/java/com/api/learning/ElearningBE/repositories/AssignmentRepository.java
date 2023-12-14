@@ -22,4 +22,9 @@ public interface AssignmentRepository extends JpaRepository<Assignment,Long>, Jp
             "INNER JOIN Account s ON cr.student.id = s.id " +
             "WHERE s.id = :studentId")
     List<Object[]> findAllAssignmentByStudentId(@Param("studentId") Long studentId);
+
+//    @Query("SELECT a " +
+//            "FROM Assignment a " +
+//            "WHERE (a.endDate >= NOW() AND DATE_ADD(NOW(), INTERVAL :numberDate DAY))")
+//    List<Assignment> findAllByEndDateAfterDay(@Param("numberDate") Integer numberDate);
 }
