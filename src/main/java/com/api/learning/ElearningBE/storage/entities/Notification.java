@@ -17,6 +17,7 @@ public class Notification extends Auditable<String> {
     private String message;
     @Column(name = "ref_id")
     private String refId;
+    private String kind; // TOPIC, COMMENT
     private Boolean isRead = false;
     @Column(name = "idUser")
     private Long idUser;
