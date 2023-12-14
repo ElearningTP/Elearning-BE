@@ -198,6 +198,7 @@ public class TopicServiceImpl implements TopicService{
         for (Long userId : userIds) {
             Notification notification = new Notification();
             notification.setIdUser(userId);
+            notification.setKind(ELearningConstant.NOTIFICATION_KIND_TOPIC);
             notification.setRefId(topic.getId().toString());
             notifications.add(notification);
         }
@@ -211,6 +212,7 @@ public class TopicServiceImpl implements TopicService{
         topicNotificationMessage.setNotificationId(notification.getId());
         topicNotificationMessage.setTopicContent(topic.getContent());
         topicNotificationMessage.setForumTitle(topic.getForum().getTitle());
+        topicNotificationMessage.setKind(notification.getKind());
         return convertObjectToJson(topicNotificationMessage);
     }
     public String convertObjectToJson(Object object) {

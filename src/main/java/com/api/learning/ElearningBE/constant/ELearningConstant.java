@@ -35,4 +35,8 @@ public class ELearningConstant {
     public static final Integer QUIZ_QUESTION_TYPE_MULTI_CHOICE = 2;
     public static final Double QUIZ_QUESTION_SCORE_DEFAULT = 1D;
     public static final Integer QUIZ_QUESTION_ATTEMPT_NUMBER_UNLIMITED = 0;
+
+    // Notification
+    public static final String NOTIFICATION_KIND_TOPIC = "TOPIC";
+    public static final String NOTIFICATION_KIND_COMMENT = "COMMENT";
 }

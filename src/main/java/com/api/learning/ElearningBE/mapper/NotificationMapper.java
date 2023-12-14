@@ -27,6 +27,7 @@ public interface NotificationMapper {
     @Mapping(source = "isRead", target = "isRead")
     @Mapping(source = "refId", target = "refId")
     @Mapping(source = "idUser", target = "userId")
+    @Mapping(source = "kind", target = "kind")
     @Named("fromEntityToNotificationDto")
     NotificationDto fromEntityToNotificationDto(Notification notification);
     @IterableMapping(elementTargetType = NotificationDto.class, qualifiedByName = "fromEntityToNotificationDto")
@@ -38,6 +39,7 @@ public interface NotificationMapper {
     @Mapping(source = "isRead", target = "isRead")
     @Mapping(source = "refId", target = "refId")
     @Mapping(source = "idUser", target = "userId")
+    @Mapping(source = "kind", target = "kind")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")

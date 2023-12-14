@@ -9,4 +9,5 @@ public class TopicNotificationMessage {
     private Long topicId;
     private String topicContent;
     private String forumTitle;
+    private String kind;
 }
