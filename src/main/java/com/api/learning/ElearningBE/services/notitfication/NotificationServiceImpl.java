@@ -27,10 +27,6 @@ public class NotificationServiceImpl implements NotificationService{
     private NotificationRepository notificationRepository;
     @Autowired
     private NotificationMapper notificationMapper;
-    @Autowired
-    private AccountRepository accountRepository;
-
-
 
     @Override
     public ApiMessageDto<ResponseListDto<List<NotificationDto>>> list(NotificationCriteria notificationCriteria, Pageable pageable) {
@@ -62,34 +58,34 @@ public class NotificationServiceImpl implements NotificationService{
         return apiMessageDto;
     }
 
-    @Override
-    public ApiMessageDto<NotificationDto> create(CreateNotificationForm createNotificationForm) {
-        ApiMessageDto<NotificationDto> apiMessageDto = new ApiMessageDto<>();
-        Account account = accountRepository.findById(createNotificationForm.getAccountId())
-                .orElseThrow(() -> new NotFoundException(String.format("Account with id %s not found", createNotificationForm.getAccountId())));
-        Notification notification = notificationMapper.fromCreateNotificationFormToEntity(createNotificationForm);
-//        notification.setAccount(account);
-        notificationRepository.save(notification);
-        NotificationDto notificationDto = notificationMapper.fromEntityToNotificationDto(notification);
-
-        apiMessageDto.setData(notificationDto);
-        apiMessageDto.setMessage("Create notification successfully");
-        return apiMessageDto;
-    }
-
-    @Override
-    public ApiMessageDto<NotificationDto> update(UpdateNotificationForm updateNotificationForm) {
-        ApiMessageDto<NotificationDto> apiMessageDto = new ApiMessageDto<>();
-        Notification notification = notificationRepository.findById(updateNotificationForm.getId())
-                .orElseThrow(() -> new NotFoundException(String.format("Notification with id %s not found", updateNotificationForm.getId())));
-        notificationMapper.fromUpdateNotificationToEntity(updateNotificationForm, notification);
-        notificationRepository.save(notification);
-        NotificationDto notificationDto = notificationMapper.fromEntityToNotificationDto(notification);
-
-        apiMessageDto.setData(notificationDto);
-        apiMessageDto.setMessage("Update notification successfully");
-        return apiMessageDto;
-    }
+//    @Override
+//    public ApiMessageDto<NotificationDto> create(CreateNotificationForm createNotificationForm) {
+//        ApiMessageDto<NotificationDto> apiMessageDto = new ApiMessageDto<>();
+//        Account account = accountRepository.findById(createNotificationForm.getAccountId())
+//                .orElseThrow(() -> new NotFoundException(String.format("Account with id %s not found", createNotificationForm.getAccountId())));
+//        Notification notification = notificationMapper.fromCreateNotificationFormToEntity(createNotificationForm);
+////        notification.setAccount(account);
+//        notificationRepository.save(notification);
+//        NotificationDto notificationDto = notificationMapper.fromEntityToNotificationDto(notification);
+//
+//        apiMessageDto.setData(notificationDto);
+//        apiMessageDto.setMessage("Create notification successfully");
+//        return apiMessageDto;
+//    }
+//
+//    @Override
+//    public ApiMessageDto<NotificationDto> update(UpdateNotificationForm updateNotificationForm) {
+//        ApiMessageDto<NotificationDto> apiMessageDto = new ApiMessageDto<>();
+//        Notification notification = notificationRepository.findById(updateNotificationForm.getId())
+//                .orElseThrow(() -> new NotFoundException(String.format("Notification with id %s not found", updateNotificationForm.getId())));
+//        notificationMapper.fromUpdateNotificationToEntity(updateNotificationForm, notification);
+//        notificationRepository.save(notification);
+//        NotificationDto notificationDto = notificationMapper.fromEntityToNotificationDto(notification);
+//
+//        apiMessageDto.setData(notificationDto);
+//        apiMessageDto.setMessage("Update notification successfully");
+//        return apiMessageDto;
+//    }
 
     @Override
     public ApiMessageDto<String> delete(Long id) {
