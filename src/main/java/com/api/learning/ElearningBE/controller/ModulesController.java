@@ -29,8 +29,8 @@ public class ModulesController {
 
     @GetMapping("/list")
     @PreAuthorize("hasRole('MODULE_L')")
-    public ApiMessageDto<ResponseListDto<List<ModulesDto>>> list(ModulesCriteria modulesCriteria, Pageable pageable){
-        ApiMessageDto<ResponseListDto<List<ModulesDto>>> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<ResponseListDto<List<ModulesAdminDto>>> list(ModulesCriteria modulesCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<ModulesAdminDto>>> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = modulesService.list(modulesCriteria,pageable);
         }catch (Exception e){
