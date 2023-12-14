@@ -30,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
 //        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
 //        builder.serializationInclusion(JsonInclude.Include.NON_EMPTY);
-        builder.dateFormat(new SimpleDateFormat(DATE_TIME_FORMAT));
+//        builder.dateFormat(new SimpleDateFormat(DATE_TIME_FORMAT));
         builder.indentOutput(true);
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
         converters.add(new ResourceHttpMessageConverter());
