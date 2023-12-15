@@ -22,7 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,37 +60,15 @@ public class TopicServiceImpl implements TopicService{
     public ApiMessageDto<ResponseListDto<List<TopicDto>>> list(TopicCriteria topicCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<TopicDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<TopicDto>> responseListDto = new ResponseListDto<>();
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createDate").descending());
         Page<Topic> topics = topicRepository.findAll(topicCriteria.getSpecification(),pageable);
         List<TopicDto> topicDtoS = topicMapper.fromEntityToTopicDtoList(topics.getContent());
         List<Long> topicIds = topics.getContent().stream().map(Topic::getId).collect(Collectors.toList());
         List<TopicComment> topicComments = topicCommentRepository.findAllByTopicIdIn(topicIds);
-//        List<TopicCommentAdminDto> topicCommentAdminDtoList = topicCommentMapper.fromEntityToTopicCommentAdminDto(topicComments);
-//
-//        topicDtoS.forEach( topicDto -> {
-//            List<TopicCommentAdminDto> topicCommentAdminDtoS = new ArrayList<>();
-//            topicCommentAdminDtoList.forEach( topicCommentAdminDto -> {
-//                if (Objects.equals(topicDto.getId(), topicCommentAdminDto.getTopicInfo().getId())){
-//                    topicCommentAdminDtoS.add(topicCommentAdminDto);
-//                }
-//            });
-//            topicDto.setCommentInfo(topicCommentAdminDtoS);
-//        });
 
-//        Map<Long, List<TopicCommentAdminDto>> commentsMap = topicComments.stream()
-//                .map(topicCommentMapper::fromEntityToTopicCommentAdminDto)
-//                .collect(Collectors.groupingBy(comment -> comment.getTopicInfo().getId()));
-
-        Map<Long, List<TopicCommentAdminDto>> commentsMap = topicComments.parallelStream()
+        Map<Long, List<TopicCommentAdminDto>> commentsMap = topicComments.stream()
                 .map(topicCommentMapper::fromEntityToTopicCommentAdminDto)
-                .collect(Collectors.toMap(
-                        comment -> comment.getTopicInfo().getId(),
-                        Collections::singletonList,
-                        (existingList, newList) -> {
-                            List<TopicCommentAdminDto> mergedList = new ArrayList<>(existingList);
-                            mergedList.addAll(newList);
-                            return mergedList;
-                        }
-                ));
+                .collect(Collectors.groupingByConcurrent(comment -> comment.getTopicInfo().getId()));
         List<TopicDto> topicDtoList = topicDtoS.parallelStream()
                 .peek(topicDto -> {
                     Long topicId = topicDto.getId();

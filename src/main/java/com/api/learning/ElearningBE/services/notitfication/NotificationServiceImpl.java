@@ -5,17 +5,15 @@ import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.notification.NotificationAdminDto;
 import com.api.learning.ElearningBE.dto.notification.NotificationDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
-import com.api.learning.ElearningBE.form.notification.CreateNotificationForm;
-import com.api.learning.ElearningBE.form.notification.UpdateNotificationForm;
 import com.api.learning.ElearningBE.mapper.NotificationMapper;
-import com.api.learning.ElearningBE.repositories.AccountRepository;
 import com.api.learning.ElearningBE.repositories.NotificationRepository;
 import com.api.learning.ElearningBE.storage.criteria.NotificationCriteria;
-import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +30,7 @@ public class NotificationServiceImpl implements NotificationService{
     public ApiMessageDto<ResponseListDto<List<NotificationDto>>> list(NotificationCriteria notificationCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<NotificationDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<NotificationDto>> responseListDto = new ResponseListDto<>();
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createDate").descending());
         Page<Notification> notifications = notificationRepository.findAll(notificationCriteria.getSpecification(),pageable);
         List<NotificationDto> notificationDtoList = notificationMapper.fromEntityToNotificationDtoList(notifications.getContent());
 
