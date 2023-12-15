@@ -24,6 +24,19 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    @PutMapping("/read-all")
+    public ApiMessageDto<String> readAllNotifications(){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = notificationService.readAllNotification();
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
     @GetMapping("/list")
     public ApiMessageDto<ResponseListDto<List<NotificationDto>>> list(NotificationCriteria notificationCriteria, Pageable pageable){
         ApiMessageDto<ResponseListDto<List<NotificationDto>>> apiMessageDto = new ApiMessageDto<>();
