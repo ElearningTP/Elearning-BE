@@ -69,6 +69,25 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public ApiMessageDto<ResponseListDto<List<AccountDto>>> getAllStudentByCourse(Long courseId, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<AccountDto>> responseListDto = new ResponseListDto<>();
+        Page<Account> accounts = accountRepository.findAllStudentByCourseId(courseId,pageable);
+        List<AccountDto> accountDtoList = accountMapper.fromEntityToAccountDtForTheSameOfCourseList(accounts.getContent());
+
+        responseListDto.setContent(accountDtoList);
+        responseListDto.setPageIndex(accounts.getNumber());
+        responseListDto.setPageSize(accounts.getSize());
+        responseListDto.setTotalPages(accounts.getTotalPages());
+        responseListDto.setTotalElements(accounts.getTotalElements());
+
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Retrieve all students successfully");
+        return apiMessageDto;
+    }
+
+
+    @Override
     public ApiMessageDto<ResponseListDto<List<AccountDto>>> memberTheSameCourse(Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
         ResponseListDto<List<AccountDto>> responseListDto = new ResponseListDto<>();

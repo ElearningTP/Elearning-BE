@@ -15,4 +15,6 @@ public class UpdateAssignmentSubmissionForm {
     private String textSubmission;
     @ApiModelProperty(name = "fileSubmissionUrl", notes = "The submission type is file")
     private String fileSubmissionUrl;
+    @ApiModelProperty(name = "linkSubmission", notes = "The submission type is link")
+    private String linkSubmission;
 }

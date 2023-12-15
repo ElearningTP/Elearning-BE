@@ -19,6 +19,8 @@ public class AssignmentSubmission extends Auditable<String> {
     private String textSubmission;
     @Column(name = "file_submission_url")
     private String fileSubmissionUrl;
+    @Column(columnDefinition = "text")
+    private String linkSubmission;
     @OneToOne
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;

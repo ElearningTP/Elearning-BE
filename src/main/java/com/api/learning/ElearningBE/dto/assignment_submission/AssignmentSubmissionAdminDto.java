@@ -12,6 +12,7 @@ import java.util.Date;
 public class AssignmentSubmissionAdminDto extends BaseAdminDto {
     private String textSubmission;
     private String fileSubmissionUrl;
+    private String linkSubmission;
     private Double score;
     private AssignmentDto assignmentInfo;
 }

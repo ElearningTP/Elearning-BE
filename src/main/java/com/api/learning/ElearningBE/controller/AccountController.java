@@ -28,6 +28,20 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @GetMapping("/all-student")
+    public ApiMessageDto<ResponseListDto<List<AccountDto>>> getAllStudentsByCourse(@RequestParam Long courseId, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = accountService.getAllStudentByCourse(courseId,pageable);
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            return apiMessageDto;
+        }
+        return apiMessageDto;
+    }
+
     @GetMapping("/member")
     public ApiMessageDto<ResponseListDto<List<AccountDto>>> memberTheSameOfCourse(Pageable pageable){
         ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
