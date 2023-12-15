@@ -81,6 +81,7 @@ public class ResourcesServiceImpl implements ResourcesService{
         Resources resources = resourcesRepository.findById(updateResourcesForm.getId())
                 .orElseThrow(() -> new NotFoundException(String.format("Resources with id %s not found", updateResourcesForm.getId())));
         resources.setTitle(updateResourcesForm.getTitle());
+        resources.setUrlDocument(updateResourcesForm.getUrlDocument());
         resourcesRepository.save(resources);
 
         apiMessageDto.setMessage("Update resources successfully");
