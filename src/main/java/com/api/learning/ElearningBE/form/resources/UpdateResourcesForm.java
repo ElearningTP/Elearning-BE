@@ -14,4 +14,7 @@ public class UpdateResourcesForm {
     @NotEmpty(message = "Title can not be empty")
     @ApiModelProperty(name = "title", required = true)
     private String title;
+    @NotEmpty(message = "Url document can not be null")
+    @ApiModelProperty(name = "urlDocument", required = true)
+    private String urlDocument;
 }
