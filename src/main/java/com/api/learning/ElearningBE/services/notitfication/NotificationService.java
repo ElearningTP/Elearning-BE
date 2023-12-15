@@ -14,6 +14,7 @@ import java.util.List;
 public interface NotificationService {
     ApiMessageDto<ResponseListDto<List<NotificationDto>>> list(NotificationCriteria notificationCriteria, Pageable pageable);
     ApiMessageDto<NotificationAdminDto> retrieve(Long id);
+    ApiMessageDto<String> readAllNotification();
 //    ApiMessageDto<NotificationDto> create(CreateNotificationForm createNotificationForm);
 //    ApiMessageDto<NotificationDto> update(UpdateNotificationForm updateNotificationForm);
     ApiMessageDto<String> delete(Long id);

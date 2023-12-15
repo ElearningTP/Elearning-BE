@@ -7,6 +7,7 @@ import com.api.learning.ElearningBE.dto.notification.NotificationDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.mapper.NotificationMapper;
 import com.api.learning.ElearningBE.repositories.NotificationRepository;
+import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.storage.criteria.NotificationCriteria;
 import com.api.learning.ElearningBE.storage.entities.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class NotificationServiceImpl implements NotificationService{
     private NotificationRepository notificationRepository;
     @Autowired
     private NotificationMapper notificationMapper;
+    @Autowired
+    private UserService userService;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<NotificationDto>>> list(NotificationCriteria notificationCriteria, Pageable pageable) {
@@ -54,6 +57,16 @@ public class NotificationServiceImpl implements NotificationService{
 
         apiMessageDto.setData(notificationAdminDto);
         apiMessageDto.setMessage("Retrieve notification successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<String> readAllNotification() {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Long accountId = userService.getAccountId();
+        notificationRepository.updateAllNotificationsToRead(accountId);
+
+        apiMessageDto.setMessage("Reading all notifications successfully");
         return apiMessageDto;
     }
 
