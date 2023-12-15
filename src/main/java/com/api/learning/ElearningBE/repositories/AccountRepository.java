@@ -48,4 +48,11 @@ public interface AccountRepository extends JpaRepository<Account,Long>, JpaSpeci
             "INNER JOIN Topic t ON t.forum.id = f.id " +
             "WHERE t.id = :topicId AND a.id != :accountId")
     List<Object[]> findAllMemberOfCourseByTopicId(@Param("topicId") Long topicId, @Param("accountId") Long accountId);
+
+    @Query("SELECT a " +
+            "FROM Account a " +
+            "INNER JOIN CourseRegistration cr ON cr.student.id = a.id " +
+            "INNER JOIN Course c ON c.id = cr.course.id " +
+            "WHERE c.id = :courseId")
+    Page<Account> findAllStudentByCourseId(@Param("courseId") Long courseId, Pageable pageable);
 }

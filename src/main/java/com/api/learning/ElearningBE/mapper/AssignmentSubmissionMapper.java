@@ -17,17 +17,20 @@ public interface AssignmentSubmissionMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
+    @Mapping(source = "linkSubmission", target = "linkSubmission")
     AssignmentSubmission fromCreateAssignmentSubmissionFormToEntity(CreateAssignmentSubmissionForm createAssignmentSubmissionForm);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
+    @Mapping(source = "linkSubmission", target = "linkSubmission")
     void fromUpdateAssignmentSubmissionFormToEntity(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm, @MappingTarget AssignmentSubmission assignmentSubmission);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
+    @Mapping(source = "linkSubmission", target = "linkSubmission")
     @Mapping(source = "status",target = "status")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")

@@ -12,6 +12,8 @@ public class CreateAssignmentSubmissionForm {
     private String textSubmission;
     @ApiModelProperty(name = "fileSubmissionUrl", notes = "The submission type is file")
     private String fileSubmissionUrl;
+    @ApiModelProperty(name = "linkSubmission", notes = "The submission type is link")
+    private String linkSubmission;
     @NotNull(message = "Assignment id can not be null")
     @ApiModelProperty(name = "assignmentId", required = true)
     private Long assignmentId;
