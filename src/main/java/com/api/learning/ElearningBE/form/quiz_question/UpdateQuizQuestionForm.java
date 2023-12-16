@@ -1,11 +1,15 @@
 package com.api.learning.ElearningBE.form.quiz_question;
 
+import com.api.learning.ElearningBE.form.answer_question.CreateAnswerQuestionForm;
+import com.api.learning.ElearningBE.form.answer_question.UpdateAnswerQuestionForm;
 import com.api.learning.ElearningBE.validation.QuizQuestionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class UpdateQuizQuestionForm {
@@ -19,4 +23,5 @@ public class UpdateQuizQuestionForm {
     @ApiModelProperty(name = "questionType", required = true)
     @QuizQuestionType
     private Integer questionType;
+    private List<@Valid UpdateAnswerQuestionForm> answers;
 }

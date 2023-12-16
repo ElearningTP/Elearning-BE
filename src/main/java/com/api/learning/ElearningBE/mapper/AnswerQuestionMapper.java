@@ -5,6 +5,7 @@ import com.api.learning.ElearningBE.dto.answer_question.AnswerQuestionDto;
 import com.api.learning.ElearningBE.dto.answer_question.ReviewAnswerQuestionDto;
 import com.api.learning.ElearningBE.dto.answer_question.StartQuizAnswerQuestionDto;
 import com.api.learning.ElearningBE.form.answer_question.CreateAnswerQuestionForm;
+import com.api.learning.ElearningBE.form.answer_question.CreateAnswerQuestionFormForCreateQuestion;
 import com.api.learning.ElearningBE.form.answer_question.UpdateAnswerQuestionForm;
 import com.api.learning.ElearningBE.storage.entities.AnswerQuestion;
 import org.mapstruct.*;
@@ -24,7 +25,17 @@ public interface AnswerQuestionMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "answerContent", target = "content")
     @Mapping(source = "isCorrect", target = "isCorrect")
+    @Named("fromCreateAnswerQuestionFormForCreateQuestionToEntity")
+    AnswerQuestion fromCreateAnswerQuestionFormForCreateQuestionToEntity(CreateAnswerQuestionFormForCreateQuestion answer);
+
+    @IterableMapping(elementTargetType = AnswerQuestion.class, qualifiedByName = "fromCreateAnswerQuestionFormForCreateQuestionToEntity")
+    List<AnswerQuestion> fromCreateAnswerQuestionFormForCreateQuestionToEntityList(List<CreateAnswerQuestionFormForCreateQuestion> answers);
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "answerContent", target = "content")
+    @Mapping(source = "isCorrect", target = "isCorrect")
+    @Named("fromUpdateAnswerQuestionFormToEntity")
     void fromUpdateAnswerQuestionFormToEntity(UpdateAnswerQuestionForm updateAnswerQuestionForm, @MappingTarget AnswerQuestion answerQuestion);
+//    void fromUpdateAnswerQuestionFormToEntityList(List<UpdateAnswerQuestionForm> answerQuestionForms, @MappingTarget List<AnswerQuestion> answers);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
