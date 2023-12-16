@@ -14,7 +14,7 @@ import java.util.List;
 public interface AnswerQuestionService {
     ApiMessageDto<ResponseListDto<List<AnswerQuestionDto>>> list(AnswerQuestionCriteria answerQuestionCriteria, Pageable pageable);
     ApiMessageDto<AnswerQuestionAdminDto> retrieve(Long id);
-    ApiMessageDto<AnswerQuestionDto> create(CreateAnswerQuestionForm createAnswerQuestionForm);
+    ApiMessageDto<List<AnswerQuestionDto>> create(CreateAnswerQuestionForm createAnswerQuestionForm);
     ApiMessageDto<AnswerQuestionDto> update(UpdateAnswerQuestionForm updateAnswerQuestionForm);
     ApiMessageDto<String> delete(Long id);
 }

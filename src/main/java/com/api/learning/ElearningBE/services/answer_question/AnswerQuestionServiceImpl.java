@@ -4,12 +4,14 @@ import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.answer_question.AnswerQuestionAdminDto;
 import com.api.learning.ElearningBE.dto.answer_question.AnswerQuestionDto;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.answer_question.CreateAnswerQuestionForm;
 import com.api.learning.ElearningBE.form.answer_question.UpdateAnswerQuestionForm;
 import com.api.learning.ElearningBE.mapper.AnswerQuestionMapper;
 import com.api.learning.ElearningBE.repositories.AnswerQuestionRepository;
 import com.api.learning.ElearningBE.repositories.QuizQuestionRepository;
+import com.api.learning.ElearningBE.repositories.TopicRepository;
 import com.api.learning.ElearningBE.storage.criteria.AnswerQuestionCriteria;
 import com.api.learning.ElearningBE.storage.entities.AnswerQuestion;
 import com.api.learning.ElearningBE.storage.entities.QuizQuestion;
@@ -20,6 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AnswerQuestionServiceImpl implements AnswerQuestionService{
@@ -30,6 +35,8 @@ public class AnswerQuestionServiceImpl implements AnswerQuestionService{
     private AnswerQuestionMapper answerQuestionMapper;
     @Autowired
     private QuizQuestionRepository quizQuestionRepository;
+    @Autowired
+    private TopicRepository topicRepository;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<AnswerQuestionDto>>> list(AnswerQuestionCriteria answerQuestionCriteria, Pageable pageable) {
@@ -62,16 +69,22 @@ public class AnswerQuestionServiceImpl implements AnswerQuestionService{
     }
 
     @Override
-    public ApiMessageDto<AnswerQuestionDto> create(CreateAnswerQuestionForm createAnswerQuestionForm) {
-        ApiMessageDto<AnswerQuestionDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<List<AnswerQuestionDto>> create(CreateAnswerQuestionForm createAnswerQuestionForm) {
+        ApiMessageDto<List<AnswerQuestionDto>> apiMessageDto = new ApiMessageDto<>();
         QuizQuestion question = quizQuestionRepository.findById(createAnswerQuestionForm.getQuestionId())
                 .orElseThrow(() -> new NotFoundException(String.format("Question with id %s not found", createAnswerQuestionForm.getQuestionId())));
-        AnswerQuestion answerQuestion = answerQuestionMapper.fromCreateAnswerQuestionFormToEntity(createAnswerQuestionForm);
-        answerQuestion.setQuestion(question);
-        answerQuestionRepository.save(answerQuestion);
-        AnswerQuestionDto answerQuestionDto = answerQuestionMapper.fromEntityToAnswerQuestionDto(answerQuestion);
+        if (createAnswerQuestionForm.getAnswers() == null){
+            throw new InvalidException("Invalid answer");
+        }
+        List<AnswerQuestion> answers = answerQuestionMapper.fromCreateAnswerQuestionFormForCreateQuestionToEntityList(createAnswerQuestionForm.getAnswers());
+        answers.replaceAll(answer -> {
+            answer.setQuestion(question);
+            return answer;
+        });
+        answerQuestionRepository.saveAll(answers);
+        List<AnswerQuestionDto> answerQuestionDtoList = answerQuestionMapper.fromEntityToAnswerQuestionDtoList(answers);
 
-        apiMessageDto.setData(answerQuestionDto);
+        apiMessageDto.setData(answerQuestionDtoList);
         apiMessageDto.setMessage("Create answer successfully");
         return apiMessageDto;
     }

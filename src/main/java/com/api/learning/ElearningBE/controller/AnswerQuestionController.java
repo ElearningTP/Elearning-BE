@@ -4,6 +4,7 @@ import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.answer_question.AnswerQuestionAdminDto;
 import com.api.learning.ElearningBE.dto.answer_question.AnswerQuestionDto;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.answer_question.CreateAnswerQuestionForm;
 import com.api.learning.ElearningBE.form.answer_question.UpdateAnswerQuestionForm;
@@ -61,14 +62,18 @@ public class AnswerQuestionController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ANSWER_C')")
-    public ApiMessageDto<AnswerQuestionDto> create(@Valid @RequestBody CreateAnswerQuestionForm createAnswerQuestionForm){
-        ApiMessageDto<AnswerQuestionDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<List<AnswerQuestionDto>> create(@Valid @RequestBody CreateAnswerQuestionForm createAnswerQuestionForm){
+        ApiMessageDto<List<AnswerQuestionDto>> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = answerQuestionService.create(createAnswerQuestionForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }catch (InvalidException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.BAD_REQUEST.toString());
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
