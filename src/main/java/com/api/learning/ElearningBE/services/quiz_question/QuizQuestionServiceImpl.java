@@ -19,7 +19,7 @@ import com.api.learning.ElearningBE.storage.criteria.QuizQuestionCriteria;
 import com.api.learning.ElearningBE.storage.entities.AnswerQuestion;
 import com.api.learning.ElearningBE.storage.entities.Quiz;
 import com.api.learning.ElearningBE.storage.entities.QuizQuestion;
-import lombok.Data;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -117,6 +117,7 @@ public class QuizQuestionServiceImpl implements QuizQuestionService{
     }
 
     @Override
+    @Transactional
     public ApiMessageDto<QuizQuestionDto> update(UpdateQuizQuestionForm updateQuizQuestionForm) {
         ApiMessageDto<QuizQuestionDto> apiMessageDto = new ApiMessageDto<>();
         QuizQuestion question = quizQuestionRepository.findById(updateQuizQuestionForm.getId())
