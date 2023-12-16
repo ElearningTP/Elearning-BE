@@ -236,6 +236,11 @@ public class CourseServiceImpl implements CourseService{
         course.setCategory(category);
         courseRepository.save(course);
 
+        Forum forum = new Forum();
+        forum.setTitle(course.getName());
+        forum.setCourse(course);
+        forumRepository.save(forum);
+
         apiMessageDto.setMessage("Create course successfully");
         return apiMessageDto;
     }
