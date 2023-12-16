@@ -7,6 +7,7 @@ import com.api.learning.ElearningBE.dto.course.CourseDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course.CreateCourseForm;
+import com.api.learning.ElearningBE.form.course.UpdateCourseForm;
 import com.api.learning.ElearningBE.services.course.CourseService;
 import com.api.learning.ElearningBE.storage.criteria.CourseCriteria;
 import org.springframework.data.domain.Pageable;
@@ -75,8 +76,8 @@ public class CourseController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('COURSE_C')")
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateCourseForm createCourseForm){
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<CourseDto> create(@Valid @RequestBody CreateCourseForm createCourseForm){
+        ApiMessageDto<CourseDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = courseService.create(createCourseForm);
         }catch (NotFoundException e){
@@ -87,6 +88,24 @@ public class CourseController {
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.BAD_REQUEST.toString());
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('COURSE_U')")
+    public ApiMessageDto<CourseDto> update(@Valid @RequestBody UpdateCourseForm updateCourseForm){
+        ApiMessageDto<CourseDto> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = courseService.update(updateCourseForm);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

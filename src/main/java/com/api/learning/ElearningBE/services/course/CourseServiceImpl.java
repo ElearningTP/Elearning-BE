@@ -16,6 +16,7 @@ import com.api.learning.ElearningBE.dto.resources.ResourcesDto;
 import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course.CreateCourseForm;
+import com.api.learning.ElearningBE.form.course.UpdateCourseForm;
 import com.api.learning.ElearningBE.mapper.*;
 import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.impl.UserService;
@@ -100,6 +101,7 @@ public class CourseServiceImpl implements CourseService{
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Course with id %s not found", id)));
         CourseAdminDto courseAdminDto = courseMapper.fromEntityToCourseAdminDto(course);
+
         if (course.getLessonPlan() != null){
             List<Modules> modules = modulesRepository.findAllByLessonPlanId(course.getLessonPlan().getId());
             List<Long> modulesIds = modules.stream().map(Modules::getId).collect(Collectors.toList());
@@ -185,12 +187,13 @@ public class CourseServiceImpl implements CourseService{
                 quizDto.setQuizSubmissionInfo(quizSubmissionDtoS);
             });
 
-            Forum forum = forumRepository.findByCourseId(course.getId());
-            ForumAdminDto forumAdminDto = forumMapper.fromEntityToForumAdminDto(forum);
-
-            courseAdminDto.setForumInfo(forumAdminDto);
             courseAdminDto.getLessonPlanInfo().setModulesInfo(modulesAdminDtoS);
         }
+        Forum forum = forumRepository.findByCourseId(course.getId());
+        ForumAdminDto forumAdminDto = forumMapper.fromEntityToForumAdminDto(forum);
+        courseAdminDto.setForumInfo(forumAdminDto);
+
+
 
         apiMessageDto.setData(courseAdminDto);
         apiMessageDto.setMessage("Retrieve course successfully");
@@ -215,8 +218,8 @@ public class CourseServiceImpl implements CourseService{
     }
 
     @Override
-    public ApiMessageDto<String> create(CreateCourseForm createCourseForm) {
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<CourseDto> create(CreateCourseForm createCourseForm) {
+        ApiMessageDto<CourseDto> apiMessageDto = new ApiMessageDto<>();
         Account account = accountRepository.findById(createCourseForm.getTeacherId())
                 .orElseThrow(() -> new NotFoundException(String.format("Teacher with id %s not found", createCourseForm.getTeacherId())));
         if (!account.getRole().getKind().equals(ELearningConstant.ROLE_KIND_TEACHER)){
@@ -235,13 +238,45 @@ public class CourseServiceImpl implements CourseService{
         course.setLessonPlan(lessonPlan);
         course.setCategory(category);
         courseRepository.save(course);
+        CourseDto courseDto = courseMapper.fromEntityToCourseDto(course);
 
         Forum forum = new Forum();
         forum.setTitle(course.getName());
         forum.setCourse(course);
         forumRepository.save(forum);
 
+        apiMessageDto.setData(courseDto);
         apiMessageDto.setMessage("Create course successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<CourseDto> update(UpdateCourseForm updateCourseForm) {
+        ApiMessageDto<CourseDto> apiMessageDto = new ApiMessageDto<>();
+        Course course = courseRepository.findById(updateCourseForm.getId())
+                .orElseThrow(() -> new NotFoundException(String.format("Course with id %s not found", updateCourseForm.getId())));
+        courseMapper.fromUpdateCourseFormToEntity(updateCourseForm, course);
+
+        if (updateCourseForm.getTeacherId() != null){
+            Account teacher = accountRepository.findById(updateCourseForm.getTeacherId())
+                    .orElseThrow(() -> new NotFoundException(String.format("Teacher with id %s not found", updateCourseForm.getTeacherId())));
+            course.setTeacher(teacher);
+        }
+        if (updateCourseForm.getLessonPlanId() != null){
+            LessonPlan lessonPlan = lessonPlanRepository.findById(updateCourseForm.getLessonPlanId())
+                    .orElseThrow(() -> new NotFoundException(String.format("Lesson plan id %s not found", updateCourseForm.getLessonPlanId())));
+            course.setLessonPlan(lessonPlan);
+        }
+        if (updateCourseForm.getCategoryId() != null){
+            Category category = categoryRepository.findById(updateCourseForm.getCategoryId())
+                    .orElseThrow(() -> new NotFoundException(String.format("Category with id %s can not be null", updateCourseForm.getCategoryId())));
+            course.setCategory(category);
+        }
+        courseRepository.save(course);
+        CourseDto courseDto = courseMapper.fromEntityToCourseDto(course);
+
+        apiMessageDto.setData(courseDto);
+        apiMessageDto.setMessage("Update course successfully");
         return apiMessageDto;
     }
 }

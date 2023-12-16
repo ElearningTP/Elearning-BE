@@ -3,6 +3,7 @@ package com.api.learning.ElearningBE.mapper;
 import com.api.learning.ElearningBE.dto.course.CourseAdminDto;
 import com.api.learning.ElearningBE.dto.course.CourseDto;
 import com.api.learning.ElearningBE.form.course.CreateCourseForm;
+import com.api.learning.ElearningBE.form.course.UpdateCourseForm;
 import com.api.learning.ElearningBE.storage.entities.Course;
 import org.mapstruct.*;
 
@@ -22,6 +23,16 @@ public interface CourseMapper {
     @Mapping(source = "objectives", target = "objectives")
     @Mapping(source = "description", target = "description")
     Course fromCreateCourseFormToEntity(CreateCourseForm createCourseForm);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "courseName", target = "name")
+    @Mapping(source = "thumbnail", target = "thumbnail")
+    @Mapping(source = "state", target = "state")
+    @Mapping(source = "startDate", target = "startDate")
+    @Mapping(source = "requirements", target = "requirements")
+    @Mapping(source = "objectives", target = "objectives")
+    @Mapping(source = "description", target = "description")
+    void fromUpdateCourseFormToEntity(UpdateCourseForm updateCourseForm, @MappingTarget Course course);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")

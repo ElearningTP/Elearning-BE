@@ -37,7 +37,7 @@ public class ForumCriteria {
                     Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
                     Root<CourseRegistration> registrationRoot = subquery.from(CourseRegistration.class);
                     subquery.select(registrationRoot.get("course").get("id"));
-                    subquery.where(criteriaBuilder.equal(registrationRoot.get("student"), getAccountId()));
+                    subquery.where(criteriaBuilder.equal(registrationRoot.get("student").get("id"), getAccountId()));
                     Predicate studentPredicate = criteriaBuilder.in(forumJoinCourse.get("id")).value(subquery);
 
                     predicates.add(criteriaBuilder.or(teacherPredicate,studentPredicate));
