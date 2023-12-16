@@ -1,6 +1,8 @@
 package com.api.learning.ElearningBE.storage.criteria;
 
 import com.api.learning.ElearningBE.storage.entities.Assignment;
+import com.api.learning.ElearningBE.storage.entities.Course;
+import com.api.learning.ElearningBE.storage.entities.LessonPlan;
 import com.api.learning.ElearningBE.storage.entities.Modules;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +17,7 @@ public class AssignmentCriteria {
     private Integer type;
     private Integer state;
     private Long modulesId;
+    private Long courseId;
 
     public Specification<Assignment> getSpecification(){
         return new Specification<Assignment>() {
@@ -34,6 +37,19 @@ public class AssignmentCriteria {
                 if (getModulesId() != null){
                     Join<Assignment, Modules> join = root.join("modules");
                     predicates.add(criteriaBuilder.equal(join.get("id"), getModulesId()));
+                }
+                if (getCourseId() != null){
+                    Join<Assignment, Modules> modulesJoin = root.join("modules");
+                    Join<Modules, LessonPlan> lessonPlanJoin = modulesJoin.join("lessonPlan");
+
+                    Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
+                    Root<Course> courseRoot = subquery.from(Course.class);
+                    Join<Course, LessonPlan> courseLessonPlanJoin = courseRoot.join("lessonPlan");
+                    subquery.select(courseLessonPlanJoin.get("id"));
+                    subquery.where(criteriaBuilder.equal(courseRoot.get("id"), getCourseId()));
+
+                    predicates.add(criteriaBuilder.equal(lessonPlanJoin.get("id"), subquery));
+
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
