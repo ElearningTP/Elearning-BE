@@ -52,7 +52,7 @@ public class QuizServiceImpl implements QuizService{
     @Autowired
     private QuizSubmissionMapper quizSubmissionMapper;
     @Autowired
-    private AccountRepository accountRepository;
+    private QuizSubmissionResultRepository quizSubmissionResultRepository;
     @Autowired
     private UserService userService;
 
@@ -169,6 +169,8 @@ public class QuizServiceImpl implements QuizService{
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Quiz with id %s not found", id)));
+        quizSubmissionResultRepository.deleteAllByQuizId(quiz.getId());
+        quizSubmissionRepository.deleteAllByQuizId(quiz.getId());
         answerQuestionRepository.deleteAllByQuizId(quiz.getId());
         quizQuestionRepository.deleteAllByQuizId(quiz.getId());
         quizRepository.delete(quiz);

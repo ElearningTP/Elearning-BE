@@ -9,6 +9,7 @@ import com.api.learning.ElearningBE.form.assignment.CreateAssignmentForm;
 import com.api.learning.ElearningBE.form.assignment.UpdateAssignmentForm;
 import com.api.learning.ElearningBE.mapper.AssignmentMapper;
 import com.api.learning.ElearningBE.repositories.AssignmentRepository;
+import com.api.learning.ElearningBE.repositories.AssignmentSubmissionRepository;
 import com.api.learning.ElearningBE.repositories.ModulesRepository;
 import com.api.learning.ElearningBE.storage.criteria.AssignmentCriteria;
 import com.api.learning.ElearningBE.storage.entities.Assignment;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class AssignmentServiceImpl implements AssignmentService{
     private ModulesRepository modulesRepository;
     @Autowired
     private AssignmentMapper assignmentMapper;
+    @Autowired
+    private AssignmentSubmissionRepository assignmentSubmissionRepository;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<AssignmentDto>>> list(AssignmentCriteria assignmentCriteria, Pageable pageable) {
@@ -86,10 +90,12 @@ public class AssignmentServiceImpl implements AssignmentService{
     }
 
     @Override
+    @Transactional
     public ApiMessageDto<String> delete(Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Assignment assignment = assignmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Assignment with id %s not found", id)));
+        assignmentSubmissionRepository.deleteAllByAssignmentId(assignment.getId());
         assignmentRepository.delete(assignment);
 
         apiMessageDto.setMessage("Delete assignment successfully");
