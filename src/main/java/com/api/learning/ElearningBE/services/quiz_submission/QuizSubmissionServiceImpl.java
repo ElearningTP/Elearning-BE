@@ -191,6 +191,64 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
 //        return (ELearningConstant.QUIZ_QUESTION_SCORE_DEFAULT * 10.0 * finalAmountQuestionSelected) / questions.size();
 //    }
 
+//    @Override
+//    public ApiMessageDto<ReviewQuizSubmissionDto> review(Long id) {
+//        ApiMessageDto<ReviewQuizSubmissionDto> apiMessageDto = new ApiMessageDto<>();
+//        QuizSubmission submission = quizSubmissionRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(String.format("Quiz submission with id %s not found", id)));
+//        ReviewQuizSubmissionDto reviewQuizSubmissionDto = quizSubmissionMapper.fromEntityToReviewQuizSubmissionDto(submission);
+//        //Group by answer result with questionId
+//        Map<Long, List<AnswerQuestion>> answerResultsMap = quizSubmissionResultRepository.findAllBySubmissionId(submission.getId()).stream()
+//                .map(QuizSubmissionResult::getAnswer)
+//                .collect(Collectors.groupingByConcurrent(submissionResult -> submissionResult.getQuestion().getId()));
+//
+//        List<QuizQuestion> questions = quizQuestionRepository.findAllByQuizId(submission.getQuiz().getId());
+//        List<Long> questionIds = questions.stream().map(QuizQuestion::getId).collect(Collectors.toList());
+//
+//        Map<Long, List<AnswerQuestion>> answersMap = answerQuestionRepository.findAllByQuestionIdIn(questionIds).stream()
+//                .collect(Collectors.groupingByConcurrent(answer -> answer.getQuestion().getId()));
+//
+//        List<ReviewQuizQuestionDto> questionReviewDtoList = new ArrayList<>();
+//        questions.parallelStream().forEach(question -> {
+//            if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_SINGLE_CHOICE)) {
+//                ReviewQuizQuestionDto questionReviewDto = quizQuestionMapper.fromEntityToReviewQuizQuestionDto(question);
+//                List<ReviewAnswerQuestionDto> answerReviewDtoList = answersMap.getOrDefault(question.getId(), Collections.emptyList()).stream()
+//                        .map(answerQuestionMapper::fromEntityToReviewAnswerQuestionDto)
+//                        .peek(answerReviewDto -> answerReviewDto.setIsSelected(false))
+//                        .collect(Collectors.toList());
+//
+//                Map<Long, ReviewAnswerQuestionDto> answerDtoListMap = answerReviewDtoList.stream().collect(Collectors.toConcurrentMap(ReviewAnswerQuestionDto::getId, Function.identity()));
+//                List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
+//                answerResults.forEach(answerResult -> {
+//                    answerDtoListMap.get(answerResult.getId()).setIsSelected(true);
+//                });
+//                questionReviewDto.setAnswers(answerReviewDtoList);
+//                questionReviewDtoList.add(questionReviewDto);
+//            }else {
+//                if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_MULTI_CHOICE)){
+//                    ReviewQuizQuestionDto questionReviewDto = quizQuestionMapper.fromEntityToReviewQuizQuestionDto(question);
+//                    List<ReviewAnswerQuestionDto> answerReviewDtoList = answersMap.getOrDefault(question.getId(), Collections.emptyList()).stream()
+//                            .map(answerQuestionMapper::fromEntityToReviewAnswerQuestionDto)
+//                            .peek(answerReviewDto -> answerReviewDto.setIsSelected(false))
+//                            .collect(Collectors.toList());
+//
+//                    Map<Long, ReviewAnswerQuestionDto> answerDtoListMap = answerReviewDtoList.stream().collect(Collectors.toConcurrentMap(ReviewAnswerQuestionDto::getId, Function.identity()));
+//                    List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
+//                    answerResults.forEach(answerResult -> {
+//                        answerDtoListMap.get(answerResult.getId()).setIsSelected(true);
+//                    });
+//                    questionReviewDto.setAnswers(answerReviewDtoList);
+//                    questionReviewDtoList.add(questionReviewDto);
+//                }
+//            }
+//            });
+//        reviewQuizSubmissionDto.setQuestions(questionReviewDtoList);
+//
+//        apiMessageDto.setData(reviewQuizSubmissionDto);
+//        apiMessageDto.setMessage("");
+//        return apiMessageDto;
+//    }
+
     @Override
     public ApiMessageDto<ReviewQuizSubmissionDto> review(Long id) {
         ApiMessageDto<ReviewQuizSubmissionDto> apiMessageDto = new ApiMessageDto<>();
@@ -210,22 +268,20 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
 
         List<ReviewQuizQuestionDto> questionReviewDtoList = new ArrayList<>();
         questions.parallelStream().forEach(question -> {
-            if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_SINGLE_CHOICE)) {
-                ReviewQuizQuestionDto questionReviewDto = quizQuestionMapper.fromEntityToReviewQuizQuestionDto(question);
-                List<ReviewAnswerQuestionDto> answerReviewDtoList = answersMap.getOrDefault(question.getId(), Collections.emptyList()).stream()
-                        .map(answerQuestionMapper::fromEntityToReviewAnswerQuestionDto)
-                        .peek(answerReviewDto -> answerReviewDto.setIsSelected(false))
-                        .collect(Collectors.toList());
+            ReviewQuizQuestionDto questionReviewDto = quizQuestionMapper.fromEntityToReviewQuizQuestionDto(question);
+            List<ReviewAnswerQuestionDto> answerReviewDtoList = answersMap.getOrDefault(question.getId(), Collections.emptyList()).stream()
+                    .map(answerQuestionMapper::fromEntityToReviewAnswerQuestionDto)
+                    .peek(answerReviewDto -> answerReviewDto.setIsSelected(false))
+                    .collect(Collectors.toList());
 
-                Map<Long, ReviewAnswerQuestionDto> answerDtoListMap = answerReviewDtoList.stream().collect(Collectors.toConcurrentMap(ReviewAnswerQuestionDto::getId, Function.identity()));
-                List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
-                answerResults.forEach(answerResult -> {
-                    answerDtoListMap.get(answerResult.getId()).setIsSelected(true);
-                });
-                questionReviewDto.setAnswers(answerReviewDtoList);
-                questionReviewDtoList.add(questionReviewDto);
-            }
+            Map<Long, ReviewAnswerQuestionDto> answerDtoListMap = answerReviewDtoList.stream().collect(Collectors.toConcurrentMap(ReviewAnswerQuestionDto::getId, Function.identity()));
+            List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
+            answerResults.forEach(answerResult -> {
+                answerDtoListMap.get(answerResult.getId()).setIsSelected(true);
             });
+            questionReviewDto.setAnswers(answerReviewDtoList);
+            questionReviewDtoList.add(questionReviewDto);
+        });
         reviewQuizSubmissionDto.setQuestions(questionReviewDtoList);
 
         apiMessageDto.setData(reviewQuizSubmissionDto);
