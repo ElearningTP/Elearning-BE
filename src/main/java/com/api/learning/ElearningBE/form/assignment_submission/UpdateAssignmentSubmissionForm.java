@@ -17,4 +17,6 @@ public class UpdateAssignmentSubmissionForm {
     private String fileSubmissionUrl;
     @ApiModelProperty(name = "linkSubmission", notes = "The submission type is link")
     private String linkSubmission;
+    @ApiModelProperty(name = "score")
+    private Double score;
 }
