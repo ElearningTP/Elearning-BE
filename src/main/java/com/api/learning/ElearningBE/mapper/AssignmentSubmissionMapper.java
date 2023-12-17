@@ -24,6 +24,7 @@ public interface AssignmentSubmissionMapper {
     @Mapping(source = "textSubmission", target = "textSubmission")
     @Mapping(source = "fileSubmissionUrl", target = "fileSubmissionUrl")
     @Mapping(source = "linkSubmission", target = "linkSubmission")
+    @Mapping(source = "score", target = "score")
     void fromUpdateAssignmentSubmissionFormToEntity(UpdateAssignmentSubmissionForm updateAssignmentSubmissionForm, @MappingTarget AssignmentSubmission assignmentSubmission);
 
     @BeanMapping(ignoreByDefault = true)
