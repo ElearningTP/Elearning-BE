@@ -8,7 +8,8 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = {AccountMapper.class})
 public interface QuizSubmissionMapper {
 
     @BeanMapping(ignoreByDefault = true)
@@ -25,6 +26,7 @@ public interface QuizSubmissionMapper {
     @Mapping(source = "score", target = "score")
     @Mapping(source = "createDate", target = "createDate")
     @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Mapping(source = "student", target = "studentInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
     @Named("fromEntityToQuizSubmissionDto")
     QuizSubmissionDto fromEntityToQuizSubmissionDto(QuizSubmission quizSubmission);
     @IterableMapping(elementTargetType = QuizSubmissionDto.class, qualifiedByName = "fromEntityToQuizSubmissionDto")

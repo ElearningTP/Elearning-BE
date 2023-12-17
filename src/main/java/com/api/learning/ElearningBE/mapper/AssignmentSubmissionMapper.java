@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {AssignmentMapper.class})
+        uses = {AssignmentMapper.class, AccountMapper.class})
 public interface AssignmentSubmissionMapper {
 
     @BeanMapping(ignoreByDefault = true)
@@ -36,6 +36,7 @@ public interface AssignmentSubmissionMapper {
     @Mapping(source = "modifiedDate", target = "modifiedDate")
     @Mapping(source = "score", target = "score")
     @Mapping(source = "assignment", target = "assignmentInfo", qualifiedByName = "fromEntityToAssignmentDto")
+    @Mapping(source = "student", target = "studentInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
     @Named("fromEntityToAssignmentSubmissionAdminDto")
     AssignmentSubmissionAdminDto fromEntityToAssignmentSubmissionAdminDto(AssignmentSubmission assignmentSubmission);
     @IterableMapping(elementTargetType = AssignmentSubmissionAdminDto.class, qualifiedByName = "fromEntityToAssignmentSubmissionAdminDto")
