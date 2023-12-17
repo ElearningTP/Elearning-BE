@@ -34,6 +34,7 @@ public interface AccountMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "fullName", target = "fullName")
     @Mapping(source = "email", target = "email")
+    @Mapping(source = "avatarPath", target = "avatarPath")
     @Named("fromEntityToAccountDtoAutoComplete")
     AccountDto fromEntityToAccountDtoAutoComplete(Account account);
 
