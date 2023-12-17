@@ -18,6 +18,7 @@ import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.impl.UserService;
 import com.api.learning.ElearningBE.storage.criteria.QuizSubmissionCriteria;
 import com.api.learning.ElearningBE.storage.entities.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -120,15 +121,22 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
         apiMessageDto.setMessage("Submit successfully");
         return apiMessageDto;
     }
+
     private Double calculateQuizSubmissionScore(QuizSubmission submission, List<QuizSubmissionResult> submissionResults){
         //Group by answer result with questionId
         Map<Long, List<AnswerQuestion>> answerResultsMap = submissionResults.parallelStream()
                 .map(QuizSubmissionResult::getAnswer)
                 .collect(Collectors.groupingByConcurrent(submissionResult -> submissionResult.getQuestion().getId()));
         List<QuizQuestion> questions = quizQuestionRepository.findAllByQuizId(submission.getQuiz().getId());
+        List<Long> questionIds = questions.parallelStream().map(QuizQuestion::getId).
+                collect(Collectors.toList());
+
+        Map<Long,List<AnswerQuestion>> answersMap = answerQuestionRepository.findAllByQuestionIdIn(questionIds).parallelStream().
+                collect(Collectors.groupingByConcurrent(answer -> answer.getQuestion().getId()));
 
         AtomicInteger amountQuestionSelected = new AtomicInteger(0);
-        questions.parallelStream().forEach(question -> {
+        questions.forEach( question -> {
+            // Single choice
             if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_SINGLE_CHOICE)) {
                 List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
                 answerResults.forEach(answerResult -> {
@@ -136,11 +144,52 @@ public class QuizSubmissionServiceImpl implements QuizSubmissionService{
                         amountQuestionSelected.incrementAndGet();
                     }
                 });
+            }else {
+                // Multiple choice
+                if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_MULTI_CHOICE)){
+                    List<AnswerQuestion> multipleAnswerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
+                    List<AnswerQuestion> multipleAnswerResultsIsCorrect = multipleAnswerResults.stream()
+                            .filter(answerIsCorrect -> answerIsCorrect.getIsCorrect().equals(true))
+                            .collect(Collectors.toList());
+                    List<AnswerQuestion> answerList = answersMap.getOrDefault(question.getId(), Collections.emptyList());
+                    List<AnswerQuestion> answerIsCorrectList = answerList.stream()
+                            .filter(answerIsCorrect -> answerIsCorrect.getIsCorrect().equals(true))
+                            .collect(Collectors.toList());
+                    if (!multipleAnswerResultsIsCorrect.isEmpty() && !answerIsCorrectList.isEmpty()) {
+                        if (multipleAnswerResultsIsCorrect.size() == answerIsCorrectList.size()
+                                && multipleAnswerResults.size() == answerIsCorrectList.size()) {
+                            amountQuestionSelected.incrementAndGet();
+                        }
+                    }
+                }
             }
         });
         int finalAmountQuestionSelected = amountQuestionSelected.get();
         return (ELearningConstant.QUIZ_QUESTION_SCORE_DEFAULT * 10.0 * finalAmountQuestionSelected) / questions.size();
     }
+
+
+//    private Double calculateQuizSubmissionScore(QuizSubmission submission, List<QuizSubmissionResult> submissionResults){
+//        //Group by answer result with questionId
+//        Map<Long, List<AnswerQuestion>> answerResultsMap = submissionResults.parallelStream()
+//                .map(QuizSubmissionResult::getAnswer)
+//                .collect(Collectors.groupingByConcurrent(submissionResult -> submissionResult.getQuestion().getId()));
+//        List<QuizQuestion> questions = quizQuestionRepository.findAllByQuizId(submission.getQuiz().getId());
+//
+//        AtomicInteger amountQuestionSelected = new AtomicInteger(0);
+//        questions.parallelStream().forEach(question -> {
+//            if (question.getQuestionType().equals(ELearningConstant.QUIZ_QUESTION_TYPE_SINGLE_CHOICE)) {
+//                List<AnswerQuestion> answerResults = answerResultsMap.getOrDefault(question.getId(), Collections.emptyList());
+//                answerResults.forEach(answerResult -> {
+//                    if (answerResult.getIsCorrect().equals(true)) {
+//                        amountQuestionSelected.incrementAndGet();
+//                    }
+//                });
+//            }
+//        });
+//        int finalAmountQuestionSelected = amountQuestionSelected.get();
+//        return (ELearningConstant.QUIZ_QUESTION_SCORE_DEFAULT * 10.0 * finalAmountQuestionSelected) / questions.size();
+//    }
 
     @Override
     public ApiMessageDto<ReviewQuizSubmissionDto> review(Long id) {
