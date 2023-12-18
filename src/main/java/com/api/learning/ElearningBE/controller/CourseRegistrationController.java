@@ -39,12 +39,12 @@ public class CourseRegistrationController {
         return apiMessageDto;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/enroll")
     @PreAuthorize("hasRole('REGISTRATION_C')")
     public ApiMessageDto<String> create(@Valid @RequestBody CreateCourseRegistrationForm createCourseRegistrationForm){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try{
-            apiMessageDto = courseRegistrationService.create(createCourseRegistrationForm);
+            apiMessageDto = courseRegistrationService.enroll(createCourseRegistrationForm);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
