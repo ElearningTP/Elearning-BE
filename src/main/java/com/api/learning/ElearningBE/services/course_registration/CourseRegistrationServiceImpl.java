@@ -3,7 +3,6 @@ package com.api.learning.ElearningBE.services.course_registration;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.course_registration.CourseRegistrationDto;
-import com.api.learning.ElearningBE.dto.lesson_plan.LessonPlanDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course_registration.CreateCourseRegistrationForm;
@@ -42,20 +41,6 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
     private ModulesRepository modulesRepository;
     @Autowired
     private ModulesMapper modulesMapper;
-//    @Override
-//    public ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> autoComplete(CourseRegistrationCriteria courseRegistrationCriteria, Pageable pageable) {
-//        ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> apiMessageDto = new ApiMessageDto<>();
-//        ResponseListDto<List<CourseRegistrationDto>> responseListDto = new ResponseListDto<>();
-//        Page<CourseRegistration> courseRegistrations = courseRegistrationRepository.findAll(courseRegistrationCriteria.getSpecification(),pageable);
-//        List<CourseRegistrationDto> courseRegistrationDtoS = courseRegistrationMapper.fromEntityToCourseRegistrationDtoList(courseRegistrations.getContent());
-//
-//        responseListDto.setContent(courseRegistrationDtoS);
-//        responseListDto.setTotalElements(courseRegistrations.getTotalElements());
-//        responseListDto.setTotalPages(courseRegistrations.getTotalPages());
-//
-//        apiMessageDto.setData(responseListDto);
-//        return apiMessageDto;
-//    }
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseRegistrationDto>>> list(CourseRegistrationCriteria courseRegistrationCriteria, Pageable pageable) {
@@ -100,7 +85,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
     }
 
     @Override
-    public ApiMessageDto<String> create(CreateCourseRegistrationForm createCourseRegistrationForm) {
+    public ApiMessageDto<String> enroll(CreateCourseRegistrationForm createCourseRegistrationForm) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Account student = accountRepository.findById(createCourseRegistrationForm.getStudentId())
                 .orElseThrow(() -> new NotFoundException(String.format("Student with id %s not found",createCourseRegistrationForm.getStudentId())));

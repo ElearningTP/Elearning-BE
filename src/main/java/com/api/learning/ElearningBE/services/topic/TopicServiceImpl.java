@@ -135,10 +135,12 @@ public class TopicServiceImpl implements TopicService{
     }
 
     @Override
+    @Transactional
     public ApiMessageDto<String> delete(Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Topic with id %s not found",id)));
+        topicCommentRepository.deleteAllByTopicId(topic.getId());
         topicRepository.delete(topic);
 
         apiMessageDto.setMessage("Delete topic successfully");
