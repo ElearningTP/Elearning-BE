@@ -37,6 +37,8 @@ public interface AccountMapper {
     @Mapping(source = "avatarPath", target = "avatarPath")
     @Named("fromEntityToAccountDtoAutoComplete")
     AccountDto fromEntityToAccountDtoAutoComplete(Account account);
+    @IterableMapping(elementTargetType = AccountDto.class, qualifiedByName = "fromEntityToAccountDtoAutoComplete")
+    List<AccountDto> fromEntityToAccountDtoAutoCompleteList(List<Account> accounts);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")

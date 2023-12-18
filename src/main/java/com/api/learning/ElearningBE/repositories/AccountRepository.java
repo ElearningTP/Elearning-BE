@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.repositories;
 
+import com.api.learning.ElearningBE.storage.criteria.AccountCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,4 +56,11 @@ public interface AccountRepository extends JpaRepository<Account,Long>, JpaSpeci
             "INNER JOIN Course c ON c.id = cr.course.id " +
             "WHERE c.id = :courseId")
     Page<Account> findAllStudentByCourseId(@Param("courseId") Long courseId, Pageable pageable);
+
+    @Query("SELECT a " +
+            "FROM Account a " +
+            "INNER JOIN Role r ON r.id = a.role.id " +
+            "WHERE (:#{#criteria.email} IS NULL OR LOWER(a.email) LIKE LOWER(CONCAT('%', :#{#criteria.email}, '%'))) " +
+            "AND r.name = 'Student' ")
+    Page<Account> findAllByPredicate(@Param("criteria")AccountCriteria criteria, Pageable pageable);
 }
