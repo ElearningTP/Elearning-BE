@@ -27,6 +27,8 @@ public interface TopicMapper {
     @Mapping(source = "content", target = "topicContent")
     @Mapping(source = "forum", target = "forumInfo", qualifiedByName = "fromEntityToForumDto")
     @Mapping(source = "account", target = "accountInfo", qualifiedByName = "fromEntityToAccountDtoAutoComplete")
+    @Mapping(source = "createDate", target = "createDate")
+    @Mapping(source = "modifiedDate", target = "modifiedDate")
     @Named("fromEntityToTopicDto")
     TopicDto fromEntityToTopicDto(Topic topic);
     @IterableMapping(elementTargetType = TopicDto.class, qualifiedByName = "fromEntityToTopicDto")
