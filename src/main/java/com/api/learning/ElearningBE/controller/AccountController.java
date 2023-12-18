@@ -7,6 +7,7 @@ import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
 import com.api.learning.ElearningBE.services.account.AccountService;
+import com.api.learning.ElearningBE.storage.criteria.AccountCriteria;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,21 @@ public class AccountController {
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
+
+    @GetMapping("/auto-complete")
+    public ApiMessageDto<ResponseListDto<List<AccountDto>>> autoComplete(AccountCriteria accountCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = accountService.autoComplete(accountCriteria,pageable);
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            return apiMessageDto;
+        }
+        return apiMessageDto;
+    }
+
 
     @GetMapping("/all-student")
     public ApiMessageDto<ResponseListDto<List<AccountDto>>> getAllStudentsByCourse(@RequestParam Long courseId, Pageable pageable){

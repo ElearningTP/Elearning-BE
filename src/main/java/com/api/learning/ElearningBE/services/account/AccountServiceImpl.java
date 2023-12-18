@@ -14,6 +14,7 @@ import com.api.learning.ElearningBE.mapper.*;
 import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.JwtUtils;
 import com.api.learning.ElearningBE.security.impl.UserService;
+import com.api.learning.ElearningBE.storage.criteria.AccountCriteria;
 import com.api.learning.ElearningBE.storage.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -66,6 +67,23 @@ public class AccountServiceImpl implements AccountService {
             return token.substring(7);
         }
         return null;
+    }
+
+    @Override
+    public ApiMessageDto<ResponseListDto<List<AccountDto>>> autoComplete(AccountCriteria accountCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<AccountDto>> responseListDto = new ResponseListDto<>();
+        Page<Account> accounts = accountRepository.findAllByPredicate(accountCriteria,pageable);
+        List<AccountDto> accountDtoList = accountMapper.fromEntityToAccountDtoAutoCompleteList(accounts.getContent());
+
+        responseListDto.setContent(accountDtoList);
+        responseListDto.setPageIndex(accounts.getNumber());
+        responseListDto.setPageSize(accounts.getSize());
+        responseListDto.setTotalPages(accounts.getTotalPages());
+        responseListDto.setTotalElements(accounts.getTotalElements());
+
+        apiMessageDto.setData(responseListDto);
+        return apiMessageDto;
     }
 
     @Override
