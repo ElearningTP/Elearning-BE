@@ -4,6 +4,7 @@ import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.course_registration.CourseRegistrationDto;
 import com.api.learning.ElearningBE.dto.modules.ModulesDto;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.course_registration.CreateCourseRegistrationForm;
 import com.api.learning.ElearningBE.mapper.CourseRegistrationMapper;
@@ -96,9 +97,7 @@ public class CourseRegistrationServiceImpl implements CourseRegistrationService{
         Long courseId = createCourseRegistrationForm.getCourseId();
         Boolean existStudent = courseRegistrationRepository.existsByStudentIdAndCourseId(studentId,courseId);
         if (existStudent){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setMessage("Student has enrolled this course");
-            return apiMessageDto;
+            throw new InvalidException("Student has enrolled this course");
         }
 
         CourseRegistration courseRegistration = new CourseRegistration();
