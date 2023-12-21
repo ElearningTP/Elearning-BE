@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.services.account;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
+import com.api.learning.ElearningBE.dto.account.AccountAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
 import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
@@ -69,6 +70,25 @@ public class AccountServiceImpl implements AccountService {
         return null;
     }
 
+    @Override
+    public ApiMessageDto<ResponseListDto<List<AccountAdminDto>>> list(AccountCriteria accountCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListDto<List<AccountAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+        ResponseListDto<List<AccountAdminDto>> responseListDto = new ResponseListDto<>();
+        Page<Account> accounts = accountRepository.findAll(accountCriteria.getSpecification(),pageable);
+        List<AccountAdminDto> accountDtoList = accountMapper.fromEntityToAccountAdminDtoList(accounts.getContent());
+
+        responseListDto.setContent(accountDtoList);
+        responseListDto.setPageIndex(accounts.getNumber());
+        responseListDto.setPageSize(accounts.getSize());
+        responseListDto.setTotalPages(accounts.getTotalPages());
+        responseListDto.setTotalElements(accounts.getTotalElements());
+
+        apiMessageDto.setData(responseListDto);
+        return apiMessageDto;
+    }
+
+
+    /// Check query again
     @Override
     public ApiMessageDto<ResponseListDto<List<AccountDto>>> autoComplete(AccountCriteria accountCriteria, Pageable pageable) {
         ApiMessageDto<ResponseListDto<List<AccountDto>>> apiMessageDto = new ApiMessageDto<>();
