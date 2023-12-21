@@ -3,6 +3,7 @@ package com.api.learning.ElearningBE.dto.account;
 import com.api.learning.ElearningBE.dto.BaseAdminDto;
 import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
 import com.api.learning.ElearningBE.dto.nation.NationAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.util.Date;
@@ -17,5 +18,5 @@ public class AccountAdminDto extends BaseAdminDto {
     private Boolean isSuperAdmin = false;
     private Date lastLogin;
     private NationAdminDto nationInfo;
-    private RoleAdminDto roleInfo;
+    private RoleDto roleInfo;
 }

@@ -47,10 +47,15 @@ public interface AccountMapper {
     @Mapping(source = "kind", target = "kind")
     @Mapping(source = "avatarPath", target = "avatarPath")
     @Mapping(source = "isSuperAdmin", target = "isSuperAdmin")
+    @Mapping(source = "createDate", target = "createDate")
+    @Mapping(source = "modifiedDate", target = "modifiedDate")
+    @Mapping(source = "status", target = "status")
     @Mapping(source = "nation", target = "nationInfo", qualifiedByName = "fromEntityToNationDto")
-    @Mapping(source = "role", target = "roleInfo", qualifiedByName = "fromEntityToRoleDto")
+    @Mapping(source = "role", target = "roleInfo", qualifiedByName = "fromEntityToRoleDtoForMe")
     @Named("fromEntityToAccountAdminDto")
     AccountAdminDto fromEntityToAccountAdminDto(Account account);
+    @IterableMapping(elementTargetType = AccountAdminDto.class, qualifiedByName = "fromEntityToAccountAdminDto")
+    List<AccountAdminDto> fromEntityToAccountAdminDtoList(List<Account> accounts);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")

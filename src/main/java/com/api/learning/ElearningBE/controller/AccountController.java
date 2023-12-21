@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
+import com.api.learning.ElearningBE.dto.account.AccountAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
@@ -27,6 +28,20 @@ public class AccountController {
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
+    }
+
+    @GetMapping("/list")
+    public ApiMessageDto<ResponseListDto<List<AccountAdminDto>>> list(AccountCriteria accountCriteria, Pageable pageable){
+        ApiMessageDto<ResponseListDto<List<AccountAdminDto>>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = accountService.list(accountCriteria,pageable);
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            return apiMessageDto;
+        }
+        return apiMessageDto;
     }
 
     @GetMapping("/auto-complete")
