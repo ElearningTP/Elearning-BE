@@ -11,4 +11,5 @@ import java.util.List;
 public interface TopicCommentRepository extends JpaRepository<TopicComment,Long>, JpaSpecificationExecutor<TopicComment> {
     List<TopicComment> findAllByTopicIdIn(List<Long> topicIds);
     void deleteAllByTopicId(Long topicId);
+    void deleteAllByAccountId(Long accountId);
 }

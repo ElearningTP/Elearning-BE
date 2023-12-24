@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, Long>, JpaSpecificationExecutor<CourseRegistration> {
     Boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
+    void deleteAllByStudentId(Long studentId);
 }

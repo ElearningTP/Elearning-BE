@@ -5,8 +5,10 @@ import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.account.AccountAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
+import com.api.learning.ElearningBE.form.account.UpdateAccountForm;
 import com.api.learning.ElearningBE.services.account.AccountService;
 import com.api.learning.ElearningBE.storage.criteria.AccountCriteria;
 import lombok.Getter;
@@ -117,10 +119,51 @@ public class AccountController {
 
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasRole('AC_C')")
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateAccountForm createAccountForm){
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<AccountDto> create(@Valid @RequestBody CreateAccountForm createAccountForm){
+        ApiMessageDto<AccountDto> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = accountService.create(createAccountForm);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
+    @PutMapping(value = "/update")
+//    @PreAuthorize("hasRole('AC_C')")
+    public ApiMessageDto<AccountDto> update(@Valid @RequestBody UpdateAccountForm updateAccountForm){
+        ApiMessageDto<AccountDto> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = accountService.update(updateAccountForm);
+        }catch (InvalidException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.BAD_GATEWAY.toString());
+        }
+        catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+//    @PreAuthorize("hasRole('AC_C')")
+    public ApiMessageDto<String> create(@PathVariable Long id){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = accountService.delete(id);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());

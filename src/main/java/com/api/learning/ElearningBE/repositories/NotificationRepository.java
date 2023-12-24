@@ -21,4 +21,5 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
             "        FROM db_notification AS n " +
             "        WHERE n.id_user = :accountId AND n.is_read IS FALSE) AS subq)",nativeQuery = true)
     void updateAllNotificationsToRead(@Param("accountId") Long accountId);
+    void deleteAllByIdUser(Long id);
 }

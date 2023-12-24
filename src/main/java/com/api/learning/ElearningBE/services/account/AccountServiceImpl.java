@@ -1,5 +1,6 @@
 package com.api.learning.ElearningBE.services.account;
 
+import com.api.learning.ElearningBE.constant.ELearningConstant;
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.ResponseListDto;
 import com.api.learning.ElearningBE.dto.account.AccountAdminDto;
@@ -9,8 +10,10 @@ import com.api.learning.ElearningBE.dto.assignment.AssignmentDto;
 import com.api.learning.ElearningBE.dto.assignment.AssignmentScheduleDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizDto;
 import com.api.learning.ElearningBE.dto.quiz.QuizScheduleDto;
+import com.api.learning.ElearningBE.exceptions.InvalidException;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
+import com.api.learning.ElearningBE.form.account.UpdateAccountForm;
 import com.api.learning.ElearningBE.mapper.*;
 import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.security.JwtUtils;
@@ -22,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -58,6 +62,16 @@ public class AccountServiceImpl implements AccountService {
     private QuizSubmissionRepository quizSubmissionRepository;
     @Autowired
     private QuizSubmissionMapper quizSubmissionMapper;
+    @Autowired
+    private TopicCommentRepository topicCommentRepository;
+    @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
+    private QuizSubmissionResultRepository quizSubmissionResultRepository;
+    @Autowired
+    private CourseRegistrationRepository courseRegistrationRepository;
     @Autowired
     private UserService userService;
     @Autowired
@@ -233,8 +247,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ApiMessageDto<String> create(CreateAccountForm createAccountForm) {
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<AccountDto> create(CreateAccountForm createAccountForm) {
+        ApiMessageDto<AccountDto> apiMessageDto = new ApiMessageDto<>();
         Boolean emailExisted = accountRepository.existsAccountByEmail(createAccountForm.getEmail().trim());
         if (emailExisted){
             apiMessageDto.setResult(false);
@@ -254,10 +268,64 @@ public class AccountServiceImpl implements AccountService {
         account.setRole(role);
         account.setPassword(hash);
         accountRepository.save(account);
+        AccountDto accountDto = accountMapper.fromEntityToAccountDtoForMe(account);
 
+        apiMessageDto.setData(accountDto);
         apiMessageDto.setMessage("Create account successfully.");
         return apiMessageDto;
 
+    }
+
+    @Override
+    public ApiMessageDto<AccountDto> update(UpdateAccountForm updateAccountForm) {
+        ApiMessageDto<AccountDto> apiMessageDto = new ApiMessageDto<>();
+        Account account = accountRepository.findById(updateAccountForm.getId())
+                .orElseThrow(() -> new NotFoundException(String.format("Account with id %s not found", updateAccountForm.getId())));
+        accountMapper.fromUpdateAccountFormToEntity(updateAccountForm,account);
+        if (updateAccountForm.getNationId() != null) {
+            Nation nation = nationRepository.findById(updateAccountForm.getNationId())
+                    .orElseThrow(() -> new NotFoundException(String.format("Nation with id %s not found", updateAccountForm.getNationId())));
+            account.setNation(nation);
+        }
+        if (updateAccountForm.getRoleId() != null) {
+            if (!userService.getAccountKind().equals(ELearningConstant.ROLE_KIND_ADMIN)){
+                throw new InvalidException("Do not allow update role");
+            }
+            Role role = roleRepository.findById(updateAccountForm.getRoleId())
+                    .orElseThrow(() -> new NotFoundException(String.format("Role with id %s not found", updateAccountForm.getRoleId())));
+            account.setRole(role);
+            account.setKind(role.getKind());
+        }
+        if (updateAccountForm.getPassword() != null && !updateAccountForm.getPassword().isEmpty()){
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            String newPassword = encoder.encode(updateAccountForm.getPassword());
+            account.setPassword(newPassword);
+        }
+        accountRepository.save(account);
+        AccountDto accountDto = accountMapper.fromEntityToAccountDtoForMe(account);
+
+        apiMessageDto.setData(accountDto);
+        apiMessageDto.setMessage("Update account successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    @Transactional
+    public ApiMessageDto<String> delete(Long id) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Account with id %s not found", id)));
+        topicCommentRepository.deleteAllByAccountId(account.getId());
+        topicRepository.deleteAllByAccountId(account.getId());
+        assignmentSubmissionRepository.deleteAllByStudentId(account.getId());
+        notificationRepository.deleteAllByIdUser(account.getId());
+        quizSubmissionResultRepository.deleteAllByStudentId(account.getId());
+        quizSubmissionRepository.deleteAllByStudentId(account.getId());
+        courseRegistrationRepository.deleteAllByStudentId(account.getId());
+        accountRepository.delete(account);
+
+        apiMessageDto.setMessage("Delete account successfully");
+        return apiMessageDto;
     }
 
 }

@@ -25,4 +25,15 @@ public interface QuizSubmissionResultRepository extends JpaRepository<QuizSubmis
             "   INNER JOIN Quiz q ON q.id = qs.quiz.id " +
             "   WHERE q.id = :quizId)")
     void deleteAllByQuizId(@Param("quizId") Long quizId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM db_quiz_submission_result AS qsr " +
+            "WHERE qsr.id IN " +
+            "   (SELECT Id " +
+            "   FROM (SELECT qsr.id " +
+            "           FROM db_quiz_submission_result AS qsr " +
+            "           INNER JOIN db_quiz_submission AS qs ON qs.id = qsr.submission_id " +
+            "           WHERE qs.student_id = :studentId) AS subquery)", nativeQuery = true)
+    void deleteAllByStudentId(@Param("studentId") Long studentId);
 }
