@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic,Long>, JpaSpecificationExecutor<Topic> {
     List<Topic> findAllByForumId(Long forumId);
+    void deleteAllByAccountId(Long accountId);
 }

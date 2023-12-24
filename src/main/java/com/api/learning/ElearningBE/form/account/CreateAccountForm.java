@@ -14,7 +14,7 @@ public class CreateAccountForm {
     private String fullName;
     @NotEmpty(message = "Email can not be empty")
     @ApiModelProperty(name = "email", required = true)
-    @Email(message = "Email is not incorrect format")
+//    @Email(message = "Email is not incorrect format")
     private String email;
     @NotEmpty(message = "Password can not be empty")
     @ApiModelProperty(name = "password", required = true)

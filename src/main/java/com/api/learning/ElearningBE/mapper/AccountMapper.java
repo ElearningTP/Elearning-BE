@@ -3,8 +3,10 @@ package com.api.learning.ElearningBE.mapper;
 import com.api.learning.ElearningBE.dto.account.AccountAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
+import com.api.learning.ElearningBE.form.account.UpdateAccountForm;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import org.mapstruct.*;
+import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
@@ -19,6 +21,10 @@ public interface AccountMapper {
     @Mapping(source = "avatarPath", target = "avatarPath")
     Account fromCreateAccountFormToEntity(CreateAccountForm createAccountForm);
 
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "fullName", target = "fullName")
+    @Mapping(source = "avatarPath", target = "avatarPath")
+    void fromUpdateAccountFormToEntity(UpdateAccountForm updateAccountForm, @MappingTarget Account account);
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
     @Mapping(source = "fullName", target = "fullName")

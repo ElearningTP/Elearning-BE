@@ -7,6 +7,7 @@ import com.api.learning.ElearningBE.dto.account.AccountAdminDto;
 import com.api.learning.ElearningBE.dto.account.AccountDto;
 import com.api.learning.ElearningBE.dto.account.StudentScheduleDto;
 import com.api.learning.ElearningBE.form.account.CreateAccountForm;
+import com.api.learning.ElearningBE.form.account.UpdateAccountForm;
 import com.api.learning.ElearningBE.storage.criteria.AccountCriteria;
 import org.springframework.data.domain.Pageable;
 
@@ -19,5 +20,7 @@ public interface AccountService {
     ApiMessageDto<ResponseListDto<List<AccountDto>>> memberTheSameCourse(Pageable pageable);
     ApiMessageDto<AccountDto> retrieveMe(String token);
     ApiMessageDto<StudentScheduleDto> mySchedule();
-    ApiMessageDto<String> create(CreateAccountForm createAccountForm);
+    ApiMessageDto<AccountDto> create(CreateAccountForm createAccountForm);
+    ApiMessageDto<AccountDto> update(UpdateAccountForm updateAccountForm);
+    ApiMessageDto<String> delete(Long id);
 }
