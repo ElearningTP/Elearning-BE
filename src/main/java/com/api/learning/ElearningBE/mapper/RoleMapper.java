@@ -45,4 +45,13 @@ public interface RoleMapper {
     @Mapping(source = "description", target = "description")
     @Named("fromEntityToRoleDtoForMe")
     RoleDto fromEntityToRoleDtoForMe(Role role);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "kind", target = "kind")
+    @Named("fromEntityToRoleDtoForAutoComplete")
+    RoleDto fromEntityToRoleDtoForAutoComplete(Role role);
+    @IterableMapping(elementTargetType = RoleDto.class, qualifiedByName = "fromEntityToRoleDtoForAutoComplete")
+    List<RoleDto> fromEntityToRoleDtoForAutoCompleteList(List<Role> roles);
 }

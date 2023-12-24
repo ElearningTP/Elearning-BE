@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.services.role;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
@@ -74,6 +75,17 @@ public class RoleServiceImpl implements RoleService {
         ApiMessageDto<List<RoleAdminDto>> apiMessageDto = new ApiMessageDto<>();
         List<Role> roles = roleRepository.findAll();
         List<RoleAdminDto> roleAdminDtos = roleMapper.fromEntityToRoleDtoList(roles);
+
+        apiMessageDto.setData(roleAdminDtos);
+        apiMessageDto.setMessage("Retrieve role list successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    public ApiMessageDto<List<RoleDto>> autoComplete() {
+        ApiMessageDto<List<RoleDto>> apiMessageDto = new ApiMessageDto<>();
+        List<Role> roles = roleRepository.findAllRole();
+        List<RoleDto> roleAdminDtos = roleMapper.fromEntityToRoleDtoForAutoCompleteList(roles);
 
         apiMessageDto.setData(roleAdminDtos);
         apiMessageDto.setMessage("Retrieve role list successfully");
