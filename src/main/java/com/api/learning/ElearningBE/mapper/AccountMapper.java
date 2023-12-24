@@ -17,7 +17,6 @@ public interface AccountMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "fullName", target = "fullName")
     @Mapping(source = "email", target = "email")
-    @Mapping(source = "kind", target = "kind")
     @Mapping(source = "avatarPath", target = "avatarPath")
     Account fromCreateAccountFormToEntity(CreateAccountForm createAccountForm);
 
