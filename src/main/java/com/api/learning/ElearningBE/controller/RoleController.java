@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.controller;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleDto;
 import com.api.learning.ElearningBE.exceptions.NotFoundException;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
@@ -20,6 +21,19 @@ public class RoleController {
 
     public RoleController(RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    @GetMapping("/auto-complete")
+    public ApiMessageDto<List<RoleDto>> autoComplete(){
+        ApiMessageDto<List<RoleDto>> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = roleService.autoComplete();
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            apiMessageDto.setMessage(e.getMessage());
+        }
+        return apiMessageDto;
     }
 
     @GetMapping("/list")

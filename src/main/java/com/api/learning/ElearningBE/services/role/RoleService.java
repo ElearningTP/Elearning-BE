@@ -2,6 +2,7 @@ package com.api.learning.ElearningBE.services.role;
 
 import com.api.learning.ElearningBE.dto.ApiMessageDto;
 import com.api.learning.ElearningBE.dto.role.RoleAdminDto;
+import com.api.learning.ElearningBE.dto.role.RoleDto;
 import com.api.learning.ElearningBE.form.role.CreateRoleForm;
 import com.api.learning.ElearningBE.form.role.UpdateRoleForm;
 
@@ -12,4 +13,5 @@ public interface RoleService {
     ApiMessageDto<String> update(UpdateRoleForm updateRoleForm);
     ApiMessageDto<RoleAdminDto> retrieve(Long id);
     ApiMessageDto<List<RoleAdminDto>> list();
+    ApiMessageDto<List<RoleDto>> autoComplete();
 }
