@@ -267,6 +267,7 @@ public class AccountServiceImpl implements AccountService {
         account.setNation(nation);
         account.setRole(role);
         account.setPassword(hash);
+        account.setKind(role.getKind());
         accountRepository.save(account);
         AccountDto accountDto = accountMapper.fromEntityToAccountDtoForMe(account);
 

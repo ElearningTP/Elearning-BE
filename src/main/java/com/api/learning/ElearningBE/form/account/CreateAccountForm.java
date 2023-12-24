@@ -19,9 +19,6 @@ public class CreateAccountForm {
     @NotEmpty(message = "Password can not be empty")
     @ApiModelProperty(name = "password", required = true)
     private String password;
-    @NotNull(message = "Kind can not be null")
-    @ApiModelProperty(name = "kind", required = true)
-    private Integer kind;
     @ApiModelProperty(name = "avatarPath")
     private String avatarPath;
     @ApiModelProperty(name = "nationId")
