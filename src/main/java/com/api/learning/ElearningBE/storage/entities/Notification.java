@@ -13,7 +13,7 @@ import javax.persistence.*;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "db_notification")
 public class Notification extends Auditable<String> {
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "longtext")
     private String message;
     @Column(name = "ref_id")
     private String refId;
