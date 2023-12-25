@@ -14,6 +14,7 @@ import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.storage.criteria.LessonPlanCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.LessonPlan;
+import com.api.learning.ElearningBE.storage.entities.QuizQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,10 @@ public class LessonPlanServiceImpl implements LessonPlanService{
     private LectureRepository lectureRepository;
     @Autowired
     private QuizRepository quizRepository;
+    @Autowired
+    private QuizQuestionRepository quizQuestionRepository;
+    @Autowired
+    private AnswerQuestionRepository answerQuestionRepository;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> autoComplete(LessonPlanCriteria lessonPlanCriteria, Pageable pageable) {
@@ -128,6 +133,8 @@ public class LessonPlanServiceImpl implements LessonPlanService{
         assignmentRepository.deleteAllByLessonPlanId(lessonPlan.getId());
         lectureRepository.deleteAllByLessonPlanId(lessonPlan.getId());
         resourcesRepository.deleteAllByLessonPLanId(lessonPlan.getId());
+        answerQuestionRepository.deleteAllByLessonPlanId(lessonPlan.getId());
+        quizQuestionRepository.deleteAllByLessonPlanId(lessonPlan.getId());
         quizRepository.deleteAllByLessonPlanId(lessonPlan.getId());
         modulesRepository.deleteAllByLessonPlanId(lessonPlan.getId());
         lessonPlanRepository.delete(lessonPlan);
