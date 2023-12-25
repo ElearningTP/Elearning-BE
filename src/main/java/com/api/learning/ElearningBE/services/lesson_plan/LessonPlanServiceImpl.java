@@ -10,8 +10,7 @@ import com.api.learning.ElearningBE.exceptions.UnauthorizedException;
 import com.api.learning.ElearningBE.form.lesson_plan.CreateLessonPlanForm;
 import com.api.learning.ElearningBE.form.lesson_plan.UpdateLessonPlanForm;
 import com.api.learning.ElearningBE.mapper.LessonPlanMapper;
-import com.api.learning.ElearningBE.repositories.AccountRepository;
-import com.api.learning.ElearningBE.repositories.LessonPlanRepository;
+import com.api.learning.ElearningBE.repositories.*;
 import com.api.learning.ElearningBE.storage.criteria.LessonPlanCriteria;
 import com.api.learning.ElearningBE.storage.entities.Account;
 import com.api.learning.ElearningBE.storage.entities.LessonPlan;
@@ -19,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +31,16 @@ public class LessonPlanServiceImpl implements LessonPlanService{
     private LessonPlanRepository lessonPlanRepository;
     @Autowired
     private LessonPlanMapper lessonPlanMapper;
+    @Autowired
+    private ModulesRepository modulesRepository;
+    @Autowired
+    private AssignmentRepository assignmentRepository;
+    @Autowired
+    private ResourcesRepository resourcesRepository;
+    @Autowired
+    private LectureRepository lectureRepository;
+    @Autowired
+    private QuizRepository quizRepository;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<LessonPlanDto>>> autoComplete(LessonPlanCriteria lessonPlanCriteria, Pageable pageable) {
@@ -110,10 +120,16 @@ public class LessonPlanServiceImpl implements LessonPlanService{
     }
 
     @Override
+    @Transactional
     public ApiMessageDto<String> delete(Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         LessonPlan lessonPlan = lessonPlanRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Lesson plan with id %s not found", id)));
+        assignmentRepository.deleteAllByLessonPlanId(lessonPlan.getId());
+        lectureRepository.deleteAllByLessonPlanId(lessonPlan.getId());
+        resourcesRepository.deleteAllByLessonPLanId(lessonPlan.getId());
+        quizRepository.deleteAllByLessonPlanId(lessonPlan.getId());
+        modulesRepository.deleteAllByLessonPlanId(lessonPlan.getId());
         lessonPlanRepository.delete(lessonPlan);
 
         apiMessageDto.setMessage("Delete lesson plan successfully");
