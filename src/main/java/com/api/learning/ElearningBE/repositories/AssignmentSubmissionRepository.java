@@ -15,4 +15,5 @@ public interface AssignmentSubmissionRepository extends JpaRepository<Assignment
     List<AssignmentSubmission> findAllByAssignmentIdInAndStudentIdAndCourseIdIn(List<Long> assignmentIds, Long studentId, List<Long> courseIds);
     void deleteAllByAssignmentId(Long assignmentId);
     void deleteAllByStudentId(Long studentId);
+    void deleteAllByCourseId(Long courseId);
 }

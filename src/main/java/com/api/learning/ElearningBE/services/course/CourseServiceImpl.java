@@ -78,6 +78,14 @@ public class CourseServiceImpl implements CourseService{
     private QuizSubmissionRepository quizSubmissionRepository;
     @Autowired
     private QuizSubmissionMapper quizSubmissionMapper;
+    @Autowired
+    private QuizSubmissionResultRepository quizSubmissionResultRepository;
+    @Autowired
+    private TopicCommentRepository topicCommentRepository;
+    @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
+    private CourseRegistrationRepository courseRegistrationRepository;
 
     @Override
     public ApiMessageDto<ResponseListDto<List<CourseDto>>> autoComplete(CourseCriteria courseCriteria, Pageable pageable) {
@@ -277,6 +285,25 @@ public class CourseServiceImpl implements CourseService{
 
         apiMessageDto.setData(courseDto);
         apiMessageDto.setMessage("Update course successfully");
+        return apiMessageDto;
+    }
+
+    @Override
+    @Transactional
+    public ApiMessageDto<String> delete(Long id) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Course with id %s not found", id)));
+        quizSubmissionResultRepository.deleteAllByCourseId(course.getId());
+        quizSubmissionRepository.deleteAllByCourseId(course.getId());
+        topicCommentRepository.deleteAllByCourseId(course.getId());
+        topicRepository.deleteAllByCourseId(course.getId());
+        forumRepository.deleteAllByCourseId(course.getId());
+        assignmentSubmissionRepository.deleteAllByCourseId(course.getId());
+        courseRegistrationRepository.deleteAllByCourseId(course.getId());
+        courseRepository.delete(course);
+
+        apiMessageDto.setMessage("Delete course successfully");
         return apiMessageDto;
     }
 }

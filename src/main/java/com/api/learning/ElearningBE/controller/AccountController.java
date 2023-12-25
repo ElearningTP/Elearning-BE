@@ -11,12 +11,10 @@ import com.api.learning.ElearningBE.form.account.CreateAccountForm;
 import com.api.learning.ElearningBE.form.account.UpdateAccountForm;
 import com.api.learning.ElearningBE.services.account.AccountService;
 import com.api.learning.ElearningBE.storage.criteria.AccountCriteria;
-import lombok.Getter;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -144,7 +142,7 @@ public class AccountController {
         }catch (InvalidException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
-            apiMessageDto.setCode(HttpStatus.BAD_GATEWAY.toString());
+            apiMessageDto.setCode(HttpStatus.BAD_REQUEST.toString());
         }
         catch (NotFoundException e){
             apiMessageDto.setResult(false);

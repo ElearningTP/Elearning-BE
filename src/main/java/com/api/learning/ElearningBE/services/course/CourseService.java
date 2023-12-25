@@ -17,4 +17,5 @@ public interface CourseService {
     ApiMessageDto<ResponseListDto<List<CourseDto>>> list(CourseCriteria courseCriteria, Pageable pageable);
     ApiMessageDto<CourseDto> create(CreateCourseForm createCourseForm);
     ApiMessageDto<CourseDto> update(UpdateCourseForm updateCourseForm);
+    ApiMessageDto<String> delete(Long id);
 }
