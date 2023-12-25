@@ -25,4 +25,18 @@ public interface AnswerQuestionRepository extends JpaRepository<AnswerQuestion,L
     void deleteAllByQuizId(@Param("quizId") Long quizId);
     List<AnswerQuestion> findAllByQuestionIdIn(List<Long> ids);
     List<AnswerQuestion> findAllByIdIn(List<Long> ids);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM db_answer_question aq " +
+            "WHERE aq.id IN " +
+            "   (SELECT Id FROM(SELECT aq.id " +
+            "       FROM db_answer_question aq " +
+            "       INNER JOIN db_quiz_question qq ON qq.id = aq.question_id " +
+            "       INNER JOIN db_quiz q ON q.id = qq.quiz_id " +
+            "       INNER JOIN db_modules m ON m.id = q.modules_id " +
+            "       INNER JOIN db_lesson_plan lp ON lp.id = m.lesson_plan_id " +
+            "       WHERE lp.id = :lessonPlanId " +
+            "       ) AS subquery)", nativeQuery = true)
+    void deleteAllByLessonPlanId(@Param("lessonPlanId") Long lessonPlanId);
 }
