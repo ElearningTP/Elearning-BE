@@ -54,6 +54,8 @@ public class TopicServiceImpl implements TopicService{
     @Autowired
     private NotificationRepository notificationRepository;
     @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
     private UserService userService;
 
     @Override
@@ -154,7 +156,7 @@ public class TopicServiceImpl implements TopicService{
         List<Object[]> objectsResult = accountRepository.findAllMemberOfCourseByTopicId(topic.getId(), accountId);
         if (userService.getAccountKind().equals(ELearningConstant.ROLE_KIND_STUDENT)) {
             List<Long> memberOfCourseId = objectsResult.parallelStream().map(objects -> (Long)objects[0]).collect(Collectors.toList());
-            Long teacherId = objectsResult.parallelStream().map(objects -> (Long)objects[1]).findFirst().orElse(null);
+            Long teacherId = courseRepository.findTeacherIdByForumId(topic.getForum().getId());
             if (teacherId != null){
                 memberOfCourseId.add(teacherId);
             }
