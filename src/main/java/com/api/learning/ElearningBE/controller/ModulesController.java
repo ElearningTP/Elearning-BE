@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.modules.ModulesService;
 import com.api.learning.ElearningBE.storage.criteria.ModulesCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,19 +98,23 @@ public class ModulesController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('MODULE_D')")
-    public ApiMessageDto<String> delete(@PathVariable Long id){
+    public ResponseEntity<ApiMessageDto<String>> delete(@PathVariable Long id){
+        ResponseEntity<ApiMessageDto<String>> response;
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = modulesService.delete(id);
+            response = new ResponseEntity<>(apiMessageDto, HttpStatus.OK);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+            response = new ResponseEntity<>(apiMessageDto, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            response = new ResponseEntity<>(apiMessageDto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return apiMessageDto;
+        return response;
     }
 }

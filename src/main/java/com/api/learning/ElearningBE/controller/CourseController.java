@@ -113,4 +113,21 @@ public class CourseController {
         }
         return apiMessageDto;
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ApiMessageDto<String> delete(@PathVariable Long id){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        try {
+            apiMessageDto = courseService.delete(id);
+        }catch (NotFoundException e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+        }catch (Exception e){
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage(e.getMessage());
+            apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return apiMessageDto;
+    }
 }

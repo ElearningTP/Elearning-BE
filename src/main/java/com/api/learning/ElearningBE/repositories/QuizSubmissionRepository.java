@@ -15,4 +15,5 @@ public interface QuizSubmissionRepository extends JpaRepository<QuizSubmission,L
     List<QuizSubmission> findAllByQuizIdAndStudentIdAndCourseId(Long quizId, Long studentId, Long courseId);
     void deleteAllByQuizId(Long quizId);
     void deleteAllByStudentId(Long id);
+    void deleteAllByCourseId(Long id);
 }

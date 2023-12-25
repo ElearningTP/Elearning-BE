@@ -11,4 +11,5 @@ import java.util.List;
 public interface ModulesRepository extends JpaRepository<Modules,Long>, JpaSpecificationExecutor<Modules> {
     List<Modules> findAllByLessonPlanIdIn(List<Long> lessonPlanIds);
     List<Modules> findAllByLessonPlanId(Long ids);
+    void deleteAllByLessonPlanId(Long lessonPlanId);
 }

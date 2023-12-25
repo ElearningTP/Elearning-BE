@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -166,10 +167,15 @@ public class ModulesServiceImpl implements ModulesService{
     }
 
     @Override
+    @Transactional
     public ApiMessageDto<String> delete(Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Modules modules = modulesRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Modules with id %s not found",id)));
+        assignmentRepository.deleteAllByModulesId(modules.getId());
+        lectureRepository.deleteAllByModulesId(modules.getId());
+        resourcesRepository.deleteAllByModulesId(modules.getId());
+        quizRepository.deleteAllByModulesId(modules.getId());
         modulesRepository.delete(modules);
 
         apiMessageDto.setMessage("Delete modules successfully");

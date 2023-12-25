@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface ForumRepository extends JpaRepository<Forum,Long>, JpaSpecificationExecutor<Forum> {
     boolean existsByCourseId(Long courseId);
     Forum findByCourseId(Long courseId);
+    void deleteAllByCourseId(Long courseId);
 }

@@ -3,9 +3,11 @@ package com.api.learning.ElearningBE.repositories;
 import com.api.learning.ElearningBE.storage.entities.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,4 +23,16 @@ public interface QuizRepository extends JpaRepository<Quiz,Long>, JpaSpecificati
             "INNER JOIN Account s ON cr.student.id = s.id " +
             "WHERE s.id = :studentId")
     List<Object[]> findAllQuizByStudentId(@Param("studentId") Long studentId);
+    void deleteAllByModulesId(Long modulesId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM db_quiz q " +
+            "WHERE q.id IN ( " +
+            "   SELECT Id FROM (SELECT q.id " +
+            "   FROM db_quiz q " +
+            "   INNER JOIN db_modules m ON m.id = q.modules_id " +
+            "   WHERE m.lesson_plan_id = :lessonPlanId " +
+            ")as subquery)", nativeQuery = true)
+    void deleteAllByLessonPlanId(@Param("lessonPlanId") Long lessonPlanId);
 }
