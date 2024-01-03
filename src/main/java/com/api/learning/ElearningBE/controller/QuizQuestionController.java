@@ -11,6 +11,7 @@ import com.api.learning.ElearningBE.services.quiz_question.QuizQuestionService;
 import com.api.learning.ElearningBE.storage.criteria.QuizQuestionCriteria;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,19 +98,23 @@ public class QuizQuestionController {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('Q_QUESTION_D')")
-    public ApiMessageDto<String> delete(@PathVariable Long id){
+    public ResponseEntity<ApiMessageDto<String>> delete(@PathVariable Long id){
+        ResponseEntity<ApiMessageDto<String>> response;
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         try {
             apiMessageDto = quizQuestionService.delete(id);
+            response = new ResponseEntity<>(apiMessageDto, HttpStatus.OK);
         }catch (NotFoundException e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.NOT_FOUND.toString());
+            response = new ResponseEntity<>(apiMessageDto, HttpStatus.NOT_FOUND);
         }catch (Exception e){
             apiMessageDto.setResult(false);
             apiMessageDto.setMessage(e.getMessage());
             apiMessageDto.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+            response = new ResponseEntity<>(apiMessageDto, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return apiMessageDto;
+        return response;
     }
 }
